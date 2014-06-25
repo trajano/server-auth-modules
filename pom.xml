@@ -7,10 +7,11 @@
         <version>8</version>
     </parent>
     <groupId>net.trajano.auth</groupId>
-    <artifactId>http-header-login-module</artifactId>
+    <artifactId>server-auth-modules</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>HTTP Header Login Module</name>
-    <description>HTTP Header Login Module</description>
+    <name>Server Auth Modules</name>
+    <description>A set of server authentication modules.</description>
+    <inceptionYear>2014</inceptionYear>
     <scm>
         <connection>scm:git:https://github.com/trajano/${project.artifactId}</connection>
         <developerConnection>scm:git:ssh://git@github.com/trajano/${project.artifactId}.git</developerConnection>
@@ -30,9 +31,21 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.main.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -306,19 +319,6 @@
                                 <configuration>
                                     <codeStyleBaseUrl>codestyle</codeStyleBaseUrl>
                                 </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>findbugs</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>findbugs</goal>
-                                </goals>
                             </execution>
                         </executions>
                     </plugin>

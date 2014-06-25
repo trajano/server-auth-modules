@@ -1,5 +1,5 @@
 /**
- * HTTP Header Login Module. HTTP Header Login Module
+ * JASPIC ServerAuthModules.
  */
 package net.trajano.auth;
 
