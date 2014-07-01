@@ -9,10 +9,20 @@ package net.trajano.auth.internal;
  *
  */
 public final class Utils {
+    /**
+     * Checks if string is null or empty.
+     *
+     * @param s
+     *            string to test
+     * @return true if string is null or empty.
+     */
     public static boolean isNullOrEmpty(final String s) {
         return s == null || s.trim().length() == 0;
     }
 
+    /**
+     * Prevent instantiation of utility class.
+     */
     private Utils() {
     }
 }

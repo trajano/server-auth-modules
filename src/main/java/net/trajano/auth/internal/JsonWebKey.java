@@ -24,9 +24,10 @@ import javax.json.JsonValue;
  */
 public class JsonWebKey {
     /**
-     * Maps "kid" to the {@link Key}.
+     * Maps "kid" to the {@link Key}. Instances of this classes are short lived
+     * and used in one thread context so concurrent use is not expected.
      */
-    private final Map<String, Key> keyMap = new HashMap<>();
+    private final Map<String, Key> keyMap = new HashMap<>(); // NOPMD
 
     /**
      * Constructs the JSON Web Key using the JSON object. Unsupported key usage

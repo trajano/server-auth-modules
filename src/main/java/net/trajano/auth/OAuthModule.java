@@ -39,7 +39,6 @@ import net.trajano.auth.internal.JsonWebKey;
 import net.trajano.auth.internal.JsonWebTokenUtil;
 import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
-import net.trajano.auth.internal.Utils;
 
 /**
  * OAuth 2.0 server authentication module. This is an implementation of the <a
@@ -97,7 +96,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-        HttpServletRequest.class, HttpServletResponse.class };
+            HttpServletRequest.class, HttpServletResponse.class };
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -201,11 +200,16 @@ public abstract class OAuthModule implements ServerAuthModule {
 
     /**
      * {@inheritDoc}
+     *
+     * <p>
+     * The array it returns contains immutable data so it is secure and faster
+     * to return the internal array.
+     * </p>
      */
     @SuppressWarnings("rawtypes")
     @Override
     public Class[] getSupportedMessageTypes() {
-        return SUPPORTED_MESSAGE_TYPES;
+        return SUPPORTED_MESSAGE_TYPES; // NOPMD
     }
 
     /**
@@ -243,7 +247,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected JsonWebKey getWebKeys(final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-                    throws GeneralSecurityException {
+            throws GeneralSecurityException {
         final Client restClient = ClientBuilder.newClient();
         final URI jwksUri = config.getJwksUri();
         return new JsonWebKey(restClient.target(jwksUri).request()
@@ -283,7 +287,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-                    throws AuthException {
+            throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -413,7 +417,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                            new GroupPrincipalCallback(subject, new String[] { issuer }) });
+                    new GroupPrincipalCallback(subject, new String[] { issuer }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -428,14 +432,14 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-                    throws AuthException {
+            throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
                 .getResponseMessage();
         final String idToken = getIdToken(req);
         final String requestCookieContext;
-        if (Utils.isNullOrEmpty(cookieContext)) {
+        if (isNullOrEmpty(cookieContext)) {
             requestCookieContext = req.getContextPath();
         } else {
             requestCookieContext = cookieContext;
@@ -445,7 +449,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                 updateSubjectPrincipal(client, idToken);
                 return AuthStatus.SUCCESS;
             } catch (final GeneralSecurityException e) {
-                LOG.fine("Invalid token " + e.getMessage());
+                LOG.log(Level.FINE, "invalidToken", e.getMessage());
                 final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
                 idTokenCookie.setMaxAge(0);
                 idTokenCookie.setPath(requestCookieContext);
