@@ -96,7 +96,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-            HttpServletRequest.class, HttpServletResponse.class };
+        HttpServletRequest.class, HttpServletResponse.class };
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -125,14 +125,9 @@ public abstract class OAuthModule implements ServerAuthModule {
     private CallbackHandler handler;
 
     /**
-     * Open ID provider configuration.
+     * Options for the module.
      */
-    private OpenIDProviderConfiguration oidProviderConfig;
-
-    /**
-     * JSON Web keys.
-     */
-    private JsonWebKey webKeys;
+    private Map<String, String> moduleOptions;
 
     /**
      * Does nothing.
@@ -217,9 +212,12 @@ public abstract class OAuthModule implements ServerAuthModule {
      *
      * @param req
      *            servlet request
+     * @param oidProviderConfig
+     *            OpenID provider config
      * @return token response
      */
-    private OAuthToken getToken(final HttpServletRequest req) {
+    private OAuthToken getToken(final HttpServletRequest req,
+            final OpenIDProviderConfiguration oidProviderConfig) {
         final Client restClient = ClientBuilder.newClient();
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle("code", req.getParameter("code"));
@@ -247,7 +245,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected JsonWebKey getWebKeys(final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-            throws GeneralSecurityException {
+                    throws GeneralSecurityException {
         final Client restClient = ClientBuilder.newClient();
         final URI jwksUri = config.getJwksUri();
         return new JsonWebKey(restClient.target(jwksUri).request()
@@ -287,7 +285,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-            throws AuthException {
+                    throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -303,8 +301,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                 throw new AuthException(MessageFormat.format(
                         R.getString("missingOption"), CLIENT_SECRET_KEY));
             }
-            oidProviderConfig = getOpenIDProviderConfig(options);
-            webKeys = getWebKeys(options, oidProviderConfig);
+            moduleOptions = options;
         } catch (final Exception e) {
             // Should not happen
             LOG.log(Level.SEVERE, "initializeException", e);
@@ -340,10 +337,14 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            HTTP servlet request
      * @param resp
      *            HTTP servlet response
+     * @param oidProviderConfig
+     *            OpenID provider config
      * @throws AuthException
      */
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
-            final HttpServletResponse resp) throws AuthException {
+            final HttpServletResponse resp,
+            final OpenIDProviderConfiguration oidProviderConfig)
+                    throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
@@ -403,19 +404,11 @@ public abstract class OAuthModule implements ServerAuthModule {
             final JsonObject jwtPayload) throws GeneralSecurityException {
         try {
             final String iss = googleWorkaround(jwtPayload.getString("iss"));
-            final String issuer = googleWorkaround(oidProviderConfig
-                    .getIssuer());
-            if (!iss.equals(issuer)) {
-                LOG.log(Level.SEVERE, "issuerMismatch", new Object[] { iss,
-                        issuer });
-                throw new GeneralSecurityException(MessageFormat.format(
-                        R.getString("issuerMismatch"), iss, issuer));
-            }
             handler.handle(new Callback[] {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                    new GroupPrincipalCallback(subject, new String[] { issuer }) });
+                            new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -430,7 +423,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
@@ -453,11 +446,14 @@ public abstract class OAuthModule implements ServerAuthModule {
                 idTokenCookie.setMaxAge(0);
                 idTokenCookie.setPath(requestCookieContext);
                 resp.addCookie(idTokenCookie);
-                redirectToAuthorizationEndpoint(req, resp);
+
+                final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(moduleOptions);
+                redirectToAuthorizationEndpoint(req, resp, oidProviderConfig);
                 return AuthStatus.SEND_CONTINUE;
             }
         } else if (!isCalledFromResourceOwner(req)) {
-            redirectToAuthorizationEndpoint(req, resp);
+            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(moduleOptions);
+            redirectToAuthorizationEndpoint(req, resp, oidProviderConfig);
             return AuthStatus.SEND_CONTINUE;
         } else {
             if (!req.isSecure()) {
@@ -465,9 +461,22 @@ public abstract class OAuthModule implements ServerAuthModule {
                 return AuthStatus.FAILURE;
             }
             try {
-                final OAuthToken token = getToken(req);
+                final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(moduleOptions);
+                final JsonWebKey webKeys = getWebKeys(moduleOptions,
+                        oidProviderConfig);
+                final OAuthToken token = getToken(req, oidProviderConfig);
                 final JsonObject payload = JsonWebTokenUtil.getPayload(
                         token.getIdToken(), webKeys, clientId);
+
+                final String iss = googleWorkaround(payload.getString("iss"));
+                final String issuer = googleWorkaround(oidProviderConfig
+                        .getIssuer());
+                if (!iss.equals(issuer)) {
+                    LOG.log(Level.SEVERE, "issuerMismatch", new Object[] { iss,
+                            issuer });
+                    throw new GeneralSecurityException(MessageFormat.format(
+                            R.getString("issuerMismatch"), iss, issuer));
+                }
                 updateSubjectPrincipal(client, payload);
                 final String encryptPayload = JsonWebTokenUtil.encryptPayload(
                         payload, clientId, clientSecret);
