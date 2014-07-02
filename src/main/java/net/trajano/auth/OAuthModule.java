@@ -394,16 +394,14 @@ public abstract class OAuthModule implements ServerAuthModule {
      *
      * @param subject
      *            subject
-     * @param idToken
-     *            ID token
+     * @param jwtPayload
+     *            JWT payload
      * @throws AuthException
      * @throws GeneralSecurityException
      */
     private void updateSubjectPrincipal(final Subject subject,
-            final String idToken) throws GeneralSecurityException {
+            final JsonObject jwtPayload) throws GeneralSecurityException {
         try {
-            final JsonObject jwtPayload = JsonWebTokenUtil.getPayload(idToken,
-                    webKeys, clientId);
             final String iss = googleWorkaround(jwtPayload.getString("iss"));
             final String issuer = googleWorkaround(oidProviderConfig
                     .getIssuer());
@@ -446,7 +444,8 @@ public abstract class OAuthModule implements ServerAuthModule {
         }
         if (idToken != null && !isCalledFromResourceOwner(req)) {
             try {
-                updateSubjectPrincipal(client, idToken);
+                updateSubjectPrincipal(client, JsonWebTokenUtil.getPayload(
+                        idToken, clientId, clientSecret));
                 return AuthStatus.SUCCESS;
             } catch (final GeneralSecurityException e) {
                 LOG.log(Level.FINE, "invalidToken", e.getMessage());
@@ -467,13 +466,13 @@ public abstract class OAuthModule implements ServerAuthModule {
             }
             try {
                 final OAuthToken token = getToken(req);
-
-                if (token.isExpired()) {
-                    return AuthStatus.FAILURE;
-                }
-                updateSubjectPrincipal(client, token.getIdToken());
+                final JsonObject payload = JsonWebTokenUtil.getPayload(
+                        token.getIdToken(), webKeys, clientId);
+                updateSubjectPrincipal(client, payload);
+                final String encryptPayload = JsonWebTokenUtil.encryptPayload(
+                        payload, clientId, clientSecret);
                 final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID,
-                        token.getIdToken());
+                        encryptPayload);
                 idTokenCookie.setMaxAge(-1);
                 idTokenCookie.setPath(requestCookieContext);
                 resp.addCookie(idTokenCookie);
@@ -488,9 +487,9 @@ public abstract class OAuthModule implements ServerAuthModule {
                 // tokens.
                 LOG.log(Level.WARNING, "validationWarning", e);
                 return AuthStatus.FAILURE;
-            } catch (final IOException e) {
+            } catch (final Exception e) {
                 // Should not happen
-                LOG.log(Level.WARNING, "validationException", e.getMessage());
+                LOG.log(Level.WARNING, "validationException", e);
                 throw new AuthException(MessageFormat.format(
                         R.getString("validationException"), e.getMessage()));
             }

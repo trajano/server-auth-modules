@@ -4,7 +4,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * OAuth token.
@@ -52,16 +51,6 @@ public class OAuthToken {
 
     public String getTokenType() {
         return tokenType;
-    }
-
-    /**
-     * Checks whether the token is expired.
-     *
-     * @return token is expired.
-     */
-    @XmlTransient
-    public boolean isExpired() {
-        return System.currentTimeMillis() > expiresIn * 1000L;
     }
 
     public void setAccessToken(final String accessToken) {
