@@ -23,7 +23,7 @@ import javax.ws.rs.client.ClientBuilder;
 
 import net.trajano.auth.OAuthModule;
 import net.trajano.auth.OpenIDConnectAuthModule;
-import net.trajano.auth.internal.JsonWebKey;
+import net.trajano.auth.internal.JsonWebKeySet;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
 import net.trajano.auth.internal.TokenCookie;
 
@@ -49,7 +49,7 @@ public class HerokuTest {
                 .target("https://connect-op.heroku.com/.well-known/openid-configuration")
                 .request().get(OpenIDProviderConfiguration.class);
 
-        new JsonWebKey(restClient.target(config.getJwksUri()).request()
+        new JsonWebKeySet(restClient.target(config.getJwksUri()).request()
                 .get(JsonObject.class));
     }
 

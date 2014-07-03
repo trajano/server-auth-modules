@@ -7,7 +7,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
-import net.trajano.auth.internal.JsonWebKey;
+import net.trajano.auth.internal.JsonWebKeySet;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
 
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ConfigurationTest {
         final OpenIDProviderConfiguration openIdProviderConfiguration = restClient
                 .target("https://accounts.google.com/.well-known/openid-configuration")
                 .request().get(OpenIDProviderConfiguration.class);
-        final JsonWebKey webKeys = new JsonWebKey(restClient
+        final JsonWebKeySet webKeys = new JsonWebKeySet(restClient
                 .target(openIdProviderConfiguration.getJwksUri()).request()
                 .get(JsonObject.class));
         assertNotNull(webKeys);

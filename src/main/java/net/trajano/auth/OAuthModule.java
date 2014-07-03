@@ -3,6 +3,7 @@ package net.trajano.auth;
 import static net.trajano.auth.internal.Utils.isNullOrEmpty;
 import static net.trajano.auth.internal.Utils.validateIdToken;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.security.GeneralSecurityException;
@@ -13,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -38,7 +40,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import net.trajano.auth.internal.Base64;
-import net.trajano.auth.internal.JsonWebKey;
+import net.trajano.auth.internal.JsonWebKeySet;
 import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
 import net.trajano.auth.internal.TokenCookie;
@@ -270,11 +272,11 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws GeneralSecurityException
      *             wraps exceptions thrown during processing
      */
-    protected JsonWebKey getWebKeys(final Client restClient,
+    protected JsonWebKeySet getWebKeys(final Client restClient,
             final Map<String, String> options,
             final OpenIDProviderConfiguration config)
                     throws GeneralSecurityException {
-        return new JsonWebKey(restClient.target(config.getJwksUri()).request()
+        return new JsonWebKeySet(restClient.target(config.getJwksUri()).request()
                 .get(JsonObject.class));
     }
 
@@ -508,12 +510,13 @@ public abstract class OAuthModule implements ServerAuthModule {
                 final Client restClient = ClientBuilder.newClient();
                 final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
                         restClient, moduleOptions);
-                final JsonWebKey webKeys = getWebKeys(restClient,
+                final JsonWebKeySet webKeys = getWebKeys(restClient,
                         moduleOptions, oidProviderConfig);
                 final OAuthToken token = getToken(req, oidProviderConfig);
                 LOG.log(Level.FINEST, "tokenValue", token);
-                final JsonObject claimsSet = Utils.getJwtClaimsSet(
-                        token.getIdToken(), webKeys);
+                final JsonObject claimsSet = Json.createReader(
+                        new ByteArrayInputStream(Utils.getJwsPayload(
+                                token.getIdToken(), webKeys))).readObject();
 
                 validateIdToken(clientId, claimsSet);
 

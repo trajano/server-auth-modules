@@ -18,36 +18,43 @@ import javax.json.JsonObject;
  */
 public final class Utils {
     /**
-     * Gets the JWT Claims Set from a JWT. It does parsing and validation of the
-     * signatures based on the JsonWebKey and ensures the client ID is listed as
-     * per the spec.
+     * Gets the JWS Payload from a <a href=
+     * "http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-30#section-3.1"
+     * >JWS Compact Serialization</a>. The validation follows the rules in <a
+     * href=
+     * "http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-30#section-5.2"
+     * >Message Signature or MAC validation section of JSON Web Signature</a>.
+     * <p>
+     * Note that "jku", "jwk", "x5u" and "x5c" should nor will <b>never</b> be
+     * implemented. It does not make sense for the serialization to contain its
+     * own validation.
      *
-     * @param token
-     *            token
-     * @param key
+     * @param serialization
+     *            JWS compact serialization
+     * @param keyset
      *            JSON web key used to validate the token
-     * @return the contents of the payload from the token
+     * @return the JWS payload
      * @throws GeneralSecurityException
-     *             problem with crypto APIs
+     *             problem with crypto APIs or signature was not valid
      */
-    public static JsonObject getJwtClaimsSet(final String token,
-            final JsonWebKey key) throws GeneralSecurityException {
-        final String[] jwtParts = token.split("\\.");
+    public static byte[] getJwsPayload(final String serialization,
+            final JsonWebKeySet keyset) throws GeneralSecurityException {
+        final String[] jwtParts = serialization.split("\\.");
 
-        final JsonObject jwtHeader = Json.createReader(
+        final JsonObject joseHeader = Json.createReader(
                 new ByteArrayInputStream(Base64.decode(jwtParts[0])))
                 .readObject();
 
         // Handle plaintext JWTs
-        if (!"none".equals(jwtHeader.getString("alg"))) {
+        if (!"none".equals(joseHeader.getString("alg"))) {
 
             final String kid;
-            if (jwtHeader.containsKey("kid")) {
-                kid = jwtHeader.getString("kid");
+            if (joseHeader.containsKey("kid")) {
+                kid = joseHeader.getString("kid");
             } else {
                 kid = "";
             }
-            final PublicKey signingKey = key.getKey(kid, PublicKey.class);
+            final PublicKey signingKey = keyset.getKey(kid, PublicKey.class);
 
             if (signingKey == null) {
                 throw new GeneralSecurityException("No key with id " + kid
@@ -55,7 +62,7 @@ public final class Utils {
             }
 
             final Signature signature = Signature
-                    .getInstance(toJavaAlgorithm(jwtHeader.getString("alg")));
+                    .getInstance(toJavaAlgorithm(joseHeader.getString("alg")));
 
             final byte[] jwtSignatureBytes = Base64.decode(jwtParts[2]);
 
@@ -66,11 +73,7 @@ public final class Utils {
                         "signature verification failed");
             }
         }
-        final JsonObject jwtPayload = Json.createReader(
-                new ByteArrayInputStream(Base64.decode(jwtParts[1])))
-                .readObject();
-
-        return jwtPayload;
+        return Base64.decode(jwtParts[1]);
     }
 
     /**

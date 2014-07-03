@@ -13,7 +13,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 /**
- * JSON Web Key. Implements
+ * JSON Web Key Set. Implements
  * http://tools.ietf.org/html/draft-ietf-jose-json-web-key-29
  *
  * TODO when supporting more methods, consider converting this to a composite
@@ -22,7 +22,7 @@ import javax.json.JsonValue;
  * @author Archimedes Trajano
  *
  */
-public class JsonWebKey {
+public class JsonWebKeySet {
     /**
      * Maps "kid" to the {@link Key}. Instances of this classes are short lived
      * and used in one thread context so concurrent use is not expected.
@@ -38,7 +38,7 @@ public class JsonWebKey {
      * @throws GeneralSecurityException
      *             problem with the crypto APIs
      */
-    public JsonWebKey(final JsonObject obj) throws GeneralSecurityException {
+    public JsonWebKeySet(final JsonObject obj) throws GeneralSecurityException {
         for (final JsonValue v : obj.getJsonArray("keys")) {
             final JsonObject keyJson = (JsonObject) v;
             final String kid;
@@ -98,7 +98,7 @@ public class JsonWebKey {
     }
 
     /**
-     * Gets a key given a KeyID.
+     * Gets a key given a Key ID.
      *
      * @param kid
      *            Key ID
@@ -109,7 +109,7 @@ public class JsonWebKey {
     }
 
     /**
-     * Gets a key given a KeyID with a specified type.
+     * Gets a key given a Key ID with a specified type.
      *
      * @param kid
      *            Key ID
