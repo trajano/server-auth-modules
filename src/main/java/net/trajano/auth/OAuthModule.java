@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.json.JsonObject;
 import javax.security.auth.Subject;
@@ -63,7 +64,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public static final String CLIENT_SECRET_KEY = "client.secret";
 
     /**
-     * Cookie context option key.
+     * Cookie context option key. The value is optional.
      */
     public static final String COOKIE_CONTEXT_KEY = "cookie.context";
 
@@ -83,6 +84,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     private static final String MESSAGES = "META-INF/Messages";
 
     /**
+     * Claims cookie name.
+     */
+    private static final String NET_TRAJANO_AUTH_CLAIMS = "net.trajano.auth.claims";
+
+    /**
      * ID token cookie name.
      */
     private static final String NET_TRAJANO_AUTH_ID = "net.trajano.auth.id";
@@ -93,10 +99,15 @@ public abstract class OAuthModule implements ServerAuthModule {
     private static final ResourceBundle R;
 
     /**
+     * Scope option key. The value is optional and defaults to "openid"
+     */
+    public static final String SCOPE_KEY = "scope";
+
+    /**
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-        HttpServletRequest.class, HttpServletResponse.class };
+            HttpServletRequest.class, HttpServletResponse.class };
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -130,6 +141,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     private Map<String, String> moduleOptions;
 
     /**
+     * Scope.
+     */
+    private String scope;
+
+    /**
      * Does nothing.
      *
      * @param messageInfo
@@ -161,19 +177,22 @@ public abstract class OAuthModule implements ServerAuthModule {
     }
 
     /**
-     * Gets the ID token from the cookies.
+     * Gets a specific cookie.
      *
+     * @param cookieName
+     *            cookie name
      * @param req
      *            HTTP servlet request
      * @return ID token
      */
-    private String getIdToken(final HttpServletRequest req) {
+    private String getCookie(final String cookieName,
+            final HttpServletRequest req) {
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
             return null;
         }
         for (final Cookie cookie : cookies) {
-            if (NET_TRAJANO_AUTH_ID.equals(cookie.getName())
+            if (cookieName.equals(cookie.getName())
                     && !isNullOrEmpty(cookie.getValue())) {
                 return cookie.getValue();
             }
@@ -245,7 +264,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected JsonWebKey getWebKeys(final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-                    throws GeneralSecurityException {
+            throws GeneralSecurityException {
         final Client restClient = ClientBuilder.newClient();
         final URI jwksUri = config.getJwksUri();
         return new JsonWebKey(restClient.target(jwksUri).request()
@@ -285,7 +304,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-                    throws AuthException {
+            throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -295,6 +314,10 @@ public abstract class OAuthModule implements ServerAuthModule {
                         R.getString("missingOption"), CLIENT_ID_KEY));
             }
             cookieContext = (String) options.get(COOKIE_CONTEXT_KEY);
+            scope = (String) options.get(SCOPE_KEY);
+            if (isNullOrEmpty(scope)) {
+                scope = "openid";
+            }
             clientSecret = (String) options.get(CLIENT_SECRET_KEY);
             if (clientId == null) {
                 LOG.log(Level.SEVERE, "missingOption", CLIENT_SECRET_KEY);
@@ -344,7 +367,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
             final HttpServletResponse resp,
             final OpenIDProviderConfiguration oidProviderConfig)
-                    throws AuthException {
+            throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
@@ -357,7 +380,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     .fromUri(oidProviderConfig.getAuthorizationEndpoint())
                     .queryParam("client_id", clientId)
                     .queryParam("response_type", "code")
-                    .queryParam("scope", "openid")
+                    .queryParam("scope", scope)
                     .queryParam("redirect_uri", getBaseUri(req))
                     .queryParam("state", Base64.encode(state.getBytes("UTF-8")))
                     .build();
@@ -408,7 +431,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                            new GroupPrincipalCallback(subject, new String[] { iss }) });
+                    new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -423,12 +446,12 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-                    throws AuthException {
+            throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
                 .getResponseMessage();
-        final String idToken = getIdToken(req);
+        final String idToken = getCookie(NET_TRAJANO_AUTH_ID, req);
         final String requestCookieContext;
         if (isNullOrEmpty(cookieContext)) {
             requestCookieContext = req.getContextPath();
@@ -439,6 +462,13 @@ public abstract class OAuthModule implements ServerAuthModule {
             try {
                 updateSubjectPrincipal(client, JsonWebTokenUtil.getPayload(
                         idToken, clientId, clientSecret));
+                final String claimsToken = getCookie(NET_TRAJANO_AUTH_CLAIMS,
+                        req);
+                if (claimsToken != null) {
+                    final JsonObject claims = JsonWebTokenUtil.decryptPayload(
+                            claimsToken, clientId, clientSecret);
+                    req.setAttribute(NET_TRAJANO_AUTH_CLAIMS, claims);
+                }
                 return AuthStatus.SUCCESS;
             } catch (final GeneralSecurityException e) {
                 LOG.log(Level.FINE, "invalidToken", e.getMessage());
@@ -478,14 +508,35 @@ public abstract class OAuthModule implements ServerAuthModule {
                             R.getString("issuerMismatch"), iss, issuer));
                 }
                 updateSubjectPrincipal(client, payload);
-                final String encryptPayload = JsonWebTokenUtil.encryptPayload(
-                        payload, clientId, clientSecret);
                 final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID,
-                        encryptPayload);
+                        JsonWebTokenUtil.encryptPayload(payload, clientId,
+                                clientSecret));
                 idTokenCookie.setMaxAge(-1);
                 idTokenCookie.setPath(requestCookieContext);
                 resp.addCookie(idTokenCookie);
 
+                if (Pattern.compile("\\bprofile\\b").matcher(scope).find()) {
+                    try {
+                        final JsonObject claims = ClientBuilder
+                                .newClient()
+                                .target(oidProviderConfig.getUserinfoEndpoint())
+                                .request()
+                                .header("Authorization",
+                                        token.getTokenType() + " "
+                                                + token.getAccessToken())
+                                .get(JsonObject.class);
+
+                        final Cookie claimsCookie = new Cookie(
+                                NET_TRAJANO_AUTH_CLAIMS,
+                                JsonWebTokenUtil.encryptPayload(claims,
+                                        clientId, clientSecret));
+                        claimsCookie.setMaxAge(-1);
+                        claimsCookie.setPath(requestCookieContext);
+                        resp.addCookie(claimsCookie);
+                    } catch (final IOException e) {
+                        LOG.warning("unable to retrieve profile information");
+                    }
+                }
                 final String stateEncoded = req.getParameter("state");
                 final String redirectUri = new String(
                         Base64.decode(stateEncoded));

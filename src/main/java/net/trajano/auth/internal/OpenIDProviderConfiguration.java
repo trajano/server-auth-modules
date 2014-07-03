@@ -71,6 +71,12 @@ public class OpenIDProviderConfiguration {
      */
     @XmlElement(name = "token_endpoint_auth_methods_supported")
     private List<String> tokenEndpointAuthMethodsSupported;
+    /**
+     * Userinfo endpoint. Used to get information about the currently
+     * authenticated user.
+     */
+    @XmlElement(name = "userinfo_endpoint")
+    private URI userinfoEndpoint;
 
     /**
      * Constructs the object with the defaults.
@@ -131,6 +137,10 @@ public class OpenIDProviderConfiguration {
         return tokenEndpointAuthMethodsSupported;
     }
 
+    public URI getUserinfoEndpoint() {
+        return userinfoEndpoint;
+    }
+
     public void setAuthorizationEndpoint(final URI authorizationEndpoint) {
         this.authorizationEndpoint = authorizationEndpoint;
     }
@@ -169,6 +179,10 @@ public class OpenIDProviderConfiguration {
     public void setTokenEndpointAuthMethodsSupported(
             final List<String> tokenEndpointAuthMethodsSupported) {
         this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;
+    }
+
+    public void setUserinfoEndpoint(final URI userinfoEndpoint) {
+        this.userinfoEndpoint = userinfoEndpoint;
     }
 
     @Override

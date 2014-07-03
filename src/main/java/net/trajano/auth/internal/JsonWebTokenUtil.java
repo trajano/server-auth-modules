@@ -45,6 +45,31 @@ public final class JsonWebTokenUtil {
     }
 
     /**
+     * Decrypts the payload data.
+     *
+     * @param token
+     *            encoded payload data
+     * @param clientId
+     *            client ID
+     * @param clientSecret
+     *            client secret
+     * @return decoded and decrypted payload data
+     * @throws GeneralSecurityException
+     */
+    public static JsonObject decryptPayload(final String token,
+            final String clientId, final String clientSecret)
+            throws GeneralSecurityException {
+        final SecretKey secret = buildSecretKey(clientId, clientSecret);
+
+        final Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secret);
+
+        return Json.createReader(
+                new ByteArrayInputStream(cipher.doFinal(Base64.decode(token))))
+                .readObject();
+    }
+
+    /**
      * Encrypts the payload. The encryption is based on a password based
      * encryption with the client secret and the password and the client ID as
      * the salt. It does not need to be too elaborate, just simple and fast.
@@ -61,7 +86,7 @@ public final class JsonWebTokenUtil {
      */
     public static String encryptPayload(final JsonObject payload,
             final String clientId, final String clientSecret)
-                    throws GeneralSecurityException, IOException {
+            throws GeneralSecurityException, IOException {
         final SecretKey secret = buildSecretKey(clientId, clientSecret);
         final Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, secret);
@@ -139,14 +164,8 @@ public final class JsonWebTokenUtil {
             final String clientId, final String clientSecret)
             throws GeneralSecurityException {
 
-        final SecretKey secret = buildSecretKey(clientId, clientSecret);
-
-        final Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, secret);
-
-        final JsonObject jwtPayload = Json.createReader(
-                new ByteArrayInputStream(cipher.doFinal(Base64.decode(token))))
-                .readObject();
+        final JsonObject jwtPayload = decryptPayload(token, clientId,
+                clientSecret);
 
         validatePayload(clientId, jwtPayload);
 
