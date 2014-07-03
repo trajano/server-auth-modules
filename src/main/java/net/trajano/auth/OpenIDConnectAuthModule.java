@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.message.AuthException;
-import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
 
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
@@ -51,15 +51,15 @@ public class OpenIDConnectAuthModule extends OAuthModule {
      */
     @Override
     protected OpenIDProviderConfiguration getOpenIDProviderConfig(
-            final Map<String, String> options) throws AuthException {
+            final Client restClient, final Map<String, String> options)
+                    throws AuthException {
         final String issuerUri = options.get(ISSUER_URI_KEY);
         if (issuerUri == null) {
             LOG.log(Level.SEVERE, "missingOption", ISSUER_URI_KEY);
             throw new AuthException(MessageFormat.format(
                     R.getString("missingOption"), ISSUER_URI_KEY));
         }
-        return ClientBuilder
-                .newClient()
+        return restClient
                 .target(URI.create(issuerUri).resolve(
                         "/.well-known/openid-configuration"))
                         .request(MediaType.APPLICATION_JSON_TYPE)

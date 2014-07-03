@@ -1,19 +1,10 @@
 package net.trajano.auth.internal;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -24,82 +15,6 @@ import javax.json.JsonObject;
  *
  */
 public final class JsonWebTokenUtil {
-    /**
-     * Build secret key.
-     *
-     * @param clientId
-     *            client ID
-     * @param clientSecret
-     *            client secret
-     * @return a secret key
-     * @throws GeneralSecurityException
-     *             crypto API problem
-     */
-    public static SecretKey buildSecretKey(final String clientId,
-            final String clientSecret) throws GeneralSecurityException {
-        final PBEKeySpec pbeSpec = new PBEKeySpec(clientSecret.toCharArray(),
-                clientId.getBytes(), 42, 128);
-
-        final SecretKeyFactory factory = SecretKeyFactory
-                .getInstance("PBKDF2WithHmacSHA1");
-        final SecretKey secret = new SecretKeySpec(factory.generateSecret(
-                pbeSpec).getEncoded(), "AES");
-        return secret;
-    }
-
-    /**
-     * Decrypts the payload data.
-     *
-     * @param token
-     *            encoded payload data
-     * @param clientId
-     *            client ID
-     * @param clientSecret
-     *            client secret
-     * @return decoded and decrypted payload data
-     * @throws GeneralSecurityException
-     */
-    public static JsonObject decryptPayload(final String token,
-            final String clientId, final String clientSecret)
-            throws GeneralSecurityException, IOException {
-        final SecretKey secret = buildSecretKey(clientId, clientSecret);
-
-        final Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, secret);
-
-        return Json.createReader(
-                new GZIPInputStream(new ByteArrayInputStream(cipher
-                        .doFinal(Base64.decode(token))))).readObject();
-    }
-
-    /**
-     * Encrypts the payload. The encryption is based on a password based
-     * encryption with the client secret and the password and the client ID as
-     * the salt. It does not need to be too elaborate, just simple and fast.
-     *
-     * @param payload
-     *            payload
-     * @param clientId
-     *            client ID
-     * @param clientSecret
-     *            clientSecret
-     * @return encrypted payload
-     * @throws GeneralSecurityException
-     *             crypto API problem
-     */
-    public static String encryptPayload(final JsonObject payload,
-            final String clientId, final String clientSecret)
-            throws GeneralSecurityException, IOException {
-        final SecretKey secret = buildSecretKey(clientId, clientSecret);
-        final Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secret);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final GZIPOutputStream zos = new GZIPOutputStream(baos);
-        zos.write(payload.toString().getBytes("UTF-8"));
-        zos.close();
-        return Base64.encodeWithoutPadding(cipher.doFinal(baos.toByteArray()));
-    }
-
     /**
      * Gets the payload from the token. It does parsing and validation of the
      * signatures based on the JsonWebKey and ensures the client ID is listed as
@@ -117,7 +32,7 @@ public final class JsonWebTokenUtil {
      */
     public static JsonObject getPayload(final String token,
             final JsonWebKey key, final String clientId)
-            throws GeneralSecurityException {
+                    throws GeneralSecurityException {
         final String[] jwtParts = token.split("\\.");
 
         final JsonObject jwtHeader = Json.createReader(
@@ -146,32 +61,6 @@ public final class JsonWebTokenUtil {
         final JsonObject jwtPayload = Json.createReader(
                 new ByteArrayInputStream(Base64.decode(jwtParts[1])))
                 .readObject();
-
-        validatePayload(clientId, jwtPayload);
-
-        return jwtPayload;
-    }
-
-    /**
-     * Gets the payload from the token that was encoded and encrypted with a
-     * secret key. The secret key is based on the clientSecret and clientId.
-     *
-     * @param token
-     *            encoded and encrypted token
-     * @param clientId
-     *            client ID
-     * @param clientSecret
-     *            client secret
-     * @return the contents of the payload from the token
-     * @throws GeneralSecurityException
-     *             problem with crypto APIs
-     */
-    public static JsonObject getPayload(final String token,
-            final String clientId, final String clientSecret)
-            throws GeneralSecurityException, IOException {
-
-        final JsonObject jwtPayload = decryptPayload(token, clientId,
-                clientSecret);
 
         validatePayload(clientId, jwtPayload);
 
