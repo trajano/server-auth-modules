@@ -1,6 +1,7 @@
 package net.trajano.auth;
 
 import static net.trajano.auth.internal.Utils.isNullOrEmpty;
+import static net.trajano.auth.internal.Utils.validateIdToken;
 
 import java.io.IOException;
 import java.net.URI;
@@ -38,10 +39,10 @@ import javax.ws.rs.core.UriBuilder;
 
 import net.trajano.auth.internal.Base64;
 import net.trajano.auth.internal.JsonWebKey;
-import net.trajano.auth.internal.JsonWebTokenUtil;
 import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
 import net.trajano.auth.internal.TokenCookie;
+import net.trajano.auth.internal.Utils;
 
 /**
  * OAuth 2.0 server authentication module. This is an implementation of the <a
@@ -88,7 +89,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     /**
      * ID token cookie name.
      */
-    private static final String NET_TRAJANO_AUTH_ID = "net.trajano.auth.id";
+    public static final String NET_TRAJANO_AUTH_ID = "net.trajano.auth.id";
 
     /**
      * User info attribute name.
@@ -109,7 +110,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-            HttpServletRequest.class, HttpServletResponse.class };
+        HttpServletRequest.class, HttpServletResponse.class };
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -215,7 +216,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(
             Client restClient, Map<String, String> options)
-            throws AuthException;
+                    throws AuthException;
 
     /**
      * {@inheritDoc}
@@ -272,7 +273,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     protected JsonWebKey getWebKeys(final Client restClient,
             final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-            throws GeneralSecurityException {
+                    throws GeneralSecurityException {
         return new JsonWebKey(restClient.target(config.getJwksUri()).request()
                 .get(JsonObject.class));
     }
@@ -310,7 +311,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-            throws AuthException {
+                    throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -374,7 +375,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
             final HttpServletResponse resp,
             final OpenIDProviderConfiguration oidProviderConfig)
-            throws AuthException {
+                    throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
@@ -438,7 +439,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                    new GroupPrincipalCallback(subject, new String[] { iss }) });
+                            new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -453,7 +454,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
@@ -469,6 +470,7 @@ public abstract class OAuthModule implements ServerAuthModule {
             try {
                 final TokenCookie tokenCookie = new TokenCookie(idToken,
                         clientId, clientSecret);
+                validateIdToken(clientId, tokenCookie.getIdToken());
                 updateSubjectPrincipal(client, tokenCookie.getIdToken());
 
                 if (tokenCookie.getUserInfo() != null) {
@@ -510,10 +512,12 @@ public abstract class OAuthModule implements ServerAuthModule {
                         moduleOptions, oidProviderConfig);
                 final OAuthToken token = getToken(req, oidProviderConfig);
                 LOG.log(Level.FINEST, "tokenValue", token);
-                final JsonObject payload = JsonWebTokenUtil.getPayload(
-                        token.getIdToken(), webKeys, clientId);
+                final JsonObject claimsSet = Utils.getJwtClaimsSet(
+                        token.getIdToken(), webKeys);
 
-                final String iss = googleWorkaround(payload.getString("iss"));
+                validateIdToken(clientId, claimsSet);
+
+                final String iss = googleWorkaround(claimsSet.getString("iss"));
                 final String issuer = googleWorkaround(oidProviderConfig
                         .getIssuer());
                 if (!iss.equals(issuer)) {
@@ -522,7 +526,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     throw new GeneralSecurityException(MessageFormat.format(
                             R.getString("issuerMismatch"), iss, issuer));
                 }
-                updateSubjectPrincipal(client, payload);
+                updateSubjectPrincipal(client, claimsSet);
 
                 final TokenCookie tokenCookie;
                 if (Pattern.compile("\\bprofile\\b").matcher(scope).find()) {
@@ -533,14 +537,14 @@ public abstract class OAuthModule implements ServerAuthModule {
                                     token.getTokenType() + " "
                                             + token.getAccessToken()).get();
                     if (userInfoResponse.getStatus() == 200) {
-                        tokenCookie = new TokenCookie(payload,
+                        tokenCookie = new TokenCookie(claimsSet,
                                 userInfoResponse.readEntity(JsonObject.class));
                     } else {
                         LOG.log(Level.WARNING, "unableToGetProfile");
-                        tokenCookie = new TokenCookie(payload);
+                        tokenCookie = new TokenCookie(claimsSet);
                     }
                 } else {
-                    tokenCookie = new TokenCookie(payload);
+                    tokenCookie = new TokenCookie(claimsSet);
                 }
                 restClient.close();
 
@@ -558,7 +562,7 @@ public abstract class OAuthModule implements ServerAuthModule {
             } catch (final GeneralSecurityException e) {
                 // Lower level as this may occur due to invalid or expired
                 // tokens.
-                LOG.log(Level.WARNING, "validationWarning", e);
+                LOG.log(Level.FINE, "validationWarning", e.getMessage());
                 return AuthStatus.FAILURE;
             } catch (final Exception e) {
                 // Should not happen

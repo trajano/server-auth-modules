@@ -41,8 +41,12 @@ public class JsonWebKey {
     public JsonWebKey(final JsonObject obj) throws GeneralSecurityException {
         for (final JsonValue v : obj.getJsonArray("keys")) {
             final JsonObject keyJson = (JsonObject) v;
-            final String kid = keyJson.getString("kid");
-
+            final String kid;
+            if (keyJson.containsKey("kid")) {
+                kid = keyJson.getString("kid");
+            } else {
+                kid = "";
+            }
             if (keyJson.containsKey("use")
                     && "sig".equals(keyJson.getString("use"))) {
                 final PublicKey key = buildPublicKey(keyJson);
