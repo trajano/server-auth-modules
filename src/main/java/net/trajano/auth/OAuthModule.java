@@ -107,7 +107,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-            HttpServletRequest.class, HttpServletResponse.class };
+        HttpServletRequest.class, HttpServletResponse.class };
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -264,7 +264,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected JsonWebKey getWebKeys(final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-            throws GeneralSecurityException {
+                    throws GeneralSecurityException {
         final Client restClient = ClientBuilder.newClient();
         final URI jwksUri = config.getJwksUri();
         return new JsonWebKey(restClient.target(jwksUri).request()
@@ -304,7 +304,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-            throws AuthException {
+                    throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -367,7 +367,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
             final HttpServletResponse resp,
             final OpenIDProviderConfiguration oidProviderConfig)
-            throws AuthException {
+                    throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
@@ -431,7 +431,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                    new GroupPrincipalCallback(subject, new String[] { iss }) });
+                            new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -446,7 +446,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
@@ -470,7 +470,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     req.setAttribute(NET_TRAJANO_AUTH_CLAIMS, claims);
                 }
                 return AuthStatus.SUCCESS;
-            } catch (final GeneralSecurityException e) {
+            } catch (final IOException | GeneralSecurityException e) {
                 LOG.log(Level.FINE, "invalidToken", e.getMessage());
                 final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
                 idTokenCookie.setMaxAge(0);
@@ -524,7 +524,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                                 .header("Authorization",
                                         token.getTokenType() + " "
                                                 + token.getAccessToken())
-                                .get(JsonObject.class);
+                                                .get(JsonObject.class);
 
                         final Cookie claimsCookie = new Cookie(
                                 NET_TRAJANO_AUTH_CLAIMS,

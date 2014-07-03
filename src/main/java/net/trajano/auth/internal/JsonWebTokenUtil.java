@@ -1,10 +1,13 @@
 package net.trajano.auth.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -58,15 +61,15 @@ public final class JsonWebTokenUtil {
      */
     public static JsonObject decryptPayload(final String token,
             final String clientId, final String clientSecret)
-            throws GeneralSecurityException {
+            throws GeneralSecurityException, IOException {
         final SecretKey secret = buildSecretKey(clientId, clientSecret);
 
         final Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, secret);
 
         return Json.createReader(
-                new ByteArrayInputStream(cipher.doFinal(Base64.decode(token))))
-                .readObject();
+                new GZIPInputStream(new ByteArrayInputStream(cipher
+                        .doFinal(Base64.decode(token))))).readObject();
     }
 
     /**
@@ -90,8 +93,11 @@ public final class JsonWebTokenUtil {
         final SecretKey secret = buildSecretKey(clientId, clientSecret);
         final Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, secret);
-        return Base64.encodeWithoutPadding(cipher.doFinal(payload.toString()
-                .getBytes("UTF-8")));
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final GZIPOutputStream zos = new GZIPOutputStream(baos);
+        zos.write(payload.toString().getBytes("UTF-8"));
+        zos.close();
+        return Base64.encodeWithoutPadding(cipher.doFinal(baos.toByteArray()));
     }
 
     /**
@@ -162,7 +168,7 @@ public final class JsonWebTokenUtil {
      */
     public static JsonObject getPayload(final String token,
             final String clientId, final String clientSecret)
-            throws GeneralSecurityException {
+            throws GeneralSecurityException, IOException {
 
         final JsonObject jwtPayload = decryptPayload(token, clientId,
                 clientSecret);
