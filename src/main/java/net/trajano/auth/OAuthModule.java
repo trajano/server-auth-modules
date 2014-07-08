@@ -117,7 +117,17 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-            HttpServletRequest.class, HttpServletResponse.class };
+        HttpServletRequest.class, HttpServletResponse.class };
+
+    /**
+     * Token URI key. The value is optional.
+     */
+    public static final String TOKEN_URI_KEY = "token_uri";
+
+    /**
+     * User Info URI key. The value is optional.
+     */
+    public static final String USERINFO_URI_KEY = "userinfo_uri";
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -151,7 +161,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     private Map<String, String> moduleOptions;
 
     /**
-     * Redirection endpoint URI. This is set through "redirection.endpoint"
+     * Redirection endpoint URI. This is set through "redirection_endpoint"
      * option. This must start with a forward slash. This value is optional.
      */
     private String redirectionEndpointUri;
@@ -160,6 +170,22 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Scope.
      */
     private String scope;
+
+    /**
+     * Token URI. This is set through "token_uri" option. This must start with a
+     * forward slash. This value is optional. The calling the token URI will
+     * return the contents of the JWT token object to the user. Make sure that
+     * this is intended before setting the value.
+     */
+    private String tokenUri;
+
+    /**
+     * User info URI. This is set through "userinfo_uri" option. This must start
+     * with a forward slash. This value is optional. The calling the user info
+     * URI will return the contents of the user info object to the user. Make
+     * sure that this is intended before setting the value.
+     */
+    private String userInfoUri;
 
     /**
      * Does nothing.
@@ -211,7 +237,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(
             Client restClient, Map<String, String> options)
-            throws AuthException;
+                    throws AuthException;
 
     /**
      * This gets the redirection endpoint URI.
@@ -299,7 +325,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     protected JsonWebKeySet getWebKeys(final Client restClient,
             final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-            throws GeneralSecurityException {
+                    throws GeneralSecurityException {
         return new JsonWebKeySet(restClient.target(config.getJwksUri())
                 .request().get(JsonObject.class));
     }
@@ -337,7 +363,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-            throws AuthException {
+                    throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -349,6 +375,8 @@ public abstract class OAuthModule implements ServerAuthModule {
             cookieContext = (String) options.get(COOKIE_CONTEXT_KEY);
             redirectionEndpointUri = (String) options
                     .get(REDIRECTION_ENDPOINT_URI_KEY);
+            tokenUri = (String) options.get(TOKEN_URI_KEY);
+            userInfoUri = (String) options.get(USERINFO_URI_KEY);
             scope = (String) options.get(SCOPE_KEY);
             if (isNullOrEmpty(scope)) {
                 scope = "openid";
@@ -407,7 +435,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
             final HttpServletResponse resp,
             final OpenIDProviderConfiguration oidProviderConfig)
-            throws AuthException {
+                    throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
@@ -471,7 +499,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                    new GroupPrincipalCallback(subject, new String[] { iss }) });
+                            new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -486,7 +514,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
@@ -509,7 +537,17 @@ public abstract class OAuthModule implements ServerAuthModule {
                     req.setAttribute(NET_TRAJANO_AUTH_USERINFO,
                             tokenCookie.getUserInfo());
                 }
-                return AuthStatus.SUCCESS;
+                if (req.getRequestURI().equals(tokenUri)) {
+                    resp.setContentType("application/json");
+                    resp.getWriter().print(tokenCookie.getIdToken());
+                    return AuthStatus.SEND_SUCCESS;
+                } else if (req.getRequestURI().equals(userInfoUri)) {
+                    resp.setContentType("application/json");
+                    resp.getWriter().print(tokenCookie.getUserInfo());
+                    return AuthStatus.SEND_SUCCESS;
+                } else {
+                    return AuthStatus.SUCCESS;
+                }
             } catch (final IOException | GeneralSecurityException e) {
                 LOG.log(Level.FINE, "invalidToken", e.getMessage());
                 final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
