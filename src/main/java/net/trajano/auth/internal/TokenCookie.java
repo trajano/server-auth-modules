@@ -110,7 +110,7 @@ public class TokenCookie {
                 new GZIPInputStream(
                         new CipherInputStream(new ByteArrayInputStream(Base64
                                 .decode(cookieValues[0])), cipher)))
-                .readObject();
+                                .readObject();
         if (cookieValues.length == 1) {
             userInfo = null;
         } else {
@@ -118,7 +118,7 @@ public class TokenCookie {
                     new GZIPInputStream(new CipherInputStream(
                             new ByteArrayInputStream(Base64
                                     .decode(cookieValues[1])), cipher)))
-                    .readObject();
+                                    .readObject();
         }
     }
 
@@ -143,7 +143,7 @@ public class TokenCookie {
                 baos, cipher));
         zos.write(jsonObject.toString().getBytes("UTF-8"));
         zos.close();
-        return Base64.encode(baos.toByteArray());
+        return Base64.encodeWithoutPadding(baos.toByteArray());
     }
 
     public JsonObject getIdToken() {
