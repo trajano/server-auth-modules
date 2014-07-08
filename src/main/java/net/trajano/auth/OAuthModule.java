@@ -104,6 +104,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     private static final ResourceBundle R;
 
     /**
+     * Redirection endpoint URI key. The value is optional.
+     */
+    public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection.endpoint";
+
+    /**
      * Scope option key. The value is optional and defaults to "openid"
      */
     public static final String SCOPE_KEY = "scope";
@@ -146,6 +151,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     private Map<String, String> moduleOptions;
 
     /**
+     * Redirection endpoint URI. This must start with a forward slash.
+     */
+    private String redirectionEndpointUri;
+
+    /**
      * Scope.
      */
     private String scope;
@@ -161,24 +171,6 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public void cleanSubject(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
-    }
-
-    /**
-     * This gets the base URI for the application based on the request. This is
-     * used as the redirect URI for OAuth.
-     *
-     * @param req
-     *            request
-     * @return the URI for the root of the application
-     */
-    private URI getBaseUri(final HttpServletRequest req) {
-        final StringBuffer redirectUri = req.getRequestURL();
-        // Get the third / character from the request URL should be the start of
-        // the path.
-        redirectUri.replace(redirectUri.indexOf("/",
-                redirectUri.indexOf("/", redirectUri.indexOf("/") + 1) + 1),
-                redirectUri.length(), req.getContextPath());
-        return URI.create(redirectUri.toString());
     }
 
     /**
@@ -221,6 +213,33 @@ public abstract class OAuthModule implements ServerAuthModule {
                     throws AuthException;
 
     /**
+     * This gets the redirection endpoint URI. If the redirection endpoint URI
+     * option is not set then this gets the base URI for the application based
+     * on the request. This is used as the redirect URI for OAuth. If the
+     * redirection endpoint is set, then it is resolved against the request URL.
+     *
+     * @param req
+     *            request
+     * @return the URI for the root of the application
+     */
+    private URI getRedirectionEndpointUri(final HttpServletRequest req) {
+        if (isNullOrEmpty(redirectionEndpointUri)) {
+            final StringBuffer redirectUri = req.getRequestURL();
+            // Get the third / character from the request URL should be the
+            // start of
+            // the path.
+            redirectUri.replace(
+                    redirectUri.indexOf("/", redirectUri.indexOf("/",
+                            redirectUri.indexOf("/") + 1) + 1), redirectUri
+                            .length(), req.getContextPath());
+            return URI.create(redirectUri.toString());
+        } else {
+            return URI.create(req.getRequestURL().toString()).resolve(
+                    redirectionEndpointUri);
+        }
+    }
+
+    /**
      * {@inheritDoc}
      *
      * <p>
@@ -251,7 +270,8 @@ public abstract class OAuthModule implements ServerAuthModule {
         requestData.putSingle("client_id", clientId);
         requestData.putSingle("client_secret", clientSecret);
         requestData.putSingle("grant_type", "authorization_code");
-        requestData.putSingle("redirect_uri", getBaseUri(req).toASCIIString());
+        requestData.putSingle("redirect_uri", getRedirectionEndpointUri(req)
+                .toASCIIString());
 
         return restClient.target(oidProviderConfig.getTokenEndpoint())
                 .request(MediaType.APPLICATION_JSON_TYPE)
@@ -276,8 +296,8 @@ public abstract class OAuthModule implements ServerAuthModule {
             final Map<String, String> options,
             final OpenIDProviderConfiguration config)
                     throws GeneralSecurityException {
-        return new JsonWebKeySet(restClient.target(config.getJwksUri()).request()
-                .get(JsonObject.class));
+        return new JsonWebKeySet(restClient.target(config.getJwksUri())
+                .request().get(JsonObject.class));
     }
 
     /**
@@ -323,6 +343,8 @@ public abstract class OAuthModule implements ServerAuthModule {
                         R.getString("missingOption"), CLIENT_ID_KEY));
             }
             cookieContext = (String) options.get(COOKIE_CONTEXT_KEY);
+            redirectionEndpointUri = (String) options
+                    .get(REDIRECTION_ENDPOINT_URI_KEY);
             scope = (String) options.get(SCOPE_KEY);
             if (isNullOrEmpty(scope)) {
                 scope = "openid";
@@ -355,6 +377,10 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return the module is called by the resource owner.
      */
     private boolean isCalledFromResourceOwner(final HttpServletRequest req) {
+        if (!isNullOrEmpty(redirectionEndpointUri)
+                && !redirectionEndpointUri.equals(req.getRequestURI())) {
+            return false;
+        }
         return "GET".equals(req.getMethod())
                 && !isNullOrEmpty(req.getParameter("code"))
                 && !isNullOrEmpty(req.getParameter("state"));
@@ -391,7 +417,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     .queryParam("client_id", clientId)
                     .queryParam("response_type", "code")
                     .queryParam("scope", scope)
-                    .queryParam("redirect_uri", getBaseUri(req))
+                    .queryParam("redirect_uri", getRedirectionEndpointUri(req))
                     .queryParam("state", Base64.encode(state.getBytes("UTF-8")))
                     .build();
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
