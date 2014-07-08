@@ -35,7 +35,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     /**
      * Group Header option key.
      */
-    private static final String GROUP_HEADER_KEY = "group.header";
+    private static final String GROUP_HEADER_KEY = "group_header";
 
     /**
      * Logger.
@@ -63,7 +63,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     /**
      * User Name Header option key.
      */
-    private static final String USERNAME_HEADER_KEY = "username.header";
+    private static final String USERNAME_HEADER_KEY = "username_header";
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.httpheadersam", MESSAGES);

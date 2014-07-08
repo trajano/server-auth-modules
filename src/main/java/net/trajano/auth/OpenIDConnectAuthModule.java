@@ -24,7 +24,7 @@ public class OpenIDConnectAuthModule extends OAuthModule {
     /**
      * Issuer URI option key.
      */
-    public static final String ISSUER_URI_KEY = "issuer.uri";
+    public static final String ISSUER_URI_KEY = "issuer_uri";
 
     /**
      * Logger.
@@ -52,7 +52,7 @@ public class OpenIDConnectAuthModule extends OAuthModule {
     @Override
     protected OpenIDProviderConfiguration getOpenIDProviderConfig(
             final Client restClient, final Map<String, String> options)
-                    throws AuthException {
+            throws AuthException {
         final String issuerUri = options.get(ISSUER_URI_KEY);
         if (issuerUri == null) {
             LOG.log(Level.SEVERE, "missingOption", ISSUER_URI_KEY);
@@ -62,8 +62,8 @@ public class OpenIDConnectAuthModule extends OAuthModule {
         return restClient
                 .target(URI.create(issuerUri).resolve(
                         "/.well-known/openid-configuration"))
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .get(OpenIDProviderConfiguration.class);
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(OpenIDProviderConfiguration.class);
     }
 
 }

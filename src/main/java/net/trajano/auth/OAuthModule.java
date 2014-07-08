@@ -61,17 +61,17 @@ public abstract class OAuthModule implements ServerAuthModule {
     /**
      * Client ID option key.
      */
-    public static final String CLIENT_ID_KEY = "client.id";
+    public static final String CLIENT_ID_KEY = "client_id";
 
     /**
      * Client secret option key.
      */
-    public static final String CLIENT_SECRET_KEY = "client.secret";
+    public static final String CLIENT_SECRET_KEY = "client_secret";
 
     /**
      * Cookie context option key. The value is optional.
      */
-    public static final String COOKIE_CONTEXT_KEY = "cookie.context";
+    public static final String COOKIE_CONTEXT_KEY = "cookie_context";
 
     /**
      * https prefix.
@@ -106,7 +106,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     /**
      * Redirection endpoint URI key. The value is optional.
      */
-    public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection.endpoint";
+    public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection_endpoint";
 
     /**
      * Scope option key. The value is optional and defaults to "openid"
@@ -117,7 +117,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Supported message types.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-        HttpServletRequest.class, HttpServletResponse.class };
+            HttpServletRequest.class, HttpServletResponse.class };
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
@@ -151,7 +151,8 @@ public abstract class OAuthModule implements ServerAuthModule {
     private Map<String, String> moduleOptions;
 
     /**
-     * Redirection endpoint URI. This must start with a forward slash.
+     * Redirection endpoint URI. This is set through "redirection.endpoint"
+     * option. This must start with a forward slash. This value is optional.
      */
     private String redirectionEndpointUri;
 
@@ -210,24 +211,27 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(
             Client restClient, Map<String, String> options)
-                    throws AuthException;
+            throws AuthException;
 
     /**
-     * This gets the redirection endpoint URI. If the redirection endpoint URI
-     * option is not set then this gets the base URI for the application based
-     * on the request. This is used as the redirect URI for OAuth. If the
-     * redirection endpoint is set, then it is resolved against the request URL.
+     * This gets the redirection endpoint URI.
+     * <p>
+     * If the redirection endpoint URI option is not set then this gets the base
+     * URI for the application based on the request. This is used as the
+     * redirect URI for OAuth.
+     * <p>
+     * If the redirection endpoint is set, then it is resolved against the
+     * request URL.
      *
      * @param req
      *            request
-     * @return the URI for the root of the application
+     * @return redirection endpoint URI.
      */
     private URI getRedirectionEndpointUri(final HttpServletRequest req) {
         if (isNullOrEmpty(redirectionEndpointUri)) {
             final StringBuffer redirectUri = req.getRequestURL();
             // Get the third / character from the request URL should be the
-            // start of
-            // the path.
+            // start of the path.
             redirectUri.replace(
                     redirectUri.indexOf("/", redirectUri.indexOf("/",
                             redirectUri.indexOf("/") + 1) + 1), redirectUri
@@ -295,7 +299,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     protected JsonWebKeySet getWebKeys(final Client restClient,
             final Map<String, String> options,
             final OpenIDProviderConfiguration config)
-                    throws GeneralSecurityException {
+            throws GeneralSecurityException {
         return new JsonWebKeySet(restClient.target(config.getJwksUri())
                 .request().get(JsonObject.class));
     }
@@ -333,7 +337,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-                    throws AuthException {
+            throws AuthException {
         handler = h;
         try {
             clientId = (String) options.get(CLIENT_ID_KEY);
@@ -403,7 +407,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
             final HttpServletResponse resp,
             final OpenIDProviderConfiguration oidProviderConfig)
-                    throws AuthException {
+            throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
@@ -467,7 +471,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString("sub"))
                             .build().toASCIIString()),
-                            new GroupPrincipalCallback(subject, new String[] { iss }) });
+                    new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
@@ -482,7 +486,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-                    throws AuthException {
+            throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
