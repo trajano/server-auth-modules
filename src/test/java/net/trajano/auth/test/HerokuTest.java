@@ -28,6 +28,7 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
 import net.trajano.auth.internal.TokenCookie;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
@@ -54,17 +55,16 @@ public class HerokuTest {
     }
 
     /**
-     * Test with the OREO test site.
+     * Test with the OREO test site. Ignored for now as <a
+     * href="https://github.com/nov/openid_connect_sample_rp/issues/1">the
+     * developer NOV for the heroku site refuses to provide assistance</a>.
      */
     @Test
+    @Ignore
     public void testWithTheModule() throws Exception {
 
         final WebDriver b = new FirefoxDriver();
         b.get("https://connect-op.heroku.com");
-        // b.findElement(By.linkText("authorize")).click();
-        // b.findElement(By.name("username")).sendKeys("test");
-        // b.findElement(By.name("password")).sendKeys("password");
-        // b.findElement(By.name("test_submit")).click();
         b.findElement(By.name("commit")).click();
         b.findElement(By.linkText("Register New Client")).click();
         b.findElement(By.id("client_name")).sendKeys("Test");
@@ -173,17 +173,16 @@ public class HerokuTest {
     }
 
     /**
-     * Test with the OREO test site.
+     * Test with the OREO test site. Ignored for now as <a
+     * href="https://github.com/nov/openid_connect_sample_rp/issues/1">the
+     * developer NOV for the heroku site refuses to provide assistance</a>.
      */
     @Test
+    @Ignore
     public void testWithTheModuleWithProfile() throws Exception {
 
         final WebDriver b = new FirefoxDriver();
         b.get("https://connect-op.heroku.com");
-        // b.findElement(By.linkText("authorize")).click();
-        // b.findElement(By.name("username")).sendKeys("test");
-        // b.findElement(By.name("password")).sendKeys("password");
-        // b.findElement(By.name("test_submit")).click();
         b.findElement(By.name("commit")).click();
         b.findElement(By.linkText("Register New Client")).click();
         b.findElement(By.id("client_name")).sendKeys("Test");
