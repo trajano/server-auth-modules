@@ -54,7 +54,7 @@
                 <div class="section">
 <h2>FindBugs Bug Detector Report<a name="FindBugs_Bug_Detector_Report"></a></h2>
 <p>The following document contains the results of <a class="externalLink" href="http://findbugs.sourceforge.net">FindBugs Report</a></p>
-<p>FindBugs Version is <i>2.0.2</i></p>
+<p>FindBugs Version is <i>2.0.3</i></p>
 <p>Threshold is <i>medium</i></p>
 <p>Effort is <i>min</i></p></div>
 <div class="section">
@@ -104,7 +104,7 @@
 <td>net.trajano.auth.HttpHeaderAuthModule.getSupportedMessageTypes() may expose internal representation by returning HttpHeaderAuthModule.SUPPORTED_MESSAGE_TYPES</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP">EI_EXPOSE_REP</a></td>
-<td><a href="./xref/net/trajano/auth/HttpHeaderAuthModule.html#112">112</a></td>
+<td><a href="./xref/net/trajano/auth/HttpHeaderAuthModule.html#L112">112</a></td>
 <td>Medium</td></tr></table></div><a name="net.trajano.auth.OAuthModule"></a>
 <div class="section">
 <h3>net.trajano.auth.OAuthModule<a name="net.trajano.auth.OAuthModule"></a></h3>
@@ -119,19 +119,19 @@
 <td>Found reliance on default encoding in net.trajano.auth.OAuthModule.doUnauthenticatedOperation(HttpServletRequest, HttpServletResponse, String, Subject): new String(byte[])</td>
 <td>I18N</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td><a href="./xref/net/trajano/auth/OAuthModule.html#356">356</a></td>
+<td><a href="./xref/net/trajano/auth/OAuthModule.html#L356">356</a></td>
 <td>High</td></tr>
 <tr class="a">
 <td>net.trajano.auth.OAuthModule.getSupportedMessageTypes() may expose internal representation by returning OAuthModule.SUPPORTED_MESSAGE_TYPES</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP">EI_EXPOSE_REP</a></td>
-<td><a href="./xref/net/trajano/auth/OAuthModule.html#446">446</a></td>
+<td><a href="./xref/net/trajano/auth/OAuthModule.html#L446">446</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Redundant nullcheck of net.trajano.auth.OAuthModule.clientId, which is known to be non-null in net.trajano.auth.OAuthModule.initialize(MessagePolicy, MessagePolicy, CallbackHandler, Map)</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE</a></td>
-<td><a href="./xref/net/trajano/auth/OAuthModule.html#549">549</a></td>
+<td><a href="./xref/net/trajano/auth/OAuthModule.html#L549">549</a></td>
 <td>High</td></tr></table></div><a name="net.trajano.auth.internal.Base64"></a>
 <div class="section">
 <h3>net.trajano.auth.internal.Base64<a name="net.trajano.auth.internal.Base64"></a></h3>
@@ -146,7 +146,7 @@
 <td>Found reliance on default encoding in net.trajano.auth.internal.Base64.decode(String, byte[], int): String.getBytes()</td>
 <td>I18N</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td><a href="./xref/net/trajano/auth/internal/Base64.html#64">64</a></td>
+<td><a href="./xref/net/trajano/auth/internal/Base64.html#L64">64</a></td>
 <td>High</td></tr></table></div><a name="net.trajano.auth.internal.TokenCookie"></a>
 <div class="section">
 <h3>net.trajano.auth.internal.TokenCookie<a name="net.trajano.auth.internal.TokenCookie"></a></h3>
@@ -161,7 +161,7 @@
 <td>Found reliance on default encoding in net.trajano.auth.internal.TokenCookie.buildSecretKey(String, String): String.getBytes()</td>
 <td>I18N</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td><a href="./xref/net/trajano/auth/internal/TokenCookie.html#47">47</a></td>
+<td><a href="./xref/net/trajano/auth/internal/TokenCookie.html#L47">47</a></td>
 <td>High</td></tr></table></div><a name="net.trajano.auth.internal.Utils"></a>
 <div class="section">
 <h3>net.trajano.auth.internal.Utils<a name="net.trajano.auth.internal.Utils"></a></h3>
@@ -176,7 +176,7 @@
 <td>Found reliance on default encoding in net.trajano.auth.internal.Utils.getJwsPayload(String, JsonWebKeySet): String.getBytes()</td>
 <td>I18N</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td><a href="./xref/net/trajano/auth/internal/Utils.html#70">70</a></td>
+<td><a href="./xref/net/trajano/auth/internal/Utils.html#L70">70</a></td>
 <td>High</td></tr></table></div>
 	      </div>
 	    </article>
