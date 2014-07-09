@@ -164,6 +164,10 @@ public class TokenCookie {
         return userInfo;
     }
 
+    public boolean isExpired() {
+        return idToken.getInt("exp") < System.currentTimeMillis() / 1000;
+    }
+
     /**
      * Converts to a cookie value.
      *
