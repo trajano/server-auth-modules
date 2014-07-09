@@ -34,6 +34,12 @@ public class TokenCookieTest {
     }
 
     @Test
+    public void testExpiration() {
+        System.out
+        .println(1404851697 - (int) (System.currentTimeMillis() / 1000));
+    }
+
+    @Test
     public void testToCookieValueAndBack() throws Exception {
         final String cookieValue = new TokenCookie(idTokenJson, userInfoJson)
         .toCookieValue("clientId", "clientSecret");

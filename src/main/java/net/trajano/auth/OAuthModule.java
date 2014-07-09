@@ -5,6 +5,7 @@ import static net.trajano.auth.internal.Utils.validateIdToken;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.security.GeneralSecurityException;
 import java.text.MessageFormat;
@@ -89,7 +90,13 @@ public abstract class OAuthModule implements ServerAuthModule {
     private static final String MESSAGES = "META-INF/Messages";
 
     /**
-     * ID token cookie name.
+     * Age cookie name. The value of this cookie is "1" and will expire based on
+     * the max age of the token.
+     */
+    public static final String NET_TRAJANO_AUTH_AGE = "net.trajano.auth.age";
+
+    /**
+     * ID token cookie name. This one expires when the browser closes.
      */
     public static final String NET_TRAJANO_AUTH_ID = "net.trajano.auth.id";
 
@@ -201,25 +208,30 @@ public abstract class OAuthModule implements ServerAuthModule {
     }
 
     /**
-     * Gets a specific cookie.
+     * Gets the ID token. This ensures that both cookies are present, if not
+     * then this will return <code>null</code>.
      *
-     * @param cookieName
-     *            cookie name
      * @param req
      *            HTTP servlet request
      * @return ID token
      */
-    private String getCookie(final String cookieName,
-            final HttpServletRequest req) {
+    private String getIdToken(final HttpServletRequest req) {
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
             return null;
         }
+        String idToken = null;
+        boolean foundAge = false;
         for (final Cookie cookie : cookies) {
-            if (cookieName.equals(cookie.getName())
+            if (NET_TRAJANO_AUTH_ID.equals(cookie.getName())
                     && !isNullOrEmpty(cookie.getValue())) {
-                return cookie.getValue();
+                idToken = cookie.getValue();
+            } else if (NET_TRAJANO_AUTH_AGE.equals(cookie.getName())) {
+                foundAge = true;
             }
+        }
+        if (idToken != null && foundAge) {
+            return idToken;
         }
         return null;
     }
@@ -428,20 +440,20 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            HTTP servlet request
      * @param resp
      *            HTTP servlet response
-     * @param oidProviderConfig
-     *            OpenID provider config
      * @throws AuthException
      */
     private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
-            final HttpServletResponse resp,
-            final OpenIDProviderConfiguration oidProviderConfig)
-                    throws AuthException {
+            final HttpServletResponse resp) throws AuthException {
         final String state;
         if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
             state = req.getContextPath();
         } else {
             state = req.getRequestURI();
         }
+        final Client restClient = ClientBuilder.newClient();
+        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
+                restClient, moduleOptions);
+        restClient.close();
         URI authorizationEndpointUri = null;
         try {
             authorizationEndpointUri = UriBuilder
@@ -450,8 +462,10 @@ public abstract class OAuthModule implements ServerAuthModule {
                     .queryParam("response_type", "code")
                     .queryParam("scope", scope)
                     .queryParam("redirect_uri", getRedirectionEndpointUri(req))
-                    .queryParam("state", Base64.encode(state.getBytes("UTF-8")))
-                    .build();
+                    .queryParam(
+                            "state",
+                            Base64.encodeWithoutPadding(state.getBytes("UTF-8")))
+                            .build();
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
         } catch (final IOException e) {
             // Should not happen
@@ -519,14 +533,17 @@ public abstract class OAuthModule implements ServerAuthModule {
                 .getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo
                 .getResponseMessage();
-        final String idToken = getCookie(NET_TRAJANO_AUTH_ID, req);
+        final String idToken = getIdToken(req);
         final String requestCookieContext;
         if (isNullOrEmpty(cookieContext)) {
             requestCookieContext = req.getContextPath();
         } else {
             requestCookieContext = cookieContext;
         }
-        if (idToken != null && !isCalledFromResourceOwner(req)) {
+        if (idToken == null && "HEAD".equals(req.getMethod())) {
+            resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
+            return AuthStatus.SEND_FAILURE;
+        } else if (idToken != null && !isCalledFromResourceOwner(req)) {
             try {
                 final TokenCookie tokenCookie = new TokenCookie(idToken,
                         clientId, clientSecret);
@@ -537,11 +554,13 @@ public abstract class OAuthModule implements ServerAuthModule {
                     req.setAttribute(NET_TRAJANO_AUTH_USERINFO,
                             tokenCookie.getUserInfo());
                 }
-                if (req.getRequestURI().equals(tokenUri)) {
+                if ("GET".equals(req.getMethod())
+                        && req.getRequestURI().equals(tokenUri)) {
                     resp.setContentType("application/json");
                     resp.getWriter().print(tokenCookie.getIdToken());
                     return AuthStatus.SEND_SUCCESS;
-                } else if (req.getRequestURI().equals(userInfoUri)) {
+                } else if ("GET".equals(req.getMethod())
+                        && req.getRequestURI().equals(userInfoUri)) {
                     resp.setContentType("application/json");
                     resp.getWriter().print(tokenCookie.getUserInfo());
                     return AuthStatus.SEND_SUCCESS;
@@ -550,24 +569,12 @@ public abstract class OAuthModule implements ServerAuthModule {
                 }
             } catch (final IOException | GeneralSecurityException e) {
                 LOG.log(Level.FINE, "invalidToken", e.getMessage());
-                final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
-                idTokenCookie.setMaxAge(0);
-                idTokenCookie.setPath(requestCookieContext);
-                resp.addCookie(idTokenCookie);
 
-                final Client restClient = ClientBuilder.newClient();
-                final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
-                        restClient, moduleOptions);
-                redirectToAuthorizationEndpoint(req, resp, oidProviderConfig);
-                restClient.close();
+                redirectToAuthorizationEndpoint(req, resp);
                 return AuthStatus.SEND_CONTINUE;
             }
         } else if (!isCalledFromResourceOwner(req)) {
-            final Client restClient = ClientBuilder.newClient();
-            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
-                    restClient, moduleOptions);
-            redirectToAuthorizationEndpoint(req, resp, oidProviderConfig);
-            restClient.close();
+            redirectToAuthorizationEndpoint(req, resp);
             return AuthStatus.SEND_CONTINUE;
         } else {
             if (!req.isSecure()) {
@@ -624,6 +631,11 @@ public abstract class OAuthModule implements ServerAuthModule {
                 idTokenCookie.setMaxAge(-1);
                 idTokenCookie.setPath(requestCookieContext);
                 resp.addCookie(idTokenCookie);
+
+                final Cookie ageCookie = new Cookie(NET_TRAJANO_AUTH_AGE, "1");
+                ageCookie.setMaxAge(tokenCookie.getMaxAge());
+                ageCookie.setPath(requestCookieContext);
+                resp.addCookie(ageCookie);
 
                 final String stateEncoded = req.getParameter("state");
                 final String redirectUri = new String(

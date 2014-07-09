@@ -110,7 +110,7 @@ public class TokenCookie {
                 new GZIPInputStream(
                         new CipherInputStream(new ByteArrayInputStream(Base64
                                 .decode(cookieValues[0])), cipher)))
-                                .readObject();
+                .readObject();
         if (cookieValues.length == 1) {
             userInfo = null;
         } else {
@@ -118,7 +118,7 @@ public class TokenCookie {
                     new GZIPInputStream(new CipherInputStream(
                             new ByteArrayInputStream(Base64
                                     .decode(cookieValues[1])), cipher)))
-                                    .readObject();
+                    .readObject();
         }
     }
 
@@ -148,6 +148,16 @@ public class TokenCookie {
 
     public JsonObject getIdToken() {
         return idToken;
+    }
+
+    /**
+     * Returns the maximum age of the token.
+     *
+     * @return maximum age of the token
+     */
+    public int getMaxAge() {
+        return idToken.getInt("exp")
+                - (int) (System.currentTimeMillis() / 1000);
     }
 
     public JsonObject getUserInfo() {
