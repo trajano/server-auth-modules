@@ -1,0 +1,14 @@
+@import 'lato.css';
+@import 'twentyfourteen.css';
+@import 'twentyfourteen-fullwidth.css';
+
+.entry-content h1,
+.entry-content > .section > h2 {
+  font-size: 33px;
+  font-weight: 300;
+  line-height: 1.0909090909;
+  margin-bottom: 12px;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+}
+}

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JsonWebKeySet.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.internal</a> &gt; <span class="el_source">JsonWebKeySet.java</span></div><h1>JsonWebKeySet.java</h1><pre class="source lang-java linenums">package net.trajano.auth.internal;
+
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
+/**
+ * JSON Web Key Set. Implements
+ * http://tools.ietf.org/html/draft-ietf-jose-json-web-key-29
+ *
+ * TODO when supporting more methods, consider converting this to a composite
+ * pattern.
+ *
+ * @author Archimedes Trajano
+ *
+ */
+public class JsonWebKeySet {
+    /**
+     * Maps &quot;kid&quot; to the {@link Key}. Instances of this classes are short lived
+     * and used in one thread context so concurrent use is not expected.
+     */
+<span class="fc" id="L30">    private final Map&lt;String, Key&gt; keyMap = new HashMap&lt;&gt;(); // NOPMD</span>
+
+    /**
+     * Constructs the JSON Web Key using the JSON object. Unsupported key usage
+     * scenarios are silently dropped.
+     *
+     * @param obj
+     *            JSON object
+     * @throws GeneralSecurityException
+     *             problem with the crypto APIs
+     */
+<span class="fc" id="L41">    public JsonWebKeySet(final JsonObject obj) throws GeneralSecurityException {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (final JsonValue v : obj.getJsonArray(&quot;keys&quot;)) {</span>
+<span class="fc" id="L43">            final JsonObject keyJson = (JsonObject) v;</span>
+            final String kid;
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (keyJson.containsKey(&quot;kid&quot;)) {</span>
+<span class="fc" id="L46">                kid = keyJson.getString(&quot;kid&quot;);</span>
+<span class="fc" id="L47">            } else {</span>
+<span class="fc" id="L48">                kid = &quot;&quot;;</span>
+            }
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            if (keyJson.containsKey(&quot;use&quot;)</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">                    &amp;&amp; &quot;sig&quot;.equals(keyJson.getString(&quot;use&quot;))) {</span>
+<span class="fc" id="L52">                final PublicKey key = buildPublicKey(keyJson);</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">                if (key != null) {</span>
+<span class="fc" id="L54">                    keyMap.put(kid, key);</span>
+                }
+            }
+        }
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * This builds the {@link PublicKey} based on the &quot;kty&quot; value. Unsupported
+     * key types are silently dropped.
+     *
+     * @param keyJson
+     *            JSON object containing the key data
+     * @return public key
+     * @throws GeneralSecurityException
+     *             problem with the crypto APIs
+     */
+    private PublicKey buildPublicKey(final JsonObject keyJson)
+            throws GeneralSecurityException {
+<span class="fc" id="L72">        final String kty = keyJson.getString(&quot;kty&quot;);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (&quot;RSA&quot;.equals(kty)) {</span>
+<span class="fc" id="L74">            return buildRSAPublicKey(keyJson);</span>
+        }
+<span class="nc" id="L76">        return null;</span>
+    }
+
+    /**
+     * Builds an RSA {@link PublicKey}. It uses &quot;n&quot; as the modulus and &quot;e&quot; as
+     * the public exponent.
+     *
+     * @param keyJson
+     *            JSON object containing the key data
+     * @return public key
+     * @throws GeneralSecurityException
+     *             problem with the crypto APIs
+     */
+    private PublicKey buildRSAPublicKey(final JsonObject keyJson)
+            throws GeneralSecurityException {
+<span class="fc" id="L91">        final BigInteger modulus = new BigInteger(Base64.decode(keyJson</span>
+<span class="fc" id="L92">                .getString(&quot;n&quot;)));</span>
+<span class="fc" id="L93">        final BigInteger publicExponent = new BigInteger(Base64.decode(keyJson</span>
+<span class="fc" id="L94">                .getString(&quot;e&quot;)));</span>
+<span class="fc" id="L95">        return KeyFactory.getInstance(&quot;RSA&quot;).generatePublic(</span>
+<span class="fc" id="L96">                new RSAPublicKeySpec(modulus, publicExponent));</span>
+
+    }
+
+    /**
+     * Gets a key given a Key ID.
+     *
+     * @param kid
+     *            Key ID
+     * @return key
+     */
+    public Key getKey(final String kid) {
+<span class="nc" id="L108">        return keyMap.get(kid);</span>
+    }
+
+    /**
+     * Gets a key given a Key ID with a specified type.
+     *
+     * @param kid
+     *            Key ID
+     * @param clazz
+     *            type of key.
+     * @param &lt;T&gt;
+     *            type
+     * @return key
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;T extends Key&gt; T getKey(final String kid, final Class&lt;T&gt; clazz) {
+<span class="nc" id="L124">        return (T) keyMap.get(kid);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OpenIDProviderConfiguration.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.internal</a> &gt; <span class="el_source">OpenIDProviderConfiguration.java</span></div><h1>OpenIDProviderConfiguration.java</h1><pre class="source lang-java linenums">package net.trajano.auth.internal;
+
+import java.net.URI;
+import java.util.List;
+
+import javax.json.JsonObject;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * OpenID Provider configuration.
+ *
+ * @author Archimedes Trajano
+ *
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class OpenIDProviderConfiguration {
+    /**
+     * Authorization endpoint.
+     */
+    @XmlElement(name = &quot;authorization_endpoint&quot;)
+    private URI authorizationEndpoint;
+
+    /**
+     * List of ID Token algorithms supports.
+     */
+    @XmlElement(name = &quot;id_token_alg_values_supported&quot;)
+    private List&lt;String&gt; idTokenAlgValuesSupported;
+
+    /**
+     * Issuer.
+     */
+    @XmlElement(name = &quot;issuer&quot;)
+    private String issuer;
+
+    /**
+     * JSON Web Keys URI.
+     */
+    @XmlElement(name = &quot;jwks_uri&quot;)
+    private URI jwksUri;
+
+    /**
+     * Response types supported.
+     */
+    @XmlElement(name = &quot;response_types_supported&quot;)
+    private List&lt;String&gt; responseTypesSupported;
+
+    /**
+     * Revocation end point.
+     */
+    @XmlElement(name = &quot;revocation_endpoint&quot;)
+    private URI revocationEndpoint;
+
+    /**
+     * Subject types supported.
+     */
+    @XmlElement(name = &quot;subject_types_supported&quot;)
+    private List&lt;String&gt; subjectTypesSupported;
+
+    /**
+     * Token end point.
+     */
+    @XmlElement(name = &quot;token_endpoint&quot;)
+    private URI tokenEndpoint;
+
+    /**
+     * Token endpoint auth methods supported.
+     */
+    @XmlElement(name = &quot;token_endpoint_auth_methods_supported&quot;)
+    private List&lt;String&gt; tokenEndpointAuthMethodsSupported;
+    /**
+     * Userinfo endpoint. Used to get information about the currently
+     * authenticated user.
+     */
+    @XmlElement(name = &quot;userinfo_endpoint&quot;)
+    private URI userinfoEndpoint;
+
+    /**
+     * Constructs the object with the defaults.
+     */
+<span class="fc" id="L84">    public OpenIDProviderConfiguration() {</span>
+
+<span class="fc" id="L86">    }</span>
+
+    /**
+     * Constructs the object using JSON.
+     *
+     * @param jsonObject
+     *            JSON object
+     */
+<span class="nc" id="L94">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
+<span class="nc" id="L95">        setAuthorizationEndpoint(URI.create(jsonObject</span>
+<span class="nc" id="L96">                .getString(&quot;authorization_endpoint&quot;)));</span>
+<span class="nc" id="L97">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
+<span class="nc" id="L98">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
+<span class="nc" id="L99">        setRevocationEndpoint(URI.create(jsonObject</span>
+<span class="nc" id="L100">                .getString(&quot;revocation_endpoint&quot;)));</span>
+<span class="nc" id="L101">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
+<span class="nc" id="L102">    }</span>
+
+    public URI getAuthorizationEndpoint() {
+<span class="nc" id="L105">        return authorizationEndpoint;</span>
+    }
+
+    public List&lt;String&gt; getIdTokenAlgValuesSupported() {
+<span class="nc" id="L109">        return idTokenAlgValuesSupported;</span>
+    }
+
+    public String getIssuer() {
+<span class="fc" id="L113">        return issuer;</span>
+    }
+
+    public URI getJwksUri() {
+<span class="fc" id="L117">        return jwksUri;</span>
+    }
+
+    public List&lt;String&gt; getResponseTypesSupported() {
+<span class="nc" id="L121">        return responseTypesSupported;</span>
+    }
+
+    public URI getRevocationEndpoint() {
+<span class="nc" id="L125">        return revocationEndpoint;</span>
+    }
+
+    public List&lt;String&gt; getSubjectTypesSupported() {
+<span class="nc" id="L129">        return subjectTypesSupported;</span>
+    }
+
+    public URI getTokenEndpoint() {
+<span class="nc" id="L133">        return tokenEndpoint;</span>
+    }
+
+    public List&lt;String&gt; getTokenEndpointAuthMethodsSupported() {
+<span class="nc" id="L137">        return tokenEndpointAuthMethodsSupported;</span>
+    }
+
+    public URI getUserinfoEndpoint() {
+<span class="nc" id="L141">        return userinfoEndpoint;</span>
+    }
+
+    public void setAuthorizationEndpoint(final URI authorizationEndpoint) {
+<span class="nc" id="L145">        this.authorizationEndpoint = authorizationEndpoint;</span>
+<span class="nc" id="L146">    }</span>
+
+    public void setIdTokenAlgValuesSupported(
+            final List&lt;String&gt; idTokenAlgValuesSupported) {
+<span class="nc" id="L150">        this.idTokenAlgValuesSupported = idTokenAlgValuesSupported;</span>
+<span class="nc" id="L151">    }</span>
+
+    public void setIssuer(final String issuer) {
+<span class="nc" id="L154">        this.issuer = issuer;</span>
+<span class="nc" id="L155">    }</span>
+
+    public void setJwksUri(final URI jwksUri) {
+<span class="nc" id="L158">        this.jwksUri = jwksUri;</span>
+<span class="nc" id="L159">    }</span>
+
+    public void setResponseTypesSupported(
+            final List&lt;String&gt; responseTypesSupported) {
+<span class="nc" id="L163">        this.responseTypesSupported = responseTypesSupported;</span>
+<span class="nc" id="L164">    }</span>
+
+    public void setRevocationEndpoint(final URI revocationEndpoint) {
+<span class="nc" id="L167">        this.revocationEndpoint = revocationEndpoint;</span>
+<span class="nc" id="L168">    }</span>
+
+    public void setSubjectTypesSupported(
+            final List&lt;String&gt; subjectTypesSupported) {
+<span class="nc" id="L172">        this.subjectTypesSupported = subjectTypesSupported;</span>
+<span class="nc" id="L173">    }</span>
+
+    public void setTokenEndpoint(final URI tokenEndpoint) {
+<span class="nc" id="L176">        this.tokenEndpoint = tokenEndpoint;</span>
+<span class="nc" id="L177">    }</span>
+
+    public void setTokenEndpointAuthMethodsSupported(
+            final List&lt;String&gt; tokenEndpointAuthMethodsSupported) {
+<span class="nc" id="L181">        this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;</span>
+<span class="nc" id="L182">    }</span>
+
+    public void setUserinfoEndpoint(final URI userinfoEndpoint) {
+<span class="nc" id="L185">        this.userinfoEndpoint = userinfoEndpoint;</span>
+<span class="nc" id="L186">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L190">        return &quot;OpenIDProviderConfigurationResponse [authorizationEndpoint=&quot;</span>
+<span class="nc" id="L191">                + authorizationEndpoint + &quot;, idTokenAlgValuesSupported=&quot;</span>
+<span class="nc" id="L192">                + idTokenAlgValuesSupported + &quot;, issuer=&quot; + issuer</span>
+<span class="nc" id="L193">                + &quot;, jwksUri=&quot; + jwksUri + &quot;, responseTypesSupported=&quot;</span>
+<span class="nc" id="L194">                + responseTypesSupported + &quot;, revocationEndpoint=&quot;</span>
+<span class="nc" id="L195">                + revocationEndpoint + &quot;, subjectTypesSupported=&quot;</span>
+<span class="nc" id="L196">                + subjectTypesSupported + &quot;, tokenEndpoint=&quot; + tokenEndpoint</span>
+<span class="nc" id="L197">                + &quot;, tokenEndpointAuthMethodsSupported=&quot;</span>
+<span class="nc" id="L198">                + tokenEndpointAuthMethodsSupported + &quot;]&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

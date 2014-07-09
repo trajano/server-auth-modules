@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>HttpHeaderAuthModule.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth</a> &gt; <span class="el_source">HttpHeaderAuthModule.java</span></div><h1>HttpHeaderAuthModule.java</h1><pre class="source lang-java linenums">package net.trajano.auth;
+
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.message.AuthException;
+import javax.security.auth.message.AuthStatus;
+import javax.security.auth.message.MessageInfo;
+import javax.security.auth.message.MessagePolicy;
+import javax.security.auth.message.callback.CallerPrincipalCallback;
+import javax.security.auth.message.callback.GroupPrincipalCallback;
+import javax.security.auth.message.module.ServerAuthModule;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * HTTP header server auth module. This can be used with SiteMinder type data.
+ *
+ * @author Archimedes Trajano
+ *
+ */
+<span class="nc" id="L33">public class HttpHeaderAuthModule implements ServerAuthModule {</span>
+
+    /**
+     * Group Header option key.
+     */
+    private static final String GROUP_HEADER_KEY = &quot;group_header&quot;;
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOG;
+
+    /**
+     * Messages resource path.
+     */
+    private static final String MESSAGES = &quot;META-INF/Messages&quot;;
+
+    /**
+     * Resource bundle.
+     */
+    private static final ResourceBundle R;
+
+    /**
+     * Supported message types. For our case we only need to deal with HTTP
+     * servlet request and responses. On Java EE 7 this will handle WebSockets
+     * as well.
+     */
+<span class="nc" id="L60">    private static final Class&lt;?&gt;[] SUPPORTED_MESSAGE_TYPES = new Class&lt;?&gt;[] {</span>
+<span class="nc" id="L61">            HttpServletRequest.class, HttpServletResponse.class };</span>
+
+    /**
+     * User Name Header option key.
+     */
+    private static final String USERNAME_HEADER_KEY = &quot;username_header&quot;;
+
+    static {
+<span class="nc" id="L69">        LOG = Logger.getLogger(&quot;net.trajano.auth.httpheadersam&quot;, MESSAGES);</span>
+<span class="nc" id="L70">        R = ResourceBundle.getBundle(MESSAGES);</span>
+<span class="nc" id="L71">    }</span>
+
+    /**
+     * Group header option.
+     */
+    private String groupHeader;
+
+    /**
+     * Callback handler that is passed in initialize by the container. This
+     * processes the callbacks which are objects that populate the &quot;subject&quot;.
+     */
+    private CallbackHandler handler;
+
+    /**
+     * User name header option.
+     */
+    private String userNameHeader;
+
+    /**
+     * Does nothing.
+     *
+     * @param messageInfo
+     *            message info
+     * @param subject
+     *            subject
+     */
+    @Override
+    public void cleanSubject(final MessageInfo messageInfo,
+            final Subject subject) throws AuthException {
+<span class="nc" id="L100">    }</span>
+
+    /**
+     * {@inheritDoc}
+     * &lt;p&gt;
+     * The array it returns contains immutable data so it is secure and faster
+     * to return the internal array.
+     * &lt;/p&gt;
+     */
+    @SuppressWarnings(&quot;rawtypes&quot;)
+    @Override
+    public Class[] getSupportedMessageTypes() {
+<span class="nc" id="L112">        return SUPPORTED_MESSAGE_TYPES; // NOPMD</span>
+    }
+
+    /**
+     * Builds a list of groups from the request. If not defined, then &quot;users&quot; is
+     * returned.
+     *
+     * @param req
+     *            servlet request.
+     * @return array of groups.
+     */
+    private String[] groups(final HttpServletRequest req) {
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (groupHeader == null) {</span>
+<span class="nc" id="L125">            return new String[] { &quot;users&quot; };</span>
+        }
+<span class="nc" id="L127">        final List&lt;String&gt; groupList = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L128">        final Enumeration&lt;String&gt; groupHeaders = req.getHeaders(groupHeader);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        while (groupHeaders.hasMoreElements()) {</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">            for (final String groupName : groupHeaders.nextElement().split(&quot;,&quot;)) {</span>
+<span class="nc" id="L131">                groupList.add(groupName.trim());</span>
+            }
+        }
+<span class="nc" id="L134">        return groupList.toArray(new String[0]);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param requestPolicy
+     *            request policy, ignored
+     * @param responsePolicy
+     *            response policy, ignored
+     * @param h
+     *            callback handler
+     * @param options
+     *            options
+     */
+    @Override
+    public void initialize(final MessagePolicy requestPolicy,
+            final MessagePolicy responsePolicy, final CallbackHandler h,
+            @SuppressWarnings(&quot;rawtypes&quot;) final Map options)
+            throws AuthException {
+<span class="nc" id="L154">        handler = h;</span>
+
+<span class="nc" id="L156">        userNameHeader = (String) options.get(USERNAME_HEADER_KEY);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (userNameHeader == null) {</span>
+<span class="nc" id="L158">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, USERNAME_HEADER_KEY);</span>
+<span class="nc" id="L159">            throw new AuthException(MessageFormat.format(</span>
+<span class="nc" id="L160">                    R.getString(&quot;missingOption&quot;), USERNAME_HEADER_KEY));</span>
+        }
+<span class="nc" id="L162">        groupHeader = (String) options.get(GROUP_HEADER_KEY);</span>
+<span class="nc" id="L163">    }</span>
+
+    /**
+     * Return {@link AuthStatus#SEND_SUCCESS}.
+     *
+     * @param messageInfo
+     *            contains the request and response messages. At this point the
+     *            response message is already committed so nothing can be
+     *            changed.
+     * @param subject
+     *            subject.
+     * @return {@link AuthStatus#SEND_SUCCESS}
+     */
+    @Override
+    public AuthStatus secureResponse(final MessageInfo messageInfo,
+            final Subject subject) throws AuthException {
+<span class="nc" id="L179">        return AuthStatus.SEND_SUCCESS;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AuthStatus validateRequest(final MessageInfo messageInfo,
+            final Subject client, final Subject serviceSubject)
+            throws AuthException {
+<span class="nc" id="L189">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
+<span class="nc" id="L190">                .getRequestMessage();</span>
+        try {
+<span class="nc bnc" id="L192" title="All 2 branches missed.">            if (!req.isSecure()) {</span>
+<span class="nc" id="L193">                return AuthStatus.FAILURE;</span>
+            }
+<span class="nc" id="L195">            final String userName = req.getHeader(userNameHeader);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (userName == null) {</span>
+<span class="nc" id="L197">                return AuthStatus.FAILURE;</span>
+            }
+
+<span class="nc" id="L200">            handler.handle(new Callback[] {</span>
+<span class="nc" id="L201">                    new CallerPrincipalCallback(client, userName),</span>
+<span class="nc" id="L202">                    new GroupPrincipalCallback(client, groups(req)) });</span>
+<span class="nc" id="L203">            return AuthStatus.SUCCESS;</span>
+<span class="nc" id="L204">        } catch (final IOException | UnsupportedCallbackException e) {</span>
+<span class="nc" id="L205">            throw new AuthException(e.getMessage());</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

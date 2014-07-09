@@ -1,0 +1,111 @@
+/*
+ Theme Name:     Twenty Fourteen Extended
+ Description:    Make use of full width page templates in the Twenty Fourteen theme
+ Author:         Nexcius
+ Author URI:     http://www.nexcius.net
+ Template:       twentyfourteen
+ Version:        1.0.1
+*/
+
+.full-width .site-content .page .entry-header,
+.full-width .site-content .page .entry-content, 
+.full-width .site-content .page .entry-summary, 
+.full-width .site-content .page .entry-meta {
+	max-width: 100%;
+}
+
+@media screen and (min-width: 594px) {
+	.full-width .site-content .page .entry-header {
+		max-width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+	 
+	.full-width .site-content .page .entry-content, 
+	.full-width .site-content .page .entry-summary, 
+	.full-width .site-content .page .entry-meta {
+		max-width: 100%;
+		padding-left: 30px;
+		padding-right: 30px;
+	}
+
+
+	.full-width .site-content .page  .wp-caption.alignnone {
+		max-width: 100%;
+		max-width: -moz-calc(100% + 60px);
+		max-width: calc(100% + 60px);
+		margin-left: -30px;
+		margin-right: -30px;
+	}
+
+	.full-width .site-content .page  .wp-caption.alignnone .wp-caption-text {
+		max-width: 100%;
+		margin-left: 30px;
+		margin-right: 30px;
+	}
+	
+	.full-width .site-content .page  blockquote.alignright, 
+	.full-width .site-content .page  img.size-full.alignright, 
+	.full-width .site-content .page  img.size-large.alignright, 
+	.full-width .site-content .page  img.size-medium.alignright, 
+	.full-width .site-content .page  .wp-caption.alignright {
+		margin-right: -20px;
+	}
+	
+	.full-width .site-content .page  blockquote.alignleft, 
+	.full-width .site-content .page  img.size-full.alignleft, 
+	.full-width .site-content .page  img.size-large.alignleft, 
+	.full-width .site-content .page  img.size-medium.alignleft, 
+	.full-width .site-content .page  .wp-caption.alignleft {
+		margin-left: -20px;
+	}
+}
+
+@media screen and (min-width: 673px) {
+	.full-width .site-content  .page .entry-header {
+		margin-left: 30px;
+		margin-right: 30px;
+	}
+	 
+	.full-width .site-content .page  .entry-content, 
+	.full-width .site-content .page  .entry-summary, 
+	.full-width .site-content .page  .entry-meta {
+		padding-left: 60px;
+		padding-right: 60px;
+	}
+
+
+	.full-width .site-content .page  .wp-caption.alignnone {
+		max-width: -moz-calc(100% + 120px);
+		max-width: calc(100% + 120px);
+		margin-left: -60px;
+		margin-right: -60px;
+		
+	}
+
+	.full-width .site-content .page .wp-caption.alignnone .wp-caption-text {
+		margin-left: 60px;
+		margin-right: 60px;
+	}
+	
+	.full-width .site-content .page blockquote.alignright,
+	.full-width .site-content .page  blockquote.alignleft {
+		max-width: 50%;
+	}
+	
+	.full-width .site-content .page  blockquote.alignright, 
+	.full-width .site-content .page  img.size-full.alignright, 
+	.full-width .site-content .page  img.size-large.alignright, 
+	.full-width .site-content .page  img.size-medium.alignright, 
+	.full-width .site-content .page  .wp-caption.alignright {
+		margin-right: -50px;
+	}
+	
+	.full-width .site-content .page  blockquote.alignleft, 
+	.full-width .site-content .page  img.size-full.alignleft, 
+	.full-width .site-content .page  img.size-large.alignleft, 
+	.full-width .site-content .page  img.size-medium.alignleft, 
+	.full-width .site-content .page  .wp-caption.alignleft {
+		margin-left: -50px;
+	}
+}
