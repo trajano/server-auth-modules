@@ -5,45 +5,45 @@
 #
 
 digraph G {
-	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
-	node [fontname="arial",fontsize=10,shape=plaintext];
+	edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10];
+	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// net.trajano.auth.internal.Utils
-	c14 [label=<<table title="net.trajano.auth.internal.Utils" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./Utils.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> Utils </td></tr>
-		</table></td></tr>
-		</table>>, URL="./Utils.html", fontname="arial", fontcolor="black", fontsize=10.0];
-	// net.trajano.auth.internal.TokenCookie
-	c15 [label=<<table title="net.trajano.auth.internal.TokenCookie" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookie.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> TokenCookie </td></tr>
-		</table></td></tr>
-		</table>>, URL="./TokenCookie.html", fontname="arial", fontcolor="black", fontsize=10.0];
-	// net.trajano.auth.internal.OpenIDProviderConfiguration
-	c16 [label=<<table title="net.trajano.auth.internal.OpenIDProviderConfiguration" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OpenIDProviderConfiguration.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> OpenIDProviderConfiguration </td></tr>
-		</table></td></tr>
-		</table>>, URL="./OpenIDProviderConfiguration.html", fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.internal.OAuthToken
-	c17 [label=<<table title="net.trajano.auth.internal.OAuthToken" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthToken.html">
+	c14 [label=<<table title="net.trajano.auth.internal.OAuthToken" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthToken.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> OAuthToken </td></tr>
 		</table></td></tr>
-		</table>>, URL="./OAuthToken.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./OAuthToken.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.internal.Utils
+	c15 [label=<<table title="net.trajano.auth.internal.Utils" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./Utils.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> Utils </td></tr>
+		</table></td></tr>
+		</table>>, URL="./Utils.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.internal.JsonWebKeySet
-	c18 [label=<<table title="net.trajano.auth.internal.JsonWebKeySet" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./JsonWebKeySet.html">
+	c16 [label=<<table title="net.trajano.auth.internal.JsonWebKeySet" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./JsonWebKeySet.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> JsonWebKeySet </td></tr>
 		</table></td></tr>
-		</table>>, URL="./JsonWebKeySet.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./JsonWebKeySet.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.internal.Base64
-	c19 [label=<<table title="net.trajano.auth.internal.Base64" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./Base64.html">
+	c17 [label=<<table title="net.trajano.auth.internal.Base64" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./Base64.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> Base64 </td></tr>
 		</table></td></tr>
-		</table>>, URL="./Base64.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./Base64.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.internal.OpenIDProviderConfiguration
+	c18 [label=<<table title="net.trajano.auth.internal.OpenIDProviderConfiguration" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OpenIDProviderConfiguration.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> OpenIDProviderConfiguration </td></tr>
+		</table></td></tr>
+		</table>>, URL="./OpenIDProviderConfiguration.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.internal.TokenCookie
+	c19 [label=<<table title="net.trajano.auth.internal.TokenCookie" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookie.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> TokenCookie </td></tr>
+		</table></td></tr>
+		</table>>, URL="./TokenCookie.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 }
 

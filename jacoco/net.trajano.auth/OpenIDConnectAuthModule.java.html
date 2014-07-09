@@ -57,14 +57,14 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
 <span class="nc bnc" id="L57" title="All 2 branches missed.">        if (issuerUri == null) {</span>
 <span class="nc" id="L58">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, ISSUER_URI_KEY);</span>
 <span class="nc" id="L59">            throw new AuthException(MessageFormat.format(</span>
-<span class="nc" id="L60">                    R.getString(&quot;missingOption&quot;), ISSUER_URI_KEY));</span>
+                    R.getString(&quot;missingOption&quot;), ISSUER_URI_KEY));
         }
 <span class="nc" id="L62">        return restClient</span>
-<span class="nc" id="L63">                .target(URI.create(issuerUri).resolve(</span>
-<span class="nc" id="L64">                        &quot;/.well-known/openid-configuration&quot;))</span>
-<span class="nc" id="L65">                .request(MediaType.APPLICATION_JSON_TYPE)</span>
-<span class="nc" id="L66">                .get(OpenIDProviderConfiguration.class);</span>
+                .target(URI.create(issuerUri).resolve(
+                        &quot;/.well-known/openid-configuration&quot;))
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(OpenIDProviderConfiguration.class);
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

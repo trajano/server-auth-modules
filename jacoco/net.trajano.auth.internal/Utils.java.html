@@ -42,8 +42,8 @@ public final class Utils {
 <span class="nc" id="L42">        final String[] jwtParts = serialization.split(&quot;\\.&quot;);</span>
 
 <span class="nc" id="L44">        final JsonObject joseHeader = Json.createReader(</span>
-<span class="nc" id="L45">                new ByteArrayInputStream(Base64.decode(jwtParts[0])))</span>
-<span class="nc" id="L46">                .readObject();</span>
+                new ByteArrayInputStream(Base64.decode(jwtParts[0])))
+                .readObject();
 
         // Handle plaintext JWTs
 <span class="nc bnc" id="L49" title="All 2 branches missed.">        if (!&quot;none&quot;.equals(joseHeader.getString(&quot;alg&quot;))) {</span>
@@ -51,18 +51,18 @@ public final class Utils {
             final String kid;
 <span class="nc bnc" id="L52" title="All 2 branches missed.">            if (joseHeader.containsKey(&quot;kid&quot;)) {</span>
 <span class="nc" id="L53">                kid = joseHeader.getString(&quot;kid&quot;);</span>
-<span class="nc" id="L54">            } else {</span>
+            } else {
 <span class="nc" id="L55">                kid = &quot;&quot;;</span>
             }
 <span class="nc" id="L57">            final PublicKey signingKey = keyset.getKey(kid, PublicKey.class);</span>
 
 <span class="nc bnc" id="L59" title="All 2 branches missed.">            if (signingKey == null) {</span>
 <span class="nc" id="L60">                throw new GeneralSecurityException(&quot;No key with id &quot; + kid</span>
-<span class="nc" id="L61">                        + &quot; defined&quot;);</span>
+                        + &quot; defined&quot;);
             }
 
 <span class="nc" id="L64">            final Signature signature = Signature</span>
-<span class="nc" id="L65">                    .getInstance(toJavaAlgorithm(joseHeader.getString(&quot;alg&quot;)));</span>
+                    .getInstance(toJavaAlgorithm(joseHeader.getString(&quot;alg&quot;)));
 
 <span class="nc" id="L67">            final byte[] jwtSignatureBytes = Base64.decode(jwtParts[2]);</span>
 
@@ -70,7 +70,7 @@ public final class Utils {
 <span class="nc" id="L70">            signature.update((jwtParts[0] + &quot;.&quot; + jwtParts[1]).getBytes());</span>
 <span class="nc bnc" id="L71" title="All 2 branches missed.">            if (!signature.verify(jwtSignatureBytes)) {</span>
 <span class="nc" id="L72">                throw new GeneralSecurityException(</span>
-<span class="nc" id="L73">                        &quot;signature verification failed&quot;);</span>
+                        &quot;signature verification failed&quot;);
             }
         }
 <span class="nc" id="L76">        return Base64.decode(jwtParts[1]);</span>
@@ -120,17 +120,17 @@ public final class Utils {
         // TODO handle multiple audiences
 <span class="nc bnc" id="L121" title="All 2 branches missed.">        if (!clientId.equals(idTokenJson.getString(&quot;aud&quot;))) {</span>
 <span class="nc" id="L122">            throw new GeneralSecurityException(String.format(</span>
-<span class="nc" id="L123">                    &quot;invalid 'aud' got' %s' expected '%s'&quot;,</span>
-<span class="nc" id="L124">                    idTokenJson.getString(&quot;aud&quot;), clientId));</span>
+                    &quot;invalid 'aud' got' %s' expected '%s'&quot;,
+                    idTokenJson.getString(&quot;aud&quot;), clientId));
         }
-<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;)</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">                &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {</span>
+<span class="nc bnc" id="L126" title="All 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;)</span>
+                &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {
 <span class="nc" id="L128">            throw new GeneralSecurityException(String.format(</span>
-<span class="nc" id="L129">                    &quot;invalid 'azp' got' %s' expected '%s'&quot;,</span>
-<span class="nc" id="L130">                    idTokenJson.getString(&quot;azp&quot;), clientId));</span>
+                    &quot;invalid 'azp' got' %s' expected '%s'&quot;,
+                    idTokenJson.getString(&quot;azp&quot;), clientId));
         }
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (idTokenJson.containsKey(&quot;exp&quot;)</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">                &amp;&amp; System.currentTimeMillis() &gt; idTokenJson.getInt(&quot;exp&quot;) * 1000L) {</span>
+<span class="nc bnc" id="L132" title="All 4 branches missed.">        if (idTokenJson.containsKey(&quot;exp&quot;)</span>
+                &amp;&amp; System.currentTimeMillis() &gt; idTokenJson.getInt(&quot;exp&quot;) * 1000L) {
 <span class="nc" id="L134">            throw new GeneralSecurityException(&quot;expired&quot;);</span>
         }
 <span class="nc" id="L136">    }</span>
@@ -141,4 +141,4 @@ public final class Utils {
 <span class="nc" id="L141">    private Utils() {</span>
 <span class="nc" id="L142">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

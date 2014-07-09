@@ -44,17 +44,17 @@ public class JsonWebKeySet {
             final String kid;
 <span class="fc bfc" id="L45" title="All 2 branches covered.">            if (keyJson.containsKey(&quot;kid&quot;)) {</span>
 <span class="fc" id="L46">                kid = keyJson.getString(&quot;kid&quot;);</span>
-<span class="fc" id="L47">            } else {</span>
+            } else {
 <span class="fc" id="L48">                kid = &quot;&quot;;</span>
             }
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            if (keyJson.containsKey(&quot;use&quot;)</span>
-<span class="pc bpc" id="L51" title="1 of 2 branches missed.">                    &amp;&amp; &quot;sig&quot;.equals(keyJson.getString(&quot;use&quot;))) {</span>
+<span class="pc bpc" id="L50" title="2 of 4 branches missed.">            if (keyJson.containsKey(&quot;use&quot;)</span>
+                    &amp;&amp; &quot;sig&quot;.equals(keyJson.getString(&quot;use&quot;))) {
 <span class="fc" id="L52">                final PublicKey key = buildPublicKey(keyJson);</span>
 <span class="pc bpc" id="L53" title="1 of 2 branches missed.">                if (key != null) {</span>
 <span class="fc" id="L54">                    keyMap.put(kid, key);</span>
                 }
             }
-        }
+<span class="fc" id="L57">        }</span>
 <span class="fc" id="L58">    }</span>
 
     /**
@@ -89,11 +89,11 @@ public class JsonWebKeySet {
     private PublicKey buildRSAPublicKey(final JsonObject keyJson)
             throws GeneralSecurityException {
 <span class="fc" id="L91">        final BigInteger modulus = new BigInteger(Base64.decode(keyJson</span>
-<span class="fc" id="L92">                .getString(&quot;n&quot;)));</span>
+                .getString(&quot;n&quot;)));
 <span class="fc" id="L93">        final BigInteger publicExponent = new BigInteger(Base64.decode(keyJson</span>
-<span class="fc" id="L94">                .getString(&quot;e&quot;)));</span>
+                .getString(&quot;e&quot;)));
 <span class="fc" id="L95">        return KeyFactory.getInstance(&quot;RSA&quot;).generatePublic(</span>
-<span class="fc" id="L96">                new RSAPublicKeySpec(modulus, publicExponent));</span>
+                new RSAPublicKeySpec(modulus, publicExponent));
 
     }
 
@@ -124,4 +124,4 @@ public class JsonWebKeySet {
 <span class="nc" id="L124">        return (T) keyMap.get(kid);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

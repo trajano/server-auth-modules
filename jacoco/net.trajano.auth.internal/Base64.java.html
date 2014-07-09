@@ -23,7 +23,7 @@ public final class Base64 {
      * Encoding map.
      */
 <span class="fc" id="L25">    private static final char[] ENCODE_MAP = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_&quot;</span>
-<span class="fc" id="L26">            .toCharArray();</span>
+            .toCharArray();
 
     static {
 <span class="fc" id="L29">        DECODE_MAP = new byte[128];</span>
@@ -162,7 +162,7 @@ public final class Base64 {
 <span class="fc" id="L162">                p2 &gt;&gt;= 4;</span>
 <span class="fc" id="L163">                p3 = bytes[i + 1] &amp; 0x0F;</span>
 <span class="fc" id="L164">                p3 &lt;&lt;= 2;</span>
-<span class="fc" id="L165">            } else {</span>
+            } else {
 <span class="nc" id="L166">                p2 = 0;</span>
 <span class="nc" id="L167">                p3 = 0;</span>
             }
@@ -172,7 +172,7 @@ public final class Base64 {
 <span class="fc" id="L172">                p4 = bytes[i + 2] &amp; 0xC0;</span>
 <span class="fc" id="L173">                p4 &gt;&gt;= 6;</span>
 <span class="fc" id="L174">                p5 = bytes[i + 2] &amp; 0x3F;</span>
-<span class="fc" id="L175">            } else {</span>
+            } else {
 <span class="fc" id="L176">                p4 = 0;</span>
 <span class="fc" id="L177">                p5 = 0;</span>
             }
@@ -189,7 +189,7 @@ public final class Base64 {
 <span class="pc bpc" id="L189" title="1 of 2 branches missed.">                if (padding) {</span>
 <span class="nc" id="L190">                    buffer.append('=');</span>
                 }
-<span class="nc" id="L192">            } else {</span>
+            } else {
 <span class="nc" id="L193">                buffer.append(ENCODE_MAP[p0]);</span>
 <span class="nc" id="L194">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
 <span class="nc bnc" id="L195" title="All 2 branches missed.">                if (padding) {</span>
@@ -218,4 +218,4 @@ public final class Base64 {
 
 <span class="nc" id="L219">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

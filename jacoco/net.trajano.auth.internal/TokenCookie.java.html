@@ -44,12 +44,12 @@ public class TokenCookie {
     public static SecretKey buildSecretKey(final String clientId,
             final String clientSecret) throws GeneralSecurityException {
 <span class="fc" id="L46">        final PBEKeySpec pbeSpec = new PBEKeySpec(clientSecret.toCharArray(),</span>
-<span class="fc" id="L47">                clientId.getBytes(), 42, 128);</span>
+                clientId.getBytes(), 42, 128);
 
 <span class="fc" id="L49">        final SecretKeyFactory factory = SecretKeyFactory</span>
-<span class="fc" id="L50">                .getInstance(&quot;PBKDF2WithHmacSHA1&quot;);</span>
+                .getInstance(&quot;PBKDF2WithHmacSHA1&quot;);
 <span class="fc" id="L51">        final SecretKey secret = new SecretKeySpec(factory.generateSecret(</span>
-<span class="fc" id="L52">                pbeSpec).getEncoded(), &quot;AES&quot;);</span>
+                pbeSpec).getEncoded(), &quot;AES&quot;);
 <span class="fc" id="L53">        return secret;</span>
     }
 
@@ -98,27 +98,27 @@ public class TokenCookie {
      * @throws IOException
      * @throws GeneralSecurityException
      */
-<span class="fc" id="L101">    public TokenCookie(final String cookieValue, final String clientId,</span>
+    public TokenCookie(final String cookieValue, final String clientId,
             final String clientSecret) throws IOException,
-            GeneralSecurityException {
+<span class="fc" id="L103">            GeneralSecurityException {</span>
 <span class="fc" id="L104">        final String[] cookieValues = cookieValue.split(&quot;\\.&quot;);</span>
 <span class="fc" id="L105">        final SecretKey secret = buildSecretKey(clientId, clientSecret);</span>
 <span class="fc" id="L106">        final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
 <span class="fc" id="L107">        cipher.init(Cipher.DECRYPT_MODE, secret);</span>
 
 <span class="fc" id="L109">        idToken = Json.createReader(</span>
-<span class="fc" id="L110">                new GZIPInputStream(</span>
-<span class="fc" id="L111">                        new CipherInputStream(new ByteArrayInputStream(Base64</span>
-<span class="fc" id="L112">                                .decode(cookieValues[0])), cipher)))</span>
-<span class="fc" id="L113">                .readObject();</span>
+                new GZIPInputStream(
+                        new CipherInputStream(new ByteArrayInputStream(Base64
+                                .decode(cookieValues[0])), cipher)))
+                .readObject();
 <span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (cookieValues.length == 1) {</span>
 <span class="nc" id="L115">            userInfo = null;</span>
-<span class="nc" id="L116">        } else {</span>
+        } else {
 <span class="fc" id="L117">            userInfo = Json.createReader(</span>
-<span class="fc" id="L118">                    new GZIPInputStream(new CipherInputStream(</span>
-<span class="fc" id="L119">                            new ByteArrayInputStream(Base64</span>
-<span class="fc" id="L120">                                    .decode(cookieValues[1])), cipher)))</span>
-<span class="fc" id="L121">                    .readObject();</span>
+                    new GZIPInputStream(new CipherInputStream(
+                            new ByteArrayInputStream(Base64
+                                    .decode(cookieValues[1])), cipher)))
+                    .readObject();
         }
 <span class="fc" id="L123">    }</span>
 
@@ -140,7 +140,7 @@ public class TokenCookie {
 
 <span class="fc" id="L141">        final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
 <span class="fc" id="L142">        final OutputStream zos = new GZIPOutputStream(new CipherOutputStream(</span>
-<span class="fc" id="L143">                baos, cipher));</span>
+                baos, cipher));
 <span class="fc" id="L144">        zos.write(jsonObject.toString().getBytes(&quot;UTF-8&quot;));</span>
 <span class="fc" id="L145">        zos.close();</span>
 <span class="fc" id="L146">        return Base64.encodeWithoutPadding(baos.toByteArray());</span>
@@ -157,7 +157,7 @@ public class TokenCookie {
      */
     public int getMaxAge() {
 <span class="nc" id="L159">        return idToken.getInt(&quot;exp&quot;)</span>
-<span class="nc" id="L160">                - (int) (System.currentTimeMillis() / 1000);</span>
+                - (int) (System.currentTimeMillis() / 1000);
     }
 
     public JsonObject getUserInfo() {
@@ -190,4 +190,4 @@ public class TokenCookie {
 <span class="fc" id="L190">        return b.toString();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

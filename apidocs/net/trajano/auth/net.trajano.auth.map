@@ -1,10 +1,10 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./OpenIDConnectAuthModule.html" title="net.trajano.auth.OpenIDConnectAuthModule" alt="" coords="16,113,196,138"/>
-<area shape="rect" id="node1" href="./OpenIDConnectAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="5,101,207,149"/>
-<area shape="rect" id="node2_1" href="./OAuthModule.html" title="net.trajano.auth.OAuthModule" alt="" coords="157,17,255,42"/>
-<area shape="rect" id="node2" href="./OAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="147,5,265,53"/>
-<area shape="rect" id="node4_2" href="./GoogleAuthModule.html" title="net.trajano.auth.GoogleAuthModule" alt="" coords="241,113,371,138"/>
-<area shape="rect" id="node4" href="./GoogleAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="231,101,381,149"/>
-<area shape="rect" id="node3_3" href="./HttpHeaderAuthModule.html" title="net.trajano.auth.HttpHeaderAuthModule" alt="" coords="300,17,453,42"/>
-<area shape="rect" id="node3" href="./HttpHeaderAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="289,5,464,53"/>
+<area shape="rect" id="node1_0" href="./HttpHeaderAuthModule.html" title="net.trajano.auth.HttpHeaderAuthModule" alt="" coords="16,16,173,43"/>
+<area shape="rect" id="node1" href="./HttpHeaderAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="5,5,184,53"/>
+<area shape="rect" id="node2_1" href="./OAuthModule.html" title="net.trajano.auth.OAuthModule" alt="" coords="219,16,319,43"/>
+<area shape="rect" id="node2" href="./OAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="209,5,330,53"/>
+<area shape="rect" id="node3_2" href="./OpenIDConnectAuthModule.html" title="net.trajano.auth.OpenIDConnectAuthModule" alt="" coords="76,112,260,139"/>
+<area shape="rect" id="node3" href="./OpenIDConnectAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="65,101,271,149"/>
+<area shape="rect" id="node4_3" href="./GoogleAuthModule.html" title="net.trajano.auth.GoogleAuthModule" alt="" coords="305,112,436,139"/>
+<area shape="rect" id="node4" href="./GoogleAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="295,101,447,149"/>
 </map>

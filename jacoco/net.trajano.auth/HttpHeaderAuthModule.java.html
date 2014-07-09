@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
      * as well.
      */
 <span class="nc" id="L60">    private static final Class&lt;?&gt;[] SUPPORTED_MESSAGE_TYPES = new Class&lt;?&gt;[] {</span>
-<span class="nc" id="L61">            HttpServletRequest.class, HttpServletResponse.class };</span>
+            HttpServletRequest.class, HttpServletResponse.class };
 
     /**
      * User Name Header option key.
@@ -157,7 +157,7 @@ import javax.servlet.http.HttpServletResponse;
 <span class="nc bnc" id="L157" title="All 2 branches missed.">        if (userNameHeader == null) {</span>
 <span class="nc" id="L158">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, USERNAME_HEADER_KEY);</span>
 <span class="nc" id="L159">            throw new AuthException(MessageFormat.format(</span>
-<span class="nc" id="L160">                    R.getString(&quot;missingOption&quot;), USERNAME_HEADER_KEY));</span>
+                    R.getString(&quot;missingOption&quot;), USERNAME_HEADER_KEY));
         }
 <span class="nc" id="L162">        groupHeader = (String) options.get(GROUP_HEADER_KEY);</span>
 <span class="nc" id="L163">    }</span>
@@ -187,7 +187,7 @@ import javax.servlet.http.HttpServletResponse;
             final Subject client, final Subject serviceSubject)
             throws AuthException {
 <span class="nc" id="L189">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
-<span class="nc" id="L190">                .getRequestMessage();</span>
+                .getRequestMessage();
         try {
 <span class="nc bnc" id="L192" title="All 2 branches missed.">            if (!req.isSecure()) {</span>
 <span class="nc" id="L193">                return AuthStatus.FAILURE;</span>
@@ -198,8 +198,8 @@ import javax.servlet.http.HttpServletResponse;
             }
 
 <span class="nc" id="L200">            handler.handle(new Callback[] {</span>
-<span class="nc" id="L201">                    new CallerPrincipalCallback(client, userName),</span>
-<span class="nc" id="L202">                    new GroupPrincipalCallback(client, groups(req)) });</span>
+                    new CallerPrincipalCallback(client, userName),
+                    new GroupPrincipalCallback(client, groups(req)) });
 <span class="nc" id="L203">            return AuthStatus.SUCCESS;</span>
 <span class="nc" id="L204">        } catch (final IOException | UnsupportedCallbackException e) {</span>
 <span class="nc" id="L205">            throw new AuthException(e.getMessage());</span>
@@ -207,4 +207,4 @@ import javax.servlet.http.HttpServletResponse;
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

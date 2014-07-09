@@ -5,33 +5,33 @@
 #
 
 digraph G {
-	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
-	node [fontname="arial",fontsize=10,shape=plaintext];
+	edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10];
+	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// net.trajano.auth.test.TokenCookieTest
-	c0 [label=<<table title="net.trajano.auth.test.TokenCookieTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookieTest.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> TokenCookieTest </td></tr>
-		</table></td></tr>
-		</table>>, URL="./TokenCookieTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.OAuthModuleTest
-	c1 [label=<<table title="net.trajano.auth.test.OAuthModuleTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthModuleTest.html">
+	c0 [label=<<table title="net.trajano.auth.test.OAuthModuleTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthModuleTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> OAuthModuleTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./OAuthModuleTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./OAuthModuleTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.test.ConfigurationTest
+	c1 [label=<<table title="net.trajano.auth.test.ConfigurationTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ConfigurationTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> ConfigurationTest </td></tr>
+		</table></td></tr>
+		</table>>, URL="./ConfigurationTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.HerokuTest
 	c2 [label=<<table title="net.trajano.auth.test.HerokuTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./HerokuTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> HerokuTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./HerokuTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
-	// net.trajano.auth.test.ConfigurationTest
-	c3 [label=<<table title="net.trajano.auth.test.ConfigurationTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ConfigurationTest.html">
+		</table>>, URL="./HerokuTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.test.TokenCookieTest
+	c3 [label=<<table title="net.trajano.auth.test.TokenCookieTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookieTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ConfigurationTest </td></tr>
+<tr><td align="center" balign="center"> TokenCookieTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./ConfigurationTest.html", fontname="arial", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./TokenCookieTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 }
 

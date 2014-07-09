@@ -93,11 +93,11 @@ public class OpenIDProviderConfiguration {
      */
 <span class="nc" id="L94">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
 <span class="nc" id="L95">        setAuthorizationEndpoint(URI.create(jsonObject</span>
-<span class="nc" id="L96">                .getString(&quot;authorization_endpoint&quot;)));</span>
+                .getString(&quot;authorization_endpoint&quot;)));
 <span class="nc" id="L97">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
 <span class="nc" id="L98">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
 <span class="nc" id="L99">        setRevocationEndpoint(URI.create(jsonObject</span>
-<span class="nc" id="L100">                .getString(&quot;revocation_endpoint&quot;)));</span>
+                .getString(&quot;revocation_endpoint&quot;)));
 <span class="nc" id="L101">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
 <span class="nc" id="L102">    }</span>
 
@@ -188,14 +188,14 @@ public class OpenIDProviderConfiguration {
     @Override
     public String toString() {
 <span class="nc" id="L190">        return &quot;OpenIDProviderConfigurationResponse [authorizationEndpoint=&quot;</span>
-<span class="nc" id="L191">                + authorizationEndpoint + &quot;, idTokenAlgValuesSupported=&quot;</span>
-<span class="nc" id="L192">                + idTokenAlgValuesSupported + &quot;, issuer=&quot; + issuer</span>
-<span class="nc" id="L193">                + &quot;, jwksUri=&quot; + jwksUri + &quot;, responseTypesSupported=&quot;</span>
-<span class="nc" id="L194">                + responseTypesSupported + &quot;, revocationEndpoint=&quot;</span>
-<span class="nc" id="L195">                + revocationEndpoint + &quot;, subjectTypesSupported=&quot;</span>
-<span class="nc" id="L196">                + subjectTypesSupported + &quot;, tokenEndpoint=&quot; + tokenEndpoint</span>
-<span class="nc" id="L197">                + &quot;, tokenEndpointAuthMethodsSupported=&quot;</span>
-<span class="nc" id="L198">                + tokenEndpointAuthMethodsSupported + &quot;]&quot;;</span>
+                + authorizationEndpoint + &quot;, idTokenAlgValuesSupported=&quot;
+                + idTokenAlgValuesSupported + &quot;, issuer=&quot; + issuer
+                + &quot;, jwksUri=&quot; + jwksUri + &quot;, responseTypesSupported=&quot;
+                + responseTypesSupported + &quot;, revocationEndpoint=&quot;
+                + revocationEndpoint + &quot;, subjectTypesSupported=&quot;
+                + subjectTypesSupported + &quot;, tokenEndpoint=&quot; + tokenEndpoint
+                + &quot;, tokenEndpointAuthMethodsSupported=&quot;
+                + tokenEndpointAuthMethodsSupported + &quot;]&quot;;
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>

@@ -32,9 +32,9 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
             final Client restClient, final Map&lt;String, String&gt; options)
                     throws AuthException {
 <span class="nc" id="L34">        return new OpenIDProviderConfiguration(Json.createReader(</span>
-<span class="nc" id="L35">                Thread.currentThread().getContextClassLoader()</span>
-<span class="nc" id="L36">                .getResourceAsStream(&quot;META-INF/google-config.json&quot;))</span>
-<span class="nc" id="L37">                .readObject());</span>
+                Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(&quot;META-INF/google-config.json&quot;))
+                .readObject());
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.0.201403182114</span></div></body></html>
