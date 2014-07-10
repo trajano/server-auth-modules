@@ -66,7 +66,7 @@
 <th>Errors</th>
 <th>Missing Classes</th></tr>
 <tr class="b">
-<td>10</td>
+<td>11</td>
 <td>7</td>
 <td>0</td>
 <td>0</td></tr></table></div>
@@ -119,19 +119,19 @@
 <td>Found reliance on default encoding in net.trajano.auth.OAuthModule.doUnauthenticatedOperation(HttpServletRequest, HttpServletResponse, String, Subject): new String(byte[])</td>
 <td>I18N</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td><a href="./xref/net/trajano/auth/OAuthModule.html#L356">356</a></td>
+<td><a href="./xref/net/trajano/auth/OAuthModule.html#L367">367</a></td>
 <td>High</td></tr>
 <tr class="a">
 <td>net.trajano.auth.OAuthModule.getSupportedMessageTypes() may expose internal representation by returning OAuthModule.SUPPORTED_MESSAGE_TYPES</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP">EI_EXPOSE_REP</a></td>
-<td><a href="./xref/net/trajano/auth/OAuthModule.html#L446">446</a></td>
+<td><a href="./xref/net/trajano/auth/OAuthModule.html#L457">457</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Redundant nullcheck of net.trajano.auth.OAuthModule.clientId, which is known to be non-null in net.trajano.auth.OAuthModule.initialize(MessagePolicy, MessagePolicy, CallbackHandler, Map)</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE</a></td>
-<td><a href="./xref/net/trajano/auth/OAuthModule.html#L549">549</a></td>
+<td><a href="./xref/net/trajano/auth/OAuthModule.html#L562">562</a></td>
 <td>High</td></tr></table></div><a name="net.trajano.auth.internal.Base64"></a>
 <div class="section">
 <h3>net.trajano.auth.internal.Base64<a name="net.trajano.auth.internal.Base64"></a></h3>
@@ -176,7 +176,7 @@
 <td>Found reliance on default encoding in net.trajano.auth.internal.Utils.getJwsPayload(String, JsonWebKeySet): String.getBytes()</td>
 <td>I18N</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td><a href="./xref/net/trajano/auth/internal/Utils.html#L70">70</a></td>
+<td><a href="./xref/net/trajano/auth/internal/Utils.html#L71">71</a></td>
 <td>High</td></tr></table></div>
 	      </div>
 	    </article>
@@ -208,10 +208,10 @@
       <aside class="widget">
                  <h1 class="widget-title">Project Documentation</h1>
                   <ul>
-                                                                                                                                                                                                                                                                              <li class="collapsed">
+                                                                                                                                                                                                                                                            <li class="collapsed">
                           <a href="project-info.html" title="Project Information">Project Information</a>
                   </li>
-                                                                                                                                                                                                                                                    <li class="expanded">
+                                                                                                                                                                                                                                                                      <li class="expanded">
                           <a href="project-reports.html" title="Project Reports">Project Reports</a>
                     <ul>
                           <li class="none">
@@ -234,6 +234,9 @@
             </li>
                           <li class="none">
                           <a href="xref/index.html" title="Source Xref">Source Xref</a>
+            </li>
+                          <li class="none">
+                          <a href="pmd.html" title="PMD">PMD</a>
             </li>
                           <li class="none">
                           <a href="surefire-report.html" title="Surefire Report">Surefire Report</a>

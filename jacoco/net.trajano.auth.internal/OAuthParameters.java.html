@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OAuthParameters.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.internal</a> &gt; <span class="el_source">OAuthParameters.java</span></div><h1>OAuthParameters.java</h1><pre class="source lang-java linenums">package net.trajano.auth.internal;
+
+/**
+ * OAuth Parameters registry. Contains the ones defined in 11.2.2. Initial
+ * Registry Contents.
+ *
+ * @author Archimedes Trajano
+ *
+ */
+public final class OAuthParameters {
+    /**
+     * access_token.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization response, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String ACCESS_TOKEN = &quot;access_token&quot;;
+
+    /**
+     * client_id.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization request, token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String CLIENT_ID = &quot;client_id&quot;;
+    /**
+     * client_secret.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String CLIENT_SECRET = &quot;client_secret&quot;;
+    /**
+     * code.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization response, token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String CODE = &quot;code&quot;;
+    /**
+     * error_description.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization response, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String ERROR_DESCRIPTION = &quot;error_description&quot;;
+    /**
+     * error_uri.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization response, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String ERROR_URI = &quot;error_uri&quot;;
+    /**
+     * expires_in.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization response, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String EXPIRES_IN = &quot;expires_in&quot;;
+    /**
+     * grant_type.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String GRANT_TYPE = &quot;grant_type&quot;;
+    /**
+     * password.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String PASSWORD = &quot;password&quot;;
+    /**
+     * redirect_uri.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization request, token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String REDIRECT_URI = &quot;redirect_uri&quot;;
+    /**
+     * refresh_token.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: token request, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String REFRESH_TOKEN = &quot;refresh_token&quot;;
+    /**
+     * response_type.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String RESPONSE_TYPE = &quot;response_type&quot;;
+    /**
+     * scope.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization request, authorization
+     * response, token request, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String SCOPE = &quot;scope&quot;;
+    /**
+     * state.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization request, authorization
+     * response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String STATE = &quot;state&quot;;
+    /**
+     * token_type.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: authorization response, token response
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String TOKEN_TYPE = &quot;token_type&quot;;
+    /**
+     * username.
+     * &lt;ul&gt;
+     * &lt;li&gt;Parameter usage location: token request
+     * &lt;li&gt;Change controller: IETF
+     * &lt;li&gt;Specification document(s): RFC 6749
+     * &lt;/ul&gt;
+     */
+    public static final String USERNAME = &quot;username&quot;;
+
+    /**
+     * Prevent instantiation of constants class.
+     */
+<span class="nc" id="L162">    private OAuthParameters() {</span>
+
+<span class="nc" id="L164">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
