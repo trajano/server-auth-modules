@@ -45,7 +45,7 @@ public final class Base64 {
 <span class="fc" id="L45">        final byte[] buffer = new byte[decodeLength(base64String)];</span>
 <span class="fc" id="L46">        decode(base64String, buffer, 0);</span>
 <span class="fc" id="L47">        return buffer;</span>
-    };
+    }
 
     /**
      * Decodes a base64 string to a buffer.
@@ -67,9 +67,9 @@ public final class Base64 {
 <span class="fc" id="L67">                buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 2);</span>
 <span class="pc bpc" id="L68" title="1 of 4 branches missed.">            } else if (i % 4 == 1 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
 <span class="fc" id="L69">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] &gt;&gt; 4;</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">                if (offset + i - p &lt; buffer.length) {</span>
-<span class="fc" id="L71">                    buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 4);</span>
-                }
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (offset + i - p &lt; buffer.length) {</span>
+<span class="fc" id="L71">                buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 4);</span>
+            }
 <span class="pc bpc" id="L73" title="1 of 4 branches missed.">            } else if (i % 4 == 2 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
 <span class="fc" id="L74">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] &gt;&gt;&gt; 2;</span>
 <span class="fc bfc" id="L75" title="All 2 branches covered.">                if (offset + i - p &lt; buffer.length) {</span>
@@ -152,50 +152,50 @@ public final class Base64 {
 <span class="fc" id="L152">            int p0 = bytes[i] &amp; 0xFC;</span>
 <span class="fc" id="L153">            p0 &gt;&gt;= 2;</span>
 
-<span class="fc" id="L155">            int p1 = bytes[i] &amp; 0x03;</span>
-<span class="fc" id="L156">            p1 &lt;&lt;= 4;</span>
+<span class="fc" id="L155">        int p1 = bytes[i] &amp; 0x03;</span>
+<span class="fc" id="L156">        p1 &lt;&lt;= 4;</span>
 
-            int p2;
-            int p3;
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">            if (i + 1 &lt; offset + length) {</span>
-<span class="fc" id="L161">                p2 = bytes[i + 1] &amp; 0xF0;</span>
-<span class="fc" id="L162">                p2 &gt;&gt;= 4;</span>
-<span class="fc" id="L163">                p3 = bytes[i + 1] &amp; 0x0F;</span>
-<span class="fc" id="L164">                p3 &lt;&lt;= 2;</span>
-            } else {
-<span class="nc" id="L166">                p2 = 0;</span>
-<span class="nc" id="L167">                p3 = 0;</span>
-            }
-            int p4;
-            int p5;
-<span class="fc bfc" id="L171" title="All 2 branches covered.">            if (i + 2 &lt; offset + length) {</span>
-<span class="fc" id="L172">                p4 = bytes[i + 2] &amp; 0xC0;</span>
-<span class="fc" id="L173">                p4 &gt;&gt;= 6;</span>
-<span class="fc" id="L174">                p5 = bytes[i + 2] &amp; 0x3F;</span>
-            } else {
-<span class="fc" id="L176">                p4 = 0;</span>
-<span class="fc" id="L177">                p5 = 0;</span>
-            }
+        int p2;
+        int p3;
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if (i + 1 &lt; offset + length) {</span>
+<span class="fc" id="L161">            p2 = bytes[i + 1] &amp; 0xF0;</span>
+<span class="fc" id="L162">            p2 &gt;&gt;= 4;</span>
+<span class="fc" id="L163">        p3 = bytes[i + 1] &amp; 0x0F;</span>
+<span class="fc" id="L164">        p3 &lt;&lt;= 2;</span>
+        } else {
+<span class="nc" id="L166">            p2 = 0;</span>
+<span class="nc" id="L167">            p3 = 0;</span>
+        }
+        int p4;
+        int p5;
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (i + 2 &lt; offset + length) {</span>
+<span class="fc" id="L172">            p4 = bytes[i + 2] &amp; 0xC0;</span>
+<span class="fc" id="L173">            p4 &gt;&gt;= 6;</span>
+<span class="fc" id="L174">        p5 = bytes[i + 2] &amp; 0x3F;</span>
+        } else {
+<span class="fc" id="L176">            p4 = 0;</span>
+<span class="fc" id="L177">            p5 = 0;</span>
+        }
 
-<span class="fc bfc" id="L180" title="All 2 branches covered.">            if (i + 2 &lt; offset + length) {</span>
-<span class="fc" id="L181">                buffer.append(ENCODE_MAP[p0]);</span>
-<span class="fc" id="L182">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="fc" id="L183">                buffer.append(ENCODE_MAP[p3 | p4]);</span>
-<span class="fc" id="L184">                buffer.append(ENCODE_MAP[p5]);</span>
-<span class="pc bpc" id="L185" title="1 of 2 branches missed.">            } else if (i + 1 &lt; offset + length) {</span>
-<span class="fc" id="L186">                buffer.append(ENCODE_MAP[p0]);</span>
-<span class="fc" id="L187">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="fc" id="L188">                buffer.append(ENCODE_MAP[p3]);</span>
-<span class="pc bpc" id="L189" title="1 of 2 branches missed.">                if (padding) {</span>
-<span class="nc" id="L190">                    buffer.append('=');</span>
-                }
-            } else {
-<span class="nc" id="L193">                buffer.append(ENCODE_MAP[p0]);</span>
-<span class="nc" id="L194">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="nc bnc" id="L195" title="All 2 branches missed.">                if (padding) {</span>
-<span class="nc" id="L196">                    buffer.append(&quot;==&quot;);</span>
-                }
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        if (i + 2 &lt; offset + length) {</span>
+<span class="fc" id="L181">            buffer.append(ENCODE_MAP[p0]);</span>
+<span class="fc" id="L182">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
+<span class="fc" id="L183">            buffer.append(ENCODE_MAP[p3 | p4]);</span>
+<span class="fc" id="L184">            buffer.append(ENCODE_MAP[p5]);</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        } else if (i + 1 &lt; offset + length) {</span>
+<span class="fc" id="L186">            buffer.append(ENCODE_MAP[p0]);</span>
+<span class="fc" id="L187">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
+<span class="fc" id="L188">            buffer.append(ENCODE_MAP[p3]);</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">            if (padding) {</span>
+<span class="nc" id="L190">                buffer.append('=');</span>
             }
+        } else {
+<span class="nc" id="L193">            buffer.append(ENCODE_MAP[p0]);</span>
+<span class="nc" id="L194">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">            if (padding) {</span>
+<span class="nc" id="L196">                buffer.append(&quot;==&quot;);</span>
+            }
+        }
         }
 <span class="fc" id="L200">        return buffer.toString();</span>
     }

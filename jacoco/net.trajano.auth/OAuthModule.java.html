@@ -136,7 +136,7 @@ import net.trajano.auth.internal.Utils;
      * Supported message types.
      */
 <span class="fc" id="L138">    private static final Class&lt;?&gt;[] SUPPORTED_MESSAGE_TYPES = new Class&lt;?&gt;[] {</span>
-            HttpServletRequest.class, HttpServletResponse.class };
+        HttpServletRequest.class, HttpServletResponse.class };
 
     /**
      * Token URI key. The value is optional and if not specified, the token
@@ -242,7 +242,7 @@ import net.trajano.auth.internal.Utils;
     private AuthStatus doGetWithToken(final HttpServletRequest req,
             final HttpServletResponse resp, final TokenCookie tokenCookie,
             final String requestCookieContext, final Subject subject)
-            throws IOException {
+                    throws IOException {
 <span class="nc bnc" id="L246" title="All 2 branches missed.">        if (req.getRequestURI().equals(tokenUri)) {</span>
 <span class="nc" id="L247">            resp.setContentType(&quot;application/json&quot;);</span>
 <span class="nc" id="L248">            resp.getWriter().print(tokenCookie.getIdToken());</span>
@@ -339,7 +339,7 @@ import net.trajano.auth.internal.Utils;
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .header(&quot;Authorization&quot;,
                             token.getTokenType() + &quot; &quot; + token.getAccessToken())
-                    .get();
+                            .get();
 <span class="nc bnc" id="L343" title="All 2 branches missed.">            if (userInfoResponse.getStatus() == 200) {</span>
 <span class="nc" id="L344">                tokenCookie = new TokenCookie(claimsSet,</span>
                         userInfoResponse.readEntity(JsonObject.class));
@@ -411,7 +411,7 @@ import net.trajano.auth.internal.Utils;
      */
     protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(
             Client restClient, Map&lt;String, String&gt; options)
-            throws AuthException;
+                    throws AuthException;
 
     /**
      * This gets the redirection endpoint URI.
@@ -501,7 +501,7 @@ import net.trajano.auth.internal.Utils;
     protected JsonWebKeySet getWebKeys(final Client restClient,
             final Map&lt;String, String&gt; options,
             final OpenIDProviderConfiguration config)
-            throws GeneralSecurityException {
+                    throws GeneralSecurityException {
 <span class="nc" id="L505">        return new JsonWebKeySet(restClient.target(config.getJwksUri())</span>
                 .request().get(JsonObject.class));
     }
@@ -539,7 +539,7 @@ import net.trajano.auth.internal.Utils;
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings(&quot;rawtypes&quot;) final Map options)
-            throws AuthException {
+                    throws AuthException {
 <span class="fc" id="L543">        handler = h;</span>
         try {
 <span class="fc" id="L545">            moduleOptions = options;</span>
@@ -559,7 +559,7 @@ import net.trajano.auth.internal.Utils;
 <span class="fc" id="L559">                scope = &quot;openid&quot;;</span>
             }
 <span class="fc" id="L561">            clientSecret = moduleOptions.get(CLIENT_SECRET_KEY);</span>
-<span class="pc bpc" id="L562" title="1 of 2 branches missed.">            if (clientId == null) {</span>
+<span class="pc bpc" id="L562" title="1 of 2 branches missed.">            if (clientSecret == null) {</span>
 <span class="nc" id="L563">                LOG.log(Level.SEVERE, &quot;missingOption&quot;, CLIENT_SECRET_KEY);</span>
 <span class="nc" id="L564">                throw new AuthException(MessageFormat.format(</span>
                         R.getString(&quot;missingOption&quot;), CLIENT_SECRET_KEY));
@@ -612,7 +612,7 @@ import net.trajano.auth.internal.Utils;
      */
     private AuthStatus redirectToAuthorizationEndpoint(
             final HttpServletRequest req, final HttpServletResponse resp)
-            throws AuthException {
+                    throws AuthException {
 <span class="nc" id="L616">        URI authorizationEndpointUri = null;</span>
         try {
             final String state;
@@ -636,7 +636,7 @@ import net.trajano.auth.internal.Utils;
                     .queryParam(
                             STATE,
                             Base64.encodeWithoutPadding(state.getBytes(&quot;UTF-8&quot;)))
-                    .build();
+                            .build();
 <span class="nc" id="L640">            resp.sendRedirect(authorizationEndpointUri.toASCIIString());</span>
 <span class="nc" id="L641">            return AuthStatus.SEND_CONTINUE;</span>
 <span class="nc" id="L642">        } catch (final IOException e) {</span>
@@ -685,7 +685,7 @@ import net.trajano.auth.internal.Utils;
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString(&quot;sub&quot;))
                             .build().toASCIIString()),
-                    new GroupPrincipalCallback(subject, new String[] { iss }) });
+                            new GroupPrincipalCallback(subject, new String[] { iss }) });
 <span class="nc" id="L689">        } catch (final IOException | UnsupportedCallbackException e) {</span>
             // Should not happen
 <span class="nc" id="L691">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
@@ -712,7 +712,7 @@ import net.trajano.auth.internal.Utils;
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
 <span class="nc" id="L716">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
                 .getRequestMessage();
 <span class="nc bnc" id="L718" title="All 2 branches missed.">        if (!req.isSecure()) {</span>
