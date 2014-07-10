@@ -1,10 +1,22 @@
 package net.trajano.auth;
 
+import static net.trajano.auth.internal.OAuthParameters.CLIENT_ID;
+import static net.trajano.auth.internal.OAuthParameters.CLIENT_SECRET;
+import static net.trajano.auth.internal.OAuthParameters.CODE;
+import static net.trajano.auth.internal.OAuthParameters.GRANT_TYPE;
+import static net.trajano.auth.internal.OAuthParameters.REDIRECT_URI;
+import static net.trajano.auth.internal.OAuthParameters.RESPONSE_TYPE;
+import static net.trajano.auth.internal.OAuthParameters.SCOPE;
+import static net.trajano.auth.internal.OAuthParameters.STATE;
+import static net.trajano.auth.internal.Utils.isGetRequest;
+import static net.trajano.auth.internal.Utils.isHeadRequest;
+import static net.trajano.auth.internal.Utils.isIdempotentRequest;
 import static net.trajano.auth.internal.Utils.isNullOrEmpty;
 import static net.trajano.auth.internal.Utils.validateIdToken;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.security.GeneralSecurityException;
 import java.text.MessageFormat;
@@ -59,12 +71,12 @@ import net.trajano.auth.internal.Utils;
  */
 public abstract class OAuthModule implements ServerAuthModule {
     /**
-     * Client ID option key.
+     * Client ID option key and JSON key.
      */
     public static final String CLIENT_ID_KEY = "client_id";
 
     /**
-     * Client secret option key.
+     * Client secret option key and JSON key.
      */
     public static final String CLIENT_SECRET_KEY = "client_secret";
 
@@ -294,8 +306,7 @@ public abstract class OAuthModule implements ServerAuthModule {
             final HttpServletResponse resp, final String requestCookieContext,
             final Subject subject) throws GeneralSecurityException, IOException {
         if (!isCalledFromResourceOwner(req)) {
-            redirectToAuthorizationEndpoint(req, resp);
-            return AuthStatus.SEND_CONTINUE;
+            return redirectToAuthorizationEndpoint(req, resp);
         }
 
         final Client restClient = ClientBuilder.newClient();
@@ -303,7 +314,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                 restClient, moduleOptions);
         final JsonWebKeySet webKeys = getWebKeys(restClient, moduleOptions,
                 oidProviderConfig);
-        final OAuthToken token = getToken(req, oidProviderConfig);
+        final OAuthToken token = getToken(restClient, req, oidProviderConfig);
         LOG.log(Level.FINEST, "tokenValue", token);
         final JsonObject claimsSet = Json.createReader(
                 new ByteArrayInputStream(Utils.getJwsPayload(
@@ -449,21 +460,23 @@ public abstract class OAuthModule implements ServerAuthModule {
     /**
      * Sends a request to the token endpoint to get the token for the code.
      *
+     * @param restClient
+     *            REST client
      * @param req
      *            servlet request
      * @param oidProviderConfig
      *            OpenID provider config
      * @return token response
      */
-    private OAuthToken getToken(final HttpServletRequest req,
+    private OAuthToken getToken(final Client restClient,
+            final HttpServletRequest req,
             final OpenIDProviderConfiguration oidProviderConfig) {
-        final Client restClient = ClientBuilder.newClient();
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
-        requestData.putSingle("code", req.getParameter("code"));
-        requestData.putSingle("client_id", clientId);
-        requestData.putSingle("client_secret", clientSecret);
-        requestData.putSingle("grant_type", "authorization_code");
-        requestData.putSingle("redirect_uri", getRedirectionEndpointUri(req)
+        requestData.putSingle(CODE, req.getParameter("code"));
+        requestData.putSingle(CLIENT_ID, clientId);
+        requestData.putSingle(CLIENT_SECRET, clientSecret);
+        requestData.putSingle(GRANT_TYPE, "authorization_code");
+        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req)
                 .toASCIIString());
 
         return restClient.target(oidProviderConfig.getTokenEndpoint())
@@ -546,7 +559,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                 scope = "openid";
             }
             clientSecret = moduleOptions.get(CLIENT_SECRET_KEY);
-            if (clientId == null) {
+            if (clientSecret == null) {
                 LOG.log(Level.SEVERE, "missingOption", CLIENT_SECRET_KEY);
                 throw new AuthException(MessageFormat.format(
                         R.getString("missingOption"), CLIENT_SECRET_KEY));
@@ -577,48 +590,55 @@ public abstract class OAuthModule implements ServerAuthModule {
             return false;
         }
 
-        return ("GET".equals(req.getMethod()) || "HEAD".equals(req.getMethod()))
-                && !isNullOrEmpty(req.getParameter("code"))
-                && !isNullOrEmpty(req.getParameter("state"));
+        return isIdempotentRequest(req)
+                && !isNullOrEmpty(req.getParameter(CODE))
+                && !isNullOrEmpty(req.getParameter(STATE));
     }
 
     /**
      * Sends a redirect to the authorization endpoint. It sends the current
      * request URI as the state so that the user can be redirected back to the
-     * last place. However, this does not work for POST requests in those cases
-     * it will redirect back to the context root.
+     * last place. However, this does not work for non-idempotent requests such
+     * as POST in those cases it will result in a 401 error and
+     * {@link AuthStatus#SEND_FAILURE}. For idempotent requests, it will build
+     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}.
      *
      * @param req
      *            HTTP servlet request
      * @param resp
      *            HTTP servlet response
+     * @return authentication status
      * @throws AuthException
      */
-    private void redirectToAuthorizationEndpoint(final HttpServletRequest req,
-            final HttpServletResponse resp) throws AuthException {
-        final String state;
-        if (!"GET".equals(req.getMethod()) && !"HEAD".equals(req.getMethod())) {
-            state = req.getContextPath();
-        } else {
-            state = req.getRequestURI();
-        }
-        final Client restClient = ClientBuilder.newClient();
-        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
-                restClient, moduleOptions);
-        restClient.close();
+    private AuthStatus redirectToAuthorizationEndpoint(
+            final HttpServletRequest req, final HttpServletResponse resp)
+                    throws AuthException {
         URI authorizationEndpointUri = null;
         try {
+            final String state;
+            if (!isIdempotentRequest(req)) {
+                state = req.getContextPath();
+            } else {
+                resp.sendError(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        "Unable to POST when unauthorized.");
+                return AuthStatus.SEND_FAILURE;
+            }
+            final Client restClient = ClientBuilder.newClient();
+            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
+                    restClient, moduleOptions);
+            restClient.close();
             authorizationEndpointUri = UriBuilder
                     .fromUri(oidProviderConfig.getAuthorizationEndpoint())
-                    .queryParam("client_id", clientId)
-                    .queryParam("response_type", "code")
-                    .queryParam("scope", scope)
-                    .queryParam("redirect_uri", getRedirectionEndpointUri(req))
+                    .queryParam(CLIENT_ID, clientId)
+                    .queryParam(RESPONSE_TYPE, "code")
+                    .queryParam(SCOPE, scope)
+                    .queryParam(REDIRECT_URI, getRedirectionEndpointUri(req))
                     .queryParam(
-                            "state",
+                            STATE,
                             Base64.encodeWithoutPadding(state.getBytes("UTF-8")))
                             .build();
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
+            return AuthStatus.SEND_CONTINUE;
         } catch (final IOException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "sendRedirectException", new Object[] {
@@ -732,10 +752,10 @@ public abstract class OAuthModule implements ServerAuthModule {
                         requestCookieContext, client);
             }
 
-            if ("GET".equals(req.getMethod())) {
+            if (isGetRequest(req)) {
                 return doGetWithToken(req, resp, tokenCookie,
                         requestCookieContext, client);
-            } else if ("HEAD".equals(req.getMethod())) {
+            } else if (isHeadRequest(req)) {
                 return doHeadWithToken(req, resp, tokenCookie,
                         requestCookieContext, client);
             } else {

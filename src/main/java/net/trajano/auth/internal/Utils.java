@@ -7,6 +7,7 @@ import java.security.Signature;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utility methods. Normally these would be in a separate JAR file like
@@ -74,6 +75,39 @@ public final class Utils {
             }
         }
         return Base64.decode(jwtParts[1]);
+    }
+
+    /**
+     * Checks if the request uses the GET method.
+     *
+     * @param req
+     *            request
+     * @return <code>true</code> if the request uses the GET method.
+     */
+    public static boolean isGetRequest(final HttpServletRequest req) {
+        return "GET".equals(req.getMethod());
+    }
+
+    /**
+     * Checks if the request uses the HEAD method.
+     *
+     * @param req
+     *            request
+     * @return <code>true</code> if the request uses the HEAD method.
+     */
+    public static boolean isHeadRequest(final HttpServletRequest req) {
+        return "HEAD".equals(req.getMethod());
+    }
+
+    /**
+     * Checks if the request is idempotent (i.e. "GET" or "HEAD" method).
+     *
+     * @param req
+     *            request
+     * @return <code>true</code> if the request uses the GET or HEAD method.
+     */
+    public static boolean isIdempotentRequest(final HttpServletRequest req) {
+        return isGetRequest(req) || isHeadRequest(req);
     }
 
     /**
