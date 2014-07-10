@@ -45,7 +45,7 @@ public final class Base64 {
         final byte[] buffer = new byte[decodeLength(base64String)];
         decode(base64String, buffer, 0);
         return buffer;
-    };
+    }
 
     /**
      * Decodes a base64 string to a buffer.
@@ -67,9 +67,9 @@ public final class Base64 {
                 buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] << 2);
             } else if (i % 4 == 1 && offset + i - p - 1 < buffer.length) {
                 buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] >> 4;
-                if (offset + i - p < buffer.length) {
-                    buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] << 4);
-                }
+            if (offset + i - p < buffer.length) {
+                buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] << 4);
+            }
             } else if (i % 4 == 2 && offset + i - p - 1 < buffer.length) {
                 buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] >>> 2;
                 if (offset + i - p < buffer.length) {
@@ -152,50 +152,50 @@ public final class Base64 {
             int p0 = bytes[i] & 0xFC;
             p0 >>= 2;
 
-            int p1 = bytes[i] & 0x03;
-            p1 <<= 4;
+        int p1 = bytes[i] & 0x03;
+        p1 <<= 4;
 
-            int p2;
-            int p3;
-            if (i + 1 < offset + length) {
-                p2 = bytes[i + 1] & 0xF0;
-                p2 >>= 4;
-                p3 = bytes[i + 1] & 0x0F;
-                p3 <<= 2;
-            } else {
-                p2 = 0;
-                p3 = 0;
-            }
-            int p4;
-            int p5;
-            if (i + 2 < offset + length) {
-                p4 = bytes[i + 2] & 0xC0;
-                p4 >>= 6;
-                p5 = bytes[i + 2] & 0x3F;
-            } else {
-                p4 = 0;
-                p5 = 0;
-            }
+        int p2;
+        int p3;
+        if (i + 1 < offset + length) {
+            p2 = bytes[i + 1] & 0xF0;
+            p2 >>= 4;
+        p3 = bytes[i + 1] & 0x0F;
+        p3 <<= 2;
+        } else {
+            p2 = 0;
+            p3 = 0;
+        }
+        int p4;
+        int p5;
+        if (i + 2 < offset + length) {
+            p4 = bytes[i + 2] & 0xC0;
+            p4 >>= 6;
+        p5 = bytes[i + 2] & 0x3F;
+        } else {
+            p4 = 0;
+            p5 = 0;
+        }
 
-            if (i + 2 < offset + length) {
-                buffer.append(ENCODE_MAP[p0]);
-                buffer.append(ENCODE_MAP[p1 | p2]);
-                buffer.append(ENCODE_MAP[p3 | p4]);
-                buffer.append(ENCODE_MAP[p5]);
-            } else if (i + 1 < offset + length) {
-                buffer.append(ENCODE_MAP[p0]);
-                buffer.append(ENCODE_MAP[p1 | p2]);
-                buffer.append(ENCODE_MAP[p3]);
-                if (padding) {
-                    buffer.append('=');
-                }
-            } else {
-                buffer.append(ENCODE_MAP[p0]);
-                buffer.append(ENCODE_MAP[p1 | p2]);
-                if (padding) {
-                    buffer.append("==");
-                }
+        if (i + 2 < offset + length) {
+            buffer.append(ENCODE_MAP[p0]);
+            buffer.append(ENCODE_MAP[p1 | p2]);
+            buffer.append(ENCODE_MAP[p3 | p4]);
+            buffer.append(ENCODE_MAP[p5]);
+        } else if (i + 1 < offset + length) {
+            buffer.append(ENCODE_MAP[p0]);
+            buffer.append(ENCODE_MAP[p1 | p2]);
+            buffer.append(ENCODE_MAP[p3]);
+            if (padding) {
+                buffer.append('=');
             }
+        } else {
+            buffer.append(ENCODE_MAP[p0]);
+            buffer.append(ENCODE_MAP[p1 | p2]);
+            if (padding) {
+                buffer.append("==");
+            }
+        }
         }
         return buffer.toString();
     }
