@@ -244,11 +244,11 @@ public abstract class OAuthModule implements ServerAuthModule {
             final String requestCookieContext, final Subject subject)
                     throws IOException {
         if (req.getRequestURI().equals(tokenUri)) {
-            resp.setContentType("application/json");
+            resp.setContentType(MediaType.APPLICATION_JSON);
             resp.getWriter().print(tokenCookie.getIdToken());
             return AuthStatus.SEND_SUCCESS;
         } else if (req.getRequestURI().equals(userInfoUri)) {
-            resp.setContentType("application/json");
+            resp.setContentType(MediaType.APPLICATION_JSON);
             resp.getWriter().print(tokenCookie.getUserInfo());
             return AuthStatus.SEND_SUCCESS;
         } else {
@@ -278,10 +278,10 @@ public abstract class OAuthModule implements ServerAuthModule {
             final HttpServletResponse resp, final TokenCookie tokenCookie,
             final String requestCookieContext, final Subject subject) {
         if (req.getRequestURI().equals(tokenUri)) {
-            resp.setContentType("application/json");
+            resp.setContentType(MediaType.APPLICATION_JSON);
             return AuthStatus.SEND_SUCCESS;
         } else if (req.getRequestURI().equals(userInfoUri)) {
-            resp.setContentType("application/json");
+            resp.setContentType(MediaType.APPLICATION_JSON);
             return AuthStatus.SEND_SUCCESS;
         } else {
             return AuthStatus.SUCCESS;
