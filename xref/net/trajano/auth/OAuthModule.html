@@ -252,11 +252,11 @@
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>             <strong class="jxr_keyword">final</strong> String requestCookieContext, <strong class="jxr_keyword">final</strong> Subject subject)
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>                     <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>         <strong class="jxr_keyword">if</strong> (req.getRequestURI().equals(tokenUri)) {
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>             resp.setContentType(<span class="jxr_string">"application/json"</span>);
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>             resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>             resp.getWriter().print(tokenCookie.getIdToken());
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (req.getRequestURI().equals(userInfoUri)) {
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>             resp.setContentType(<span class="jxr_string">"application/json"</span>);
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>             resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>             resp.getWriter().print(tokenCookie.getUserInfo());
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         } <strong class="jxr_keyword">else</strong> {
@@ -286,10 +286,10 @@
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>             <strong class="jxr_keyword">final</strong> HttpServletResponse resp, <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/TokenCookie.html">TokenCookie</a> tokenCookie,
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>             <strong class="jxr_keyword">final</strong> String requestCookieContext, <strong class="jxr_keyword">final</strong> Subject subject) {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         <strong class="jxr_keyword">if</strong> (req.getRequestURI().equals(tokenUri)) {
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>             resp.setContentType(<span class="jxr_string">"application/json"</span>);
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>             resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (req.getRequestURI().equals(userInfoUri)) {
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>             resp.setContentType(<span class="jxr_string">"application/json"</span>);
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>             resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SUCCESS;

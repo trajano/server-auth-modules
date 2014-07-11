@@ -244,11 +244,11 @@ import net.trajano.auth.internal.Utils;
             final String requestCookieContext, final Subject subject)
                     throws IOException {
 <span class="nc bnc" id="L246" title="All 2 branches missed.">        if (req.getRequestURI().equals(tokenUri)) {</span>
-<span class="nc" id="L247">            resp.setContentType(&quot;application/json&quot;);</span>
+<span class="nc" id="L247">            resp.setContentType(MediaType.APPLICATION_JSON);</span>
 <span class="nc" id="L248">            resp.getWriter().print(tokenCookie.getIdToken());</span>
 <span class="nc" id="L249">            return AuthStatus.SEND_SUCCESS;</span>
 <span class="nc bnc" id="L250" title="All 2 branches missed.">        } else if (req.getRequestURI().equals(userInfoUri)) {</span>
-<span class="nc" id="L251">            resp.setContentType(&quot;application/json&quot;);</span>
+<span class="nc" id="L251">            resp.setContentType(MediaType.APPLICATION_JSON);</span>
 <span class="nc" id="L252">            resp.getWriter().print(tokenCookie.getUserInfo());</span>
 <span class="nc" id="L253">            return AuthStatus.SEND_SUCCESS;</span>
         } else {
@@ -278,10 +278,10 @@ import net.trajano.auth.internal.Utils;
             final HttpServletResponse resp, final TokenCookie tokenCookie,
             final String requestCookieContext, final Subject subject) {
 <span class="nc bnc" id="L280" title="All 2 branches missed.">        if (req.getRequestURI().equals(tokenUri)) {</span>
-<span class="nc" id="L281">            resp.setContentType(&quot;application/json&quot;);</span>
+<span class="nc" id="L281">            resp.setContentType(MediaType.APPLICATION_JSON);</span>
 <span class="nc" id="L282">            return AuthStatus.SEND_SUCCESS;</span>
 <span class="nc bnc" id="L283" title="All 2 branches missed.">        } else if (req.getRequestURI().equals(userInfoUri)) {</span>
-<span class="nc" id="L284">            resp.setContentType(&quot;application/json&quot;);</span>
+<span class="nc" id="L284">            resp.setContentType(MediaType.APPLICATION_JSON);</span>
 <span class="nc" id="L285">            return AuthStatus.SEND_SUCCESS;</span>
         } else {
 <span class="nc" id="L287">            return AuthStatus.SUCCESS;</span>
