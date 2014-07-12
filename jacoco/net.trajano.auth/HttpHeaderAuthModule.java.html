@@ -53,22 +53,14 @@ import javax.servlet.http.HttpServletResponse;
     private static final ResourceBundle R;
 
     /**
-     * Supported message types. For our case we only need to deal with HTTP
-     * servlet request and responses. On Java EE 7 this will handle WebSockets
-     * as well.
-     */
-<span class="nc" id="L60">    private static final Class&lt;?&gt;[] SUPPORTED_MESSAGE_TYPES = new Class&lt;?&gt;[] {</span>
-        HttpServletRequest.class, HttpServletResponse.class };
-
-    /**
      * User Name Header option key.
      */
     private static final String USERNAME_HEADER_KEY = &quot;username_header&quot;;
 
     static {
-<span class="nc" id="L69">        LOG = Logger.getLogger(&quot;net.trajano.auth.httpheadersam&quot;, MESSAGES);</span>
-<span class="nc" id="L70">        R = ResourceBundle.getBundle(MESSAGES);</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L61">        LOG = Logger.getLogger(&quot;net.trajano.auth.httpheadersam&quot;, MESSAGES);</span>
+<span class="nc" id="L62">        R = ResourceBundle.getBundle(MESSAGES);</span>
+<span class="nc" id="L63">    }</span>
 
     /**
      * Group header option.
@@ -98,19 +90,26 @@ import javax.servlet.http.HttpServletResponse;
     public void cleanSubject(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
         // Does nothing.
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L93">    }</span>
 
     /**
-     * {@inheritDoc}
      * &lt;p&gt;
-     * The array it returns contains immutable data so it is secure and faster
-     * to return the internal array.
+     * Supported message types. For our case we only need to deal with HTTP
+     * servlet request and responses. On Java EE 7 this will handle WebSockets
+     * as well.
      * &lt;/p&gt;
+     * &lt;p&gt;
+     * This creates a new array for security at the expense of performance.
+     * &lt;/p&gt;
+     *
+     * @return {@link HttpServletRequest} and {@link HttpServletResponse}
+     *         classes.
      */
     @SuppressWarnings(&quot;rawtypes&quot;)
     @Override
     public Class[] getSupportedMessageTypes() {
-<span class="nc" id="L113">        return SUPPORTED_MESSAGE_TYPES; // NOPMD</span>
+<span class="nc" id="L111">        return new Class&lt;?&gt;[] { HttpServletRequest.class,</span>
+                HttpServletResponse.class };
     }
 
     /**
@@ -122,17 +121,17 @@ import javax.servlet.http.HttpServletResponse;
      * @return array of groups.
      */
     private String[] groups(final HttpServletRequest req) {
-<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (groupHeader == null) {</span>
-<span class="nc" id="L126">            return new String[] { &quot;users&quot; };</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (groupHeader == null) {</span>
+<span class="nc" id="L125">            return new String[] { &quot;users&quot; };</span>
         }
-<span class="nc" id="L128">        final List&lt;String&gt; groupList = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L129">        final Enumeration&lt;String&gt; groupHeaders = req.getHeaders(groupHeader);</span>
-<span class="nc bnc" id="L130" title="All 2 branches missed.">        while (groupHeaders.hasMoreElements()) {</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">            for (final String groupName : groupHeaders.nextElement().split(&quot;,&quot;)) {</span>
-<span class="nc" id="L132">                groupList.add(groupName.trim());</span>
+<span class="nc" id="L127">        final List&lt;String&gt; groupList = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L128">        final Enumeration&lt;String&gt; groupHeaders = req.getHeaders(groupHeader);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        while (groupHeaders.hasMoreElements()) {</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">            for (final String groupName : groupHeaders.nextElement().split(&quot;,&quot;)) {</span>
+<span class="nc" id="L131">                groupList.add(groupName.trim());</span>
             }
         }
-<span class="nc" id="L135">        return groupList.toArray(new String[0]);</span>
+<span class="nc" id="L134">        return groupList.toArray(new String[0]);</span>
     }
 
     /**
@@ -151,17 +150,17 @@ import javax.servlet.http.HttpServletResponse;
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings(&quot;rawtypes&quot;) final Map options)
-                    throws AuthException {
-<span class="nc" id="L155">        handler = h;</span>
+            throws AuthException {
+<span class="nc" id="L154">        handler = h;</span>
 
-<span class="nc" id="L157">        userNameHeader = (String) options.get(USERNAME_HEADER_KEY);</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (userNameHeader == null) {</span>
-<span class="nc" id="L159">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, USERNAME_HEADER_KEY);</span>
-<span class="nc" id="L160">            throw new AuthException(MessageFormat.format(</span>
+<span class="nc" id="L156">        userNameHeader = (String) options.get(USERNAME_HEADER_KEY);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (userNameHeader == null) {</span>
+<span class="nc" id="L158">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, USERNAME_HEADER_KEY);</span>
+<span class="nc" id="L159">            throw new AuthException(MessageFormat.format(</span>
                     R.getString(&quot;missingOption&quot;), USERNAME_HEADER_KEY));
         }
-<span class="nc" id="L163">        groupHeader = (String) options.get(GROUP_HEADER_KEY);</span>
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L162">        groupHeader = (String) options.get(GROUP_HEADER_KEY);</span>
+<span class="nc" id="L163">    }</span>
 
     /**
      * Return {@link AuthStatus#SEND_SUCCESS}.
@@ -177,7 +176,7 @@ import javax.servlet.http.HttpServletResponse;
     @Override
     public AuthStatus secureResponse(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
-<span class="nc" id="L180">        return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L179">        return AuthStatus.SEND_SUCCESS;</span>
     }
 
     /**
@@ -186,24 +185,24 @@ import javax.servlet.http.HttpServletResponse;
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-                    throws AuthException {
-<span class="nc" id="L190">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
+            throws AuthException {
+<span class="nc" id="L189">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
                 .getRequestMessage();
         try {
-<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (!req.isSecure()) {</span>
-<span class="nc" id="L194">                return AuthStatus.FAILURE;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">            if (!req.isSecure()) {</span>
+<span class="nc" id="L193">                return AuthStatus.FAILURE;</span>
             }
-<span class="nc" id="L196">            final String userName = req.getHeader(userNameHeader);</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">            if (userName == null) {</span>
-<span class="nc" id="L198">                return AuthStatus.FAILURE;</span>
+<span class="nc" id="L195">            final String userName = req.getHeader(userNameHeader);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (userName == null) {</span>
+<span class="nc" id="L197">                return AuthStatus.FAILURE;</span>
             }
 
-<span class="nc" id="L201">            handler.handle(new Callback[] {</span>
+<span class="nc" id="L200">            handler.handle(new Callback[] {</span>
                     new CallerPrincipalCallback(client, userName),
                     new GroupPrincipalCallback(client, groups(req)) });
-<span class="nc" id="L204">            return AuthStatus.SUCCESS;</span>
-<span class="nc" id="L205">        } catch (final IOException | UnsupportedCallbackException e) {</span>
-<span class="nc" id="L206">            throw new AuthException(e.getMessage());</span>
+<span class="nc" id="L203">            return AuthStatus.SUCCESS;</span>
+<span class="nc" id="L204">        } catch (final IOException | UnsupportedCallbackException e) {</span>
+<span class="nc" id="L205">            throw new AuthException(e.getMessage());</span>
         }
     }
 
