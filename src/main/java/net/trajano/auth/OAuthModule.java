@@ -213,6 +213,41 @@ public abstract class OAuthModule implements ServerAuthModule {
     @Override
     public void cleanSubject(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
+        // Does nothing.
+    }
+
+    /**
+     * Processes the token cookie and dispatches to the appropriate handler.
+     *
+     * @param subject
+     *            subject
+     * @param req
+     *            servlet request
+     * @param resp
+     *            servlet response
+     * @param requestCookieContext
+     *            request cookie context
+     * @return auth status
+     * @throws Exception
+     */
+    private AuthStatus dispatch(final Subject subject,
+            final HttpServletRequest req, final HttpServletResponse resp,
+            final String requestCookieContext) throws Exception {
+        final TokenCookie tokenCookie = processTokenCookie(subject, req);
+        if (tokenCookie == null || tokenCookie.isExpired()) {
+            return doUnauthenticatedOperation(req, resp, requestCookieContext,
+                    subject);
+        }
+
+        if (isGetRequest(req)) {
+            return doGetWithToken(req, resp, tokenCookie, requestCookieContext,
+                    subject);
+        } else if (isHeadRequest(req)) {
+            return doHeadWithToken(req, resp, tokenCookie,
+                    requestCookieContext, subject);
+        } else {
+            return AuthStatus.SUCCESS;
+        }
     }
 
     /**
@@ -596,6 +631,41 @@ public abstract class OAuthModule implements ServerAuthModule {
     }
 
     /**
+     * Builds the token cookie and updates the subject principal and sets the
+     * user info attribute in the request. Any exceptions or validation problems
+     * during validation will make this return <code>null</code> to indicate
+     * that there was no valid token.
+     *
+     * @param subject
+     *            subject
+     * @param req
+     *            servlet request
+     * @return token cookie.
+     */
+    private TokenCookie processTokenCookie(final Subject subject,
+            final HttpServletRequest req) {
+        final String idToken = getIdToken(req);
+        TokenCookie tokenCookie = null;
+        if (idToken != null) {
+            try {
+                tokenCookie = new TokenCookie(idToken, clientId, clientSecret);
+                validateIdToken(clientId, tokenCookie.getIdToken());
+                updateSubjectPrincipal(subject, tokenCookie.getIdToken());
+
+                if (tokenCookie.getUserInfo() != null) {
+                    req.setAttribute(NET_TRAJANO_AUTH_USERINFO,
+                            tokenCookie.getUserInfo());
+                }
+
+            } catch (final GeneralSecurityException e) {
+                LOG.log(Level.FINE, "invalidToken", e.getMessage());
+                LOG.throwing(this.getClass().getName(), "validateRequest", e);
+            }
+        }
+        return tokenCookie;
+    }
+
+    /**
      * Sends a redirect to the authorization endpoint. It sends the current
      * request URI as the state so that the user can be redirected back to the
      * last place. However, this does not work for non-idempotent requests such
@@ -728,47 +798,18 @@ public abstract class OAuthModule implements ServerAuthModule {
             requestCookieContext = cookieContext;
         }
 
-        final String idToken = getIdToken(req);
-        TokenCookie tokenCookie = null;
-        if (idToken != null) {
-            try {
-                tokenCookie = new TokenCookie(idToken, clientId, clientSecret);
-                validateIdToken(clientId, tokenCookie.getIdToken());
-                updateSubjectPrincipal(client, tokenCookie.getIdToken());
-
-                if (tokenCookie.getUserInfo() != null) {
-                    req.setAttribute(NET_TRAJANO_AUTH_USERINFO,
-                            tokenCookie.getUserInfo());
-                }
-
-            } catch (final IOException | GeneralSecurityException e) {
-                LOG.log(Level.FINE, "invalidToken", e.getMessage());
-            }
-        }
-
         try {
-            if (tokenCookie == null || tokenCookie.isExpired()) {
-                return doUnauthenticatedOperation(req, resp,
-                        requestCookieContext, client);
-            }
-
-            if (isGetRequest(req)) {
-                return doGetWithToken(req, resp, tokenCookie,
-                        requestCookieContext, client);
-            } else if (isHeadRequest(req)) {
-                return doHeadWithToken(req, resp, tokenCookie,
-                        requestCookieContext, client);
-            } else {
-                return AuthStatus.SUCCESS;
-            }
+            return dispatch(client, req, resp, requestCookieContext);
         } catch (final GeneralSecurityException e) {
             // Lower level as this may occur due to invalid or expired
             // tokens.
             LOG.log(Level.FINE, "validationWarning", e.getMessage());
+            LOG.throwing(this.getClass().getName(), "validateRequest", e);
             return AuthStatus.FAILURE;
         } catch (final Exception e) {
             // Should not happen
-            LOG.log(Level.WARNING, "validationException", e);
+            LOG.log(Level.WARNING, "validationException", e.getMessage());
+            LOG.throwing(this.getClass().getName(), "validateRequest", e);
             throw new AuthException(MessageFormat.format(
                     R.getString("validationException"), e.getMessage()));
         }
