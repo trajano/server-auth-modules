@@ -58,7 +58,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
      * as well.
      */
     private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-            HttpServletRequest.class, HttpServletResponse.class };
+        HttpServletRequest.class, HttpServletResponse.class };
 
     /**
      * User Name Header option key.
@@ -97,6 +97,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     @Override
     public void cleanSubject(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
+        // Does nothing.
     }
 
     /**
@@ -150,7 +151,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-            throws AuthException {
+                    throws AuthException {
         handler = h;
 
         userNameHeader = (String) options.get(USERNAME_HEADER_KEY);
@@ -185,7 +186,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         try {
