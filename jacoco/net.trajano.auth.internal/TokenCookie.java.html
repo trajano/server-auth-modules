@@ -95,32 +95,34 @@ public class TokenCookie {
      *            client ID (used for creating the {@link SecretKey})
      * @param clientSecret
      *            client secret (used for creating the {@link SecretKey})
-     * @throws IOException
      * @throws GeneralSecurityException
      */
     public TokenCookie(final String cookieValue, final String clientId,
-            final String clientSecret) throws IOException,
-<span class="fc" id="L103">            GeneralSecurityException {</span>
-<span class="fc" id="L104">        final String[] cookieValues = cookieValue.split(&quot;\\.&quot;);</span>
-<span class="fc" id="L105">        final SecretKey secret = buildSecretKey(clientId, clientSecret);</span>
-<span class="fc" id="L106">        final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
-<span class="fc" id="L107">        cipher.init(Cipher.DECRYPT_MODE, secret);</span>
+<span class="fc" id="L101">            final String clientSecret) throws GeneralSecurityException {</span>
+<span class="fc" id="L102">        final String[] cookieValues = cookieValue.split(&quot;\\.&quot;);</span>
+<span class="fc" id="L103">        final SecretKey secret = buildSecretKey(clientId, clientSecret);</span>
+<span class="fc" id="L104">        final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
+<span class="fc" id="L105">        cipher.init(Cipher.DECRYPT_MODE, secret);</span>
 
-<span class="fc" id="L109">        idToken = Json.createReader(</span>
-                new GZIPInputStream(
-                        new CipherInputStream(new ByteArrayInputStream(Base64
-                                .decode(cookieValues[0])), cipher)))
-                .readObject();
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (cookieValues.length == 1) {</span>
-<span class="nc" id="L115">            userInfo = null;</span>
-        } else {
-<span class="fc" id="L117">            userInfo = Json.createReader(</span>
+        try {
+<span class="fc" id="L108">            idToken = Json.createReader(</span>
                     new GZIPInputStream(new CipherInputStream(
                             new ByteArrayInputStream(Base64
-                                    .decode(cookieValues[1])), cipher)))
+                                    .decode(cookieValues[0])), cipher)))
                     .readObject();
-        }
-<span class="fc" id="L123">    }</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">            if (cookieValues.length == 1) {</span>
+<span class="nc" id="L114">                userInfo = null;</span>
+            } else {
+<span class="fc" id="L116">                userInfo = Json.createReader(</span>
+                        new GZIPInputStream(new CipherInputStream(
+                                new ByteArrayInputStream(Base64
+                                        .decode(cookieValues[1])), cipher)))
+                        .readObject();
+            }
+<span class="nc" id="L122">        } catch (final IOException e) {</span>
+<span class="nc" id="L123">                throw new GeneralSecurityException(e);</span>
+<span class="fc" id="L124">            }</span>
+<span class="fc" id="L125">    }</span>
 
     /**
      * Encodes the JSON object to a Base64 string.
@@ -135,22 +137,22 @@ public class TokenCookie {
     private String encode(final JsonObject jsonObject, final SecretKey secret)
             throws GeneralSecurityException {
         try {
-<span class="fc" id="L138">            final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
-<span class="fc" id="L139">            cipher.init(Cipher.ENCRYPT_MODE, secret);</span>
+<span class="fc" id="L140">            final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
+<span class="fc" id="L141">            cipher.init(Cipher.ENCRYPT_MODE, secret);</span>
 
-<span class="fc" id="L141">            final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
-<span class="fc" id="L142">            final OutputStream zos = new GZIPOutputStream(</span>
+<span class="fc" id="L143">            final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
+<span class="fc" id="L144">            final OutputStream zos = new GZIPOutputStream(</span>
                     new CipherOutputStream(baos, cipher));
-<span class="fc" id="L144">            zos.write(jsonObject.toString().getBytes(&quot;UTF-8&quot;));</span>
-<span class="fc" id="L145">            zos.close();</span>
-<span class="fc" id="L146">            return Base64.encodeWithoutPadding(baos.toByteArray());</span>
-<span class="nc" id="L147">        } catch (final IOException e) {</span>
-<span class="nc" id="L148">            throw new GeneralSecurityException(e);</span>
+<span class="fc" id="L146">            zos.write(jsonObject.toString().getBytes(&quot;UTF-8&quot;));</span>
+<span class="fc" id="L147">            zos.close();</span>
+<span class="fc" id="L148">            return Base64.encodeWithoutPadding(baos.toByteArray());</span>
+<span class="nc" id="L149">        } catch (final IOException e) {</span>
+<span class="nc" id="L150">            throw new GeneralSecurityException(e);</span>
         }
     }
 
     public JsonObject getIdToken() {
-<span class="nc" id="L153">        return idToken;</span>
+<span class="nc" id="L155">        return idToken;</span>
     }
 
     /**
@@ -159,16 +161,16 @@ public class TokenCookie {
      * @return maximum age of the token
      */
     public int getMaxAge() {
-<span class="nc" id="L162">        return idToken.getInt(&quot;exp&quot;)</span>
+<span class="nc" id="L164">        return idToken.getInt(&quot;exp&quot;)</span>
                 - (int) (System.currentTimeMillis() / 1000);
     }
 
     public JsonObject getUserInfo() {
-<span class="fc" id="L167">        return userInfo;</span>
+<span class="fc" id="L169">        return userInfo;</span>
     }
 
     public boolean isExpired() {
-<span class="nc bnc" id="L171" title="All 2 branches missed.">        return idToken.getInt(&quot;exp&quot;) &lt; System.currentTimeMillis() / 1000;</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        return idToken.getInt(&quot;exp&quot;) &lt; System.currentTimeMillis() / 1000;</span>
     }
 
     /**
@@ -183,13 +185,13 @@ public class TokenCookie {
      */
     public String toCookieValue(final String clientId, final String clientSecret)
             throws GeneralSecurityException {
-<span class="fc" id="L186">        final SecretKey secret = buildSecretKey(clientId, clientSecret);</span>
-<span class="fc" id="L187">        final StringBuilder b = new StringBuilder(encode(idToken, secret));</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        if (userInfo != null) {</span>
-<span class="fc" id="L189">            b.append('.');</span>
-<span class="fc" id="L190">            b.append(encode(userInfo, secret));</span>
+<span class="fc" id="L188">        final SecretKey secret = buildSecretKey(clientId, clientSecret);</span>
+<span class="fc" id="L189">        final StringBuilder b = new StringBuilder(encode(idToken, secret));</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        if (userInfo != null) {</span>
+<span class="fc" id="L191">            b.append('.');</span>
+<span class="fc" id="L192">            b.append(encode(userInfo, secret));</span>
         }
-<span class="fc" id="L192">        return b.toString();</span>
+<span class="fc" id="L194">        return b.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -279,7 +279,7 @@
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>     <strong class="jxr_keyword">private</strong> AuthStatus doGetWithToken(<strong class="jxr_keyword">final</strong> HttpServletRequest req,
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>             <strong class="jxr_keyword">final</strong> HttpServletResponse resp, <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/TokenCookie.html">TokenCookie</a> tokenCookie,
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>             <strong class="jxr_keyword">final</strong> String requestCookieContext, <strong class="jxr_keyword">final</strong> Subject subject)
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>             <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>                     <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>         <strong class="jxr_keyword">if</strong> (req.getRequestURI().equals(tokenUri)) {
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>             resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>             resp.getWriter().print(tokenCookie.getIdToken());
@@ -376,7 +376,7 @@
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>                     .request(MediaType.APPLICATION_JSON_TYPE)
 <a class="jxr_linenumber" name="L369" href="#L369">369</a>                     .header(<span class="jxr_string">"Authorization"</span>,
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>                             token.getTokenType() + <span class="jxr_string">" "</span> + token.getAccessToken())
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>                     .get();
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>                             .get();
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>             <strong class="jxr_keyword">if</strong> (userInfoResponse.getStatus() == 200) {
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>                 tokenCookie = <strong class="jxr_keyword">new</strong> <a href="../../../net/trajano/auth/internal/TokenCookie.html">TokenCookie</a>(claimsSet,
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>                         userInfoResponse.readEntity(JsonObject.<strong class="jxr_keyword">class</strong>));
@@ -448,7 +448,7 @@
 <a class="jxr_linenumber" name="L440" href="#L440">440</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <a href="../../../net/trajano/auth/internal/OpenIDProviderConfiguration.html">OpenIDProviderConfiguration</a> getOpenIDProviderConfig(
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>             Client restClient, Map&lt;String, String&gt; options)
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>             <strong class="jxr_keyword">throws</strong> AuthException;
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>                     <strong class="jxr_keyword">throws</strong> AuthException;
 <a class="jxr_linenumber" name="L444" href="#L444">444</a> 
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">     * This gets the redirection endpoint URI.</em>
@@ -544,7 +544,7 @@
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>     <strong class="jxr_keyword">protected</strong> <a href="../../../net/trajano/auth/internal/JsonWebKeySet.html">JsonWebKeySet</a> getWebKeys(<strong class="jxr_keyword">final</strong> Client restClient,
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>             <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; options,
 <a class="jxr_linenumber" name="L538" href="#L538">538</a>             <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/OpenIDProviderConfiguration.html">OpenIDProviderConfiguration</a> config)
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>             <strong class="jxr_keyword">throws</strong> GeneralSecurityException {
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>                     <strong class="jxr_keyword">throws</strong> GeneralSecurityException {
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../net/trajano/auth/internal/JsonWebKeySet.html">JsonWebKeySet</a>(restClient.target(config.getJwksUri())
 <a class="jxr_linenumber" name="L541" href="#L541">541</a>                 .request().get(JsonObject.<strong class="jxr_keyword">class</strong>));
 <a class="jxr_linenumber" name="L542" href="#L542">542</a>     }
@@ -582,7 +582,7 @@
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> initialize(<strong class="jxr_keyword">final</strong> MessagePolicy requestPolicy,
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>             <strong class="jxr_keyword">final</strong> MessagePolicy responsePolicy, <strong class="jxr_keyword">final</strong> CallbackHandler h,
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>             @SuppressWarnings(<span class="jxr_string">"rawtypes"</span>) <strong class="jxr_keyword">final</strong> Map options)
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>             <strong class="jxr_keyword">throws</strong> AuthException {
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>                     <strong class="jxr_keyword">throws</strong> AuthException {
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>         handler = h;
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>             moduleOptions = options;
@@ -665,7 +665,7 @@
 <a class="jxr_linenumber" name="L657" href="#L657">657</a>                             tokenCookie.getUserInfo());
 <a class="jxr_linenumber" name="L658" href="#L658">658</a>                 }
 <a class="jxr_linenumber" name="L659" href="#L659">659</a> 
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>             } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException | GeneralSecurityException e) {
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>             } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> GeneralSecurityException e) {
 <a class="jxr_linenumber" name="L661" href="#L661">661</a>                 LOG.log(Level.FINE, <span class="jxr_string">"invalidToken"</span>, e.getMessage());
 <a class="jxr_linenumber" name="L662" href="#L662">662</a>                 LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass().getName(), <span class="jxr_string">"validateRequest"</span>, e);
 <a class="jxr_linenumber" name="L663" href="#L663">663</a>             }
@@ -690,7 +690,7 @@
 <a class="jxr_linenumber" name="L682" href="#L682">682</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L683" href="#L683">683</a>     <strong class="jxr_keyword">private</strong> AuthStatus redirectToAuthorizationEndpoint(
 <a class="jxr_linenumber" name="L684" href="#L684">684</a>             <strong class="jxr_keyword">final</strong> HttpServletRequest req, <strong class="jxr_keyword">final</strong> HttpServletResponse resp)
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>             <strong class="jxr_keyword">throws</strong> AuthException {
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>                     <strong class="jxr_keyword">throws</strong> AuthException {
 <a class="jxr_linenumber" name="L686" href="#L686">686</a>         URI authorizationEndpointUri = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L687" href="#L687">687</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L688" href="#L688">688</a>             <strong class="jxr_keyword">final</strong> String state;
@@ -714,7 +714,7 @@
 <a class="jxr_linenumber" name="L706" href="#L706">706</a>                     .queryParam(
 <a class="jxr_linenumber" name="L707" href="#L707">707</a>                             STATE,
 <a class="jxr_linenumber" name="L708" href="#L708">708</a>                             Base64.encodeWithoutPadding(state.getBytes(<span class="jxr_string">"UTF-8"</span>)))
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>                     .build();
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>                             .build();
 <a class="jxr_linenumber" name="L710" href="#L710">710</a>             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
 <a class="jxr_linenumber" name="L711" href="#L711">711</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_CONTINUE;
 <a class="jxr_linenumber" name="L712" href="#L712">712</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
@@ -763,7 +763,7 @@
 <a class="jxr_linenumber" name="L755" href="#L755">755</a>                     <strong class="jxr_keyword">new</strong> CallerPrincipalCallback(subject, UriBuilder
 <a class="jxr_linenumber" name="L756" href="#L756">756</a>                             .fromUri(iss).userInfo(jwtPayload.getString(<span class="jxr_string">"sub"</span>))
 <a class="jxr_linenumber" name="L757" href="#L757">757</a>                             .build().toASCIIString()),
-<a class="jxr_linenumber" name="L758" href="#L758">758</a>                     <strong class="jxr_keyword">new</strong> GroupPrincipalCallback(subject, <strong class="jxr_keyword">new</strong> String[] { iss }) });
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>                             <strong class="jxr_keyword">new</strong> GroupPrincipalCallback(subject, <strong class="jxr_keyword">new</strong> String[] { iss }) });
 <a class="jxr_linenumber" name="L759" href="#L759">759</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException | UnsupportedCallbackException e) {
 <a class="jxr_linenumber" name="L760" href="#L760">760</a>             <em class="jxr_comment">// Should not happen</em>
 <a class="jxr_linenumber" name="L761" href="#L761">761</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"updatePrincipalException"</span>, e.getMessage());
@@ -790,7 +790,7 @@
 <a class="jxr_linenumber" name="L782" href="#L782">782</a>     @Override
 <a class="jxr_linenumber" name="L783" href="#L783">783</a>     <strong class="jxr_keyword">public</strong> AuthStatus validateRequest(<strong class="jxr_keyword">final</strong> MessageInfo messageInfo,
 <a class="jxr_linenumber" name="L784" href="#L784">784</a>             <strong class="jxr_keyword">final</strong> Subject client, <strong class="jxr_keyword">final</strong> Subject serviceSubject)
-<a class="jxr_linenumber" name="L785" href="#L785">785</a>             <strong class="jxr_keyword">throws</strong> AuthException {
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>                     <strong class="jxr_keyword">throws</strong> AuthException {
 <a class="jxr_linenumber" name="L786" href="#L786">786</a>         <strong class="jxr_keyword">final</strong> HttpServletRequest req = (HttpServletRequest) messageInfo
 <a class="jxr_linenumber" name="L787" href="#L787">787</a>                 .getRequestMessage();
 <a class="jxr_linenumber" name="L788" href="#L788">788</a>         <strong class="jxr_keyword">if</strong> (!req.isSecure()) {
