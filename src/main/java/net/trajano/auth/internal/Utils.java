@@ -100,17 +100,6 @@ public final class Utils {
     }
 
     /**
-     * Checks if the request is idempotent (i.e. "GET" or "HEAD" method).
-     *
-     * @param req
-     *            request
-     * @return <code>true</code> if the request uses the GET or HEAD method.
-     */
-    public static boolean isIdempotentRequest(final HttpServletRequest req) {
-        return isGetRequest(req) || isHeadRequest(req);
-    }
-
-    /**
      * Checks if string is null or empty.
      *
      * @param s
@@ -119,6 +108,17 @@ public final class Utils {
      */
     public static boolean isNullOrEmpty(final String s) {
         return s == null || s.trim().length() == 0;
+    }
+
+    /**
+     * Checks if the request is to retrieve data (i.e. "GET" or "HEAD" method).
+     *
+     * @param req
+     *            request
+     * @return <code>true</code> if the request uses the GET or HEAD method.
+     */
+    public static boolean isRetrievalRequest(final HttpServletRequest req) {
+        return isGetRequest(req) || isHeadRequest(req);
     }
 
     /**

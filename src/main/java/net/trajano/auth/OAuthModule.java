@@ -10,7 +10,7 @@ import static net.trajano.auth.internal.OAuthParameters.SCOPE;
 import static net.trajano.auth.internal.OAuthParameters.STATE;
 import static net.trajano.auth.internal.Utils.isGetRequest;
 import static net.trajano.auth.internal.Utils.isHeadRequest;
-import static net.trajano.auth.internal.Utils.isIdempotentRequest;
+import static net.trajano.auth.internal.Utils.isRetrievalRequest;
 import static net.trajano.auth.internal.Utils.isNullOrEmpty;
 import static net.trajano.auth.internal.Utils.validateIdToken;
 
@@ -625,7 +625,7 @@ public abstract class OAuthModule implements ServerAuthModule {
             return false;
         }
 
-        return isIdempotentRequest(req)
+        return isRetrievalRequest(req)
                 && !isNullOrEmpty(req.getParameter(CODE))
                 && !isNullOrEmpty(req.getParameter(STATE));
     }
@@ -686,7 +686,7 @@ public abstract class OAuthModule implements ServerAuthModule {
         URI authorizationEndpointUri = null;
         try {
             final String state;
-            if (!isIdempotentRequest(req)) {
+            if (!isRetrievalRequest(req)) {
                 state = req.getContextPath();
             } else {
                 resp.sendError(HttpURLConnection.HTTP_UNAUTHORIZED,
