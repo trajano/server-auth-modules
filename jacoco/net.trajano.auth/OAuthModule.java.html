@@ -10,8 +10,8 @@ import static net.trajano.auth.internal.OAuthParameters.SCOPE;
 import static net.trajano.auth.internal.OAuthParameters.STATE;
 import static net.trajano.auth.internal.Utils.isGetRequest;
 import static net.trajano.auth.internal.Utils.isHeadRequest;
-import static net.trajano.auth.internal.Utils.isRetrievalRequest;
 import static net.trajano.auth.internal.Utils.isNullOrEmpty;
+import static net.trajano.auth.internal.Utils.isRetrievalRequest;
 import static net.trajano.auth.internal.Utils.validateIdToken;
 
 import java.io.ByteArrayInputStream;
@@ -713,7 +713,9 @@ import net.trajano.auth.internal.Utils;
             // Should not happen
 <span class="nc" id="L714">            LOG.log(Level.SEVERE, &quot;sendRedirectException&quot;, new Object[] {</span>
                     authorizationEndpointUri, e.getMessage() });
-<span class="nc" id="L716">            throw new AuthException(MessageFormat.format(</span>
+<span class="nc" id="L716">            LOG.throwing(this.getClass().getName(),</span>
+                    &quot;redirectToAuthorizationEndpoint&quot;, e);
+<span class="nc" id="L718">            throw new AuthException(MessageFormat.format(</span>
                     R.getString(&quot;sendRedirectException&quot;),
                     authorizationEndpointUri, e.getMessage()));
         }
@@ -733,7 +735,7 @@ import net.trajano.auth.internal.Utils;
     @Override
     public AuthStatus secureResponse(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
-<span class="nc" id="L736">        return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L738">        return AuthStatus.SEND_SUCCESS;</span>
     }
 
     /**
@@ -750,19 +752,20 @@ import net.trajano.auth.internal.Utils;
     private void updateSubjectPrincipal(final Subject subject,
             final JsonObject jwtPayload) throws GeneralSecurityException {
         try {
-<span class="nc" id="L753">            final String iss = googleWorkaround(jwtPayload.getString(&quot;iss&quot;));</span>
-<span class="nc" id="L754">            handler.handle(new Callback[] {</span>
+<span class="nc" id="L755">            final String iss = googleWorkaround(jwtPayload.getString(&quot;iss&quot;));</span>
+<span class="nc" id="L756">            handler.handle(new Callback[] {</span>
                     new CallerPrincipalCallback(subject, UriBuilder
                             .fromUri(iss).userInfo(jwtPayload.getString(&quot;sub&quot;))
                             .build().toASCIIString()),
                             new GroupPrincipalCallback(subject, new String[] { iss }) });
-<span class="nc" id="L759">        } catch (final IOException | UnsupportedCallbackException e) {</span>
+<span class="nc" id="L761">        } catch (final IOException | UnsupportedCallbackException e) {</span>
             // Should not happen
-<span class="nc" id="L761">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
-<span class="nc" id="L762">            throw new AuthException(MessageFormat.format(</span>
+<span class="nc" id="L763">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
+<span class="nc" id="L764">            LOG.throwing(this.getClass().getName(), &quot;updateSubjectPrincipal&quot;, e);</span>
+<span class="nc" id="L765">            throw new AuthException(MessageFormat.format(</span>
                     R.getString(&quot;updatePrincipalException&quot;), e.getMessage()));
-<span class="nc" id="L764">        }</span>
-<span class="nc" id="L765">    }</span>
+<span class="nc" id="L767">        }</span>
+<span class="nc" id="L768">    }</span>
 
     /**
      * Validates the request. The request must be secure otherwise it will
@@ -783,34 +786,34 @@ import net.trajano.auth.internal.Utils;
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
                     throws AuthException {
-<span class="nc" id="L786">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
+<span class="nc" id="L789">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
                 .getRequestMessage();
-<span class="nc bnc" id="L788" title="All 2 branches missed.">        if (!req.isSecure()) {</span>
+<span class="nc bnc" id="L791" title="All 2 branches missed.">        if (!req.isSecure()) {</span>
             // Fail authorization 3.1.2.1
-<span class="nc" id="L790">            return AuthStatus.FAILURE;</span>
+<span class="nc" id="L793">            return AuthStatus.FAILURE;</span>
         }
-<span class="nc" id="L792">        final HttpServletResponse resp = (HttpServletResponse) messageInfo</span>
+<span class="nc" id="L795">        final HttpServletResponse resp = (HttpServletResponse) messageInfo</span>
                 .getResponseMessage();
         final String requestCookieContext;
-<span class="nc bnc" id="L795" title="All 2 branches missed.">        if (isNullOrEmpty(cookieContext)) {</span>
-<span class="nc" id="L796">            requestCookieContext = req.getContextPath();</span>
+<span class="nc bnc" id="L798" title="All 2 branches missed.">        if (isNullOrEmpty(cookieContext)) {</span>
+<span class="nc" id="L799">            requestCookieContext = req.getContextPath();</span>
         } else {
-<span class="nc" id="L798">            requestCookieContext = cookieContext;</span>
+<span class="nc" id="L801">            requestCookieContext = cookieContext;</span>
         }
 
         try {
-<span class="nc" id="L802">            return dispatch(client, req, resp, requestCookieContext);</span>
-<span class="nc" id="L803">        } catch (final GeneralSecurityException e) {</span>
+<span class="nc" id="L805">            return dispatch(client, req, resp, requestCookieContext);</span>
+<span class="nc" id="L806">        } catch (final GeneralSecurityException e) {</span>
             // Lower level as this may occur due to invalid or expired
             // tokens.
-<span class="nc" id="L806">            LOG.log(Level.FINE, &quot;validationWarning&quot;, e.getMessage());</span>
-<span class="nc" id="L807">            LOG.throwing(this.getClass().getName(), &quot;validateRequest&quot;, e);</span>
-<span class="nc" id="L808">            return AuthStatus.FAILURE;</span>
-<span class="nc" id="L809">        } catch (final Exception e) {</span>
+<span class="nc" id="L809">            LOG.log(Level.FINE, &quot;validationWarning&quot;, e.getMessage());</span>
+<span class="nc" id="L810">            LOG.throwing(this.getClass().getName(), &quot;validateRequest&quot;, e);</span>
+<span class="nc" id="L811">            return AuthStatus.FAILURE;</span>
+<span class="nc" id="L812">        } catch (final Exception e) {</span>
             // Should not happen
-<span class="nc" id="L811">            LOG.log(Level.WARNING, &quot;validationException&quot;, e.getMessage());</span>
-<span class="nc" id="L812">            LOG.throwing(this.getClass().getName(), &quot;validateRequest&quot;, e);</span>
-<span class="nc" id="L813">            throw new AuthException(MessageFormat.format(</span>
+<span class="nc" id="L814">            LOG.log(Level.WARNING, &quot;validationException&quot;, e.getMessage());</span>
+<span class="nc" id="L815">            LOG.throwing(this.getClass().getName(), &quot;validateRequest&quot;, e);</span>
+<span class="nc" id="L816">            throw new AuthException(MessageFormat.format(</span>
                     R.getString(&quot;validationException&quot;), e.getMessage()));
         }
     }

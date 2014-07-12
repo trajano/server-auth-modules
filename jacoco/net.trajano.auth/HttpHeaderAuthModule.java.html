@@ -150,7 +150,7 @@ import javax.servlet.http.HttpServletResponse;
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings(&quot;rawtypes&quot;) final Map options)
-            throws AuthException {
+                    throws AuthException {
 <span class="nc" id="L154">        handler = h;</span>
 
 <span class="nc" id="L156">        userNameHeader = (String) options.get(USERNAME_HEADER_KEY);</span>
@@ -185,7 +185,7 @@ import javax.servlet.http.HttpServletResponse;
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
 <span class="nc" id="L189">        final HttpServletRequest req = (HttpServletRequest) messageInfo</span>
                 .getRequestMessage();
         try {
@@ -202,7 +202,8 @@ import javax.servlet.http.HttpServletResponse;
                     new GroupPrincipalCallback(client, groups(req)) });
 <span class="nc" id="L203">            return AuthStatus.SUCCESS;</span>
 <span class="nc" id="L204">        } catch (final IOException | UnsupportedCallbackException e) {</span>
-<span class="nc" id="L205">            throw new AuthException(e.getMessage());</span>
+<span class="nc" id="L205">            LOG.throwing(this.getClass().getName(), &quot;validateRequest&quot;, e);</span>
+<span class="nc" id="L206">            throw new AuthException(e.getMessage());</span>
         }
     }
 
