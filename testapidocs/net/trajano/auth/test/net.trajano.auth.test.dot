@@ -27,8 +27,14 @@ digraph G {
 <tr><td align="center" balign="center"> HerokuTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./HerokuTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.test.TestUtilityClasses
+	c3 [label=<<table title="net.trajano.auth.test.TestUtilityClasses" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TestUtilityClasses.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> TestUtilityClasses </td></tr>
+		</table></td></tr>
+		</table>>, URL="./TestUtilityClasses.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.TokenCookieTest
-	c3 [label=<<table title="net.trajano.auth.test.TokenCookieTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookieTest.html">
+	c4 [label=<<table title="net.trajano.auth.test.TokenCookieTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookieTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> TokenCookieTest </td></tr>
 		</table></td></tr>

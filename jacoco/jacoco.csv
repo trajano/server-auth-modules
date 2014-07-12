@@ -4,9 +4,9 @@ Server Auth Modules,net.trajano.auth,GoogleAuthModule,13,0,0,0,2,0,2,0,2,0
 Server Auth Modules,net.trajano.auth,OpenIDConnectAuthModule,43,11,2,0,5,4,2,2,1,2
 Server Auth Modules,net.trajano.auth,OAuthModule,903,87,65,3,152,20,51,3,17,3
 Server Auth Modules,net.trajano.auth.internal,Base64,63,431,12,30,14,61,14,16,3,6
-Server Auth Modules,net.trajano.auth.internal,Utils,205,5,27,1,31,1,21,1,7,1
+Server Auth Modules,net.trajano.auth.internal,Utils,198,12,25,3,29,3,19,3,6,2
 Server Auth Modules,net.trajano.auth.internal,OAuthToken,58,0,0,0,14,0,10,0,10,0
-Server Auth Modules,net.trajano.auth.internal,OAuthParameters,3,0,0,0,2,0,1,0,1,0
+Server Auth Modules,net.trajano.auth.internal,OAuthParameters,0,3,0,0,0,2,0,1,0,1
 Server Auth Modules,net.trajano.auth.internal,JsonWebKeySet,14,94,4,8,3,19,6,5,2,3
 Server Auth Modules,net.trajano.auth.internal,OpenIDProviderConfiguration,148,9,0,0,36,4,20,3,20,3
 Server Auth Modules,net.trajano.auth.internal,TokenCookie,43,164,4,2,8,34,6,7,3,7
