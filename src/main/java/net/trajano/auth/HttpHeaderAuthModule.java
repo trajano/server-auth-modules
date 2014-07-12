@@ -150,7 +150,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-            throws AuthException {
+                    throws AuthException {
         handler = h;
 
         userNameHeader = (String) options.get(USERNAME_HEADER_KEY);
@@ -185,7 +185,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-            throws AuthException {
+                    throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         try {
@@ -202,6 +202,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
                     new GroupPrincipalCallback(client, groups(req)) });
             return AuthStatus.SUCCESS;
         } catch (final IOException | UnsupportedCallbackException e) {
+            LOG.throwing(this.getClass().getName(), "validateRequest", e);
             throw new AuthException(e.getMessage());
         }
     }

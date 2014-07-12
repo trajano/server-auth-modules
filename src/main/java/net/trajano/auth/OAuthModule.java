@@ -10,8 +10,8 @@ import static net.trajano.auth.internal.OAuthParameters.SCOPE;
 import static net.trajano.auth.internal.OAuthParameters.STATE;
 import static net.trajano.auth.internal.Utils.isGetRequest;
 import static net.trajano.auth.internal.Utils.isHeadRequest;
-import static net.trajano.auth.internal.Utils.isRetrievalRequest;
 import static net.trajano.auth.internal.Utils.isNullOrEmpty;
+import static net.trajano.auth.internal.Utils.isRetrievalRequest;
 import static net.trajano.auth.internal.Utils.validateIdToken;
 
 import java.io.ByteArrayInputStream;
@@ -713,6 +713,8 @@ public abstract class OAuthModule implements ServerAuthModule {
             // Should not happen
             LOG.log(Level.SEVERE, "sendRedirectException", new Object[] {
                     authorizationEndpointUri, e.getMessage() });
+            LOG.throwing(this.getClass().getName(),
+                    "redirectToAuthorizationEndpoint", e);
             throw new AuthException(MessageFormat.format(
                     R.getString("sendRedirectException"),
                     authorizationEndpointUri, e.getMessage()));
@@ -759,6 +761,7 @@ public abstract class OAuthModule implements ServerAuthModule {
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
+            LOG.throwing(this.getClass().getName(), "updateSubjectPrincipal", e);
             throw new AuthException(MessageFormat.format(
                     R.getString("updatePrincipalException"), e.getMessage()));
         }
