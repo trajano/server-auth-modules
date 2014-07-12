@@ -85,7 +85,7 @@ public final class Utils {
      * @return &lt;code&gt;true&lt;/code&gt; if the request uses the GET method.
      */
     public static boolean isGetRequest(final HttpServletRequest req) {
-<span class="nc" id="L88">        return &quot;GET&quot;.equals(req.getMethod());</span>
+<span class="fc" id="L88">        return &quot;GET&quot;.equals(req.getMethod());</span>
     }
 
     /**
@@ -96,18 +96,7 @@ public final class Utils {
      * @return &lt;code&gt;true&lt;/code&gt; if the request uses the HEAD method.
      */
     public static boolean isHeadRequest(final HttpServletRequest req) {
-<span class="nc" id="L99">        return &quot;HEAD&quot;.equals(req.getMethod());</span>
-    }
-
-    /**
-     * Checks if the request is idempotent (i.e. &quot;GET&quot; or &quot;HEAD&quot; method).
-     *
-     * @param req
-     *            request
-     * @return &lt;code&gt;true&lt;/code&gt; if the request uses the GET or HEAD method.
-     */
-    public static boolean isIdempotentRequest(final HttpServletRequest req) {
-<span class="nc bnc" id="L110" title="All 4 branches missed.">        return isGetRequest(req) || isHeadRequest(req);</span>
+<span class="fc" id="L99">        return &quot;HEAD&quot;.equals(req.getMethod());</span>
     }
 
     /**
@@ -118,7 +107,18 @@ public final class Utils {
      * @return true if string is null or empty.
      */
     public static boolean isNullOrEmpty(final String s) {
-<span class="pc bpc" id="L121" title="1 of 4 branches missed.">        return s == null || s.trim().length() == 0;</span>
+<span class="fc bfc" id="L110" title="All 4 branches covered.">        return s == null || s.trim().length() == 0;</span>
+    }
+
+    /**
+     * Checks if the request is to retrieve data (i.e. &quot;GET&quot; or &quot;HEAD&quot; method).
+     *
+     * @param req
+     *            request
+     * @return &lt;code&gt;true&lt;/code&gt; if the request uses the GET or HEAD method.
+     */
+    public static boolean isRetrievalRequest(final HttpServletRequest req) {
+<span class="fc bfc" id="L121" title="All 4 branches covered.">        return isGetRequest(req) || isHeadRequest(req);</span>
     }
 
     /**
