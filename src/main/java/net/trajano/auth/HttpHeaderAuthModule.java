@@ -53,14 +53,6 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     private static final ResourceBundle R;
 
     /**
-     * Supported message types. For our case we only need to deal with HTTP
-     * servlet request and responses. On Java EE 7 this will handle WebSockets
-     * as well.
-     */
-    private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-        HttpServletRequest.class, HttpServletResponse.class };
-
-    /**
      * User Name Header option key.
      */
     private static final String USERNAME_HEADER_KEY = "username_header";
@@ -101,16 +93,23 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     }
 
     /**
-     * {@inheritDoc}
      * <p>
-     * The array it returns contains immutable data so it is secure and faster
-     * to return the internal array.
+     * Supported message types. For our case we only need to deal with HTTP
+     * servlet request and responses. On Java EE 7 this will handle WebSockets
+     * as well.
      * </p>
+     * <p>
+     * This creates a new array for security at the expense of performance.
+     * </p>
+     *
+     * @return {@link HttpServletRequest} and {@link HttpServletResponse}
+     *         classes.
      */
     @SuppressWarnings("rawtypes")
     @Override
     public Class[] getSupportedMessageTypes() {
-        return SUPPORTED_MESSAGE_TYPES; // NOPMD
+        return new Class<?>[] { HttpServletRequest.class,
+                HttpServletResponse.class };
     }
 
     /**
@@ -151,7 +150,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     public void initialize(final MessagePolicy requestPolicy,
             final MessagePolicy responsePolicy, final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options)
-                    throws AuthException {
+            throws AuthException {
         handler = h;
 
         userNameHeader = (String) options.get(USERNAME_HEADER_KEY);
@@ -186,7 +185,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo,
             final Subject client, final Subject serviceSubject)
-                    throws AuthException {
+            throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
         try {

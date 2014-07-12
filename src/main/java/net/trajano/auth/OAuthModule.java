@@ -133,12 +133,6 @@ public abstract class OAuthModule implements ServerAuthModule {
     public static final String SCOPE_KEY = "scope";
 
     /**
-     * Supported message types.
-     */
-    private static final Class<?>[] SUPPORTED_MESSAGE_TYPES = new Class<?>[] {
-        HttpServletRequest.class, HttpServletResponse.class };
-
-    /**
      * Token URI key. The value is optional and if not specified, the token
      * request functionality will not be available.
      */
@@ -444,17 +438,23 @@ public abstract class OAuthModule implements ServerAuthModule {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * <p>
-     * The array it returns contains immutable data so it is secure and faster
-     * to return the internal array.
+     * Supported message types. For our case we only need to deal with HTTP
+     * servlet request and responses. On Java EE 7 this will handle WebSockets
+     * as well.
      * </p>
+     * <p>
+     * This creates a new array for security at the expense of performance.
+     * </p>
+     *
+     * @return {@link HttpServletRequest} and {@link HttpServletResponse}
+     *         classes.
      */
     @SuppressWarnings("rawtypes")
     @Override
     public Class[] getSupportedMessageTypes() {
-        return SUPPORTED_MESSAGE_TYPES; // NOPMD
+        return new Class<?>[] { HttpServletRequest.class,
+                HttpServletResponse.class };
     }
 
     /**
