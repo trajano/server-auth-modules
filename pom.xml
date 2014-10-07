@@ -9,6 +9,7 @@
     <groupId>net.trajano.auth</groupId>
     <artifactId>server-auth-modules</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
     <name>Server Auth Modules</name>
     <description>A set of server authentication modules.</description>
     <inceptionYear>2014</inceptionYear>
@@ -116,7 +117,6 @@
                         <id>attach-jar</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>jar</goal>
                             <goal>test-jar</goal>
                         </goals>
                     </execution>
@@ -214,6 +214,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.5.3</version>
+                <extensions>true</extensions>
             </plugin>
         </plugins>
         <extensions>
