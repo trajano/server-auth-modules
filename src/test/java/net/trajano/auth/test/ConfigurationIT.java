@@ -15,7 +15,7 @@ import org.junit.Test;
 /**
  * Tests the configuration processing.
  */
-public class ConfigurationTest {
+public class ConfigurationIT{
 
     /**
      * Tests getting the configuration from Google.

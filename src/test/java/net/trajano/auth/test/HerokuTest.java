@@ -3,6 +3,7 @@ package net.trajano.auth.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +16,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.AuthStatus;
 import javax.security.auth.message.MessageInfo;
+import javax.security.auth.message.MessagePolicy;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +40,8 @@ import org.mockito.stubbing.Answer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Tests using Heroku.
@@ -60,7 +64,6 @@ public class HerokuTest {
      * developer NOV for the heroku site refuses to provide assistance</a>.
      */
     @Test
-    @Ignore
     public void testWithTheModule() throws Exception {
 
         final WebDriver b = new FirefoxDriver();
@@ -69,29 +72,40 @@ public class HerokuTest {
         b.findElement(By.linkText("Register New Client")).click();
         b.findElement(By.id("client_name")).sendKeys("Test");
         b.findElement(By.id("client_redirect_uri")).sendKeys(
-                "https://www.trajano.net/app");
+                "https://www.trajano.net/app/oauth2");
         b.findElement(By.name("commit")).click();
-
-        final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
-        final Map<String, String> options = new HashMap<>();
-        options.put("client.id", b.findElement(By.xpath("//dd[1]")).getText());
-        options.put("client.secret", b.findElement(By.xpath("//dd[2]"))
-                .getText());
-        options.put("issuer.uri", "https://connect-op.heroku.com");
-
-        final CallbackHandler handler = mock(CallbackHandler.class);
-        module.initialize(null, null, handler, options);
+        final Map<String, String> options;
 
         {
-            final MessageInfo messageInfo = Mockito.mock(MessageInfo.class);
+            final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
+            options = new HashMap<>();
+            options.put("client_id", b.findElement(By.xpath("//dd[1]"))
+                    .getText());
+            options.put("client_secret", b.findElement(By.xpath("//dd[2]"))
+                    .getText());
+            options.put("issuer_uri", "https://connect-op.heroku.com");
+            options.put(OAuthModule.COOKIE_CONTEXT_KEY, "/");
+            options.put(OAuthModule.REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2");
+
+            final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
+            when(mockRequestPolicy.isMandatory()).thenReturn(true);
+
+            final CallbackHandler handler = mock(CallbackHandler.class);
+            module.initialize(mockRequestPolicy, null, handler, options);
+
+            final MessageInfo messageInfo = mock(MessageInfo.class);
 
             final HttpServletRequest req = Mockito
                     .mock(HttpServletRequest.class);
             when(req.getContextPath()).thenReturn("/app");
+            when(req.isSecure()).thenReturn(true);
+            when(req.getMethod()).thenReturn("GET");
             when(req.getRequestURL())
             .thenReturn(
                     new StringBuffer(
                             "https://www.trajano.net/app/somefile.jsp"));
+            when(req.getRequestURI()).thenReturn("/app/somefile.jsp",
+                    "/app/somefile.jsp");
 
             when(messageInfo.getRequestMessage()).thenReturn(req);
 
@@ -100,20 +114,27 @@ public class HerokuTest {
             when(messageInfo.getResponseMessage()).thenReturn(resp);
 
             final Subject client = new Subject();
-            Assert.assertEquals(AuthStatus.SEND_CONTINUE,
+            assertEquals(AuthStatus.SEND_CONTINUE,
                     module.validateRequest(messageInfo, client, null));
-
             final ArgumentCaptor<String> redirectUrl = ArgumentCaptor
                     .forClass(String.class);
             verify(resp).sendRedirect(redirectUrl.capture());
-            System.out.println(redirectUrl.getValue());
-
             b.get(redirectUrl.getValue());
+
             b.findElement(By.name("commit")).click();
-            System.out.println(b.getCurrentUrl());
+            final WebDriverWait wait = new WebDriverWait(b, 30);
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By
+                    .name("commit")));
         }
 
         {
+            final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
+
+            final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
+            when(mockRequestPolicy.isMandatory()).thenReturn(true);
+
+            final CallbackHandler handler = mock(CallbackHandler.class);
+            module.initialize(mockRequestPolicy, null, handler, options);
 
             final String[] queryParams = URI.create(b.getCurrentUrl())
                     .getQuery().split("&");
@@ -128,7 +149,8 @@ public class HerokuTest {
                     .mock(HttpServletRequest.class);
             when(req.getContextPath()).thenReturn("/app");
             when(req.getRequestURL()).thenReturn(
-                    new StringBuffer("https://www.trajano.net/app/"));
+                    new StringBuffer(b.getCurrentUrl()));
+            when(req.getRequestURI()).thenReturn("/app/oauth2");
             when(req.getParameter("code")).thenReturn(code);
             when(req.getParameter("state")).thenReturn(state);
             when(req.getMethod()).thenReturn("GET");
@@ -154,20 +176,23 @@ public class HerokuTest {
             assertEquals(AuthStatus.SEND_SUCCESS,
                     module.validateRequest(messageInfo, client, null));
 
-            final ArgumentCaptor<String> redirectUrl = ArgumentCaptor
-                    .forClass(String.class);
-            verify(resp).sendRedirect(redirectUrl.capture());
-
             final ArgumentCaptor<Cookie> cookieCapture = ArgumentCaptor
                     .forClass(Cookie.class);
-            verify(resp).addCookie(cookieCapture.capture());
-            final Cookie cookie = cookieCapture.getValue();
+            verify(resp, times(2)).addCookie(cookieCapture.capture());
+            final Cookie cookie = cookieCapture.getAllValues().get(0);
             assertEquals(OAuthModule.NET_TRAJANO_AUTH_ID, cookie.getName());
             final TokenCookie tokenCookie = new TokenCookie(cookie.getValue(),
                     options.get(OAuthModule.CLIENT_ID_KEY),
                     options.get(OAuthModule.CLIENT_SECRET_KEY));
             assertEquals("https://connect-op.heroku.com", tokenCookie
                     .getIdToken().getString("iss"));
+
+            final Cookie ageCookie = cookieCapture.getAllValues().get(1);
+            assertEquals(OAuthModule.NET_TRAJANO_AUTH_AGE, ageCookie.getName());
+
+            final ArgumentCaptor<String> redirectUrl = ArgumentCaptor
+                    .forClass(String.class);
+            verify(resp).sendRedirect(redirectUrl.capture());
         }
         b.quit();
     }
@@ -187,15 +212,15 @@ public class HerokuTest {
         b.findElement(By.linkText("Register New Client")).click();
         b.findElement(By.id("client_name")).sendKeys("Test");
         b.findElement(By.id("client_redirect_uri")).sendKeys(
-                "https://www.trajano.net/app");
+                "https://www.trajano.net/app/oauth2");
         b.findElement(By.name("commit")).click();
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final Map<String, String> options = new HashMap<>();
-        options.put("client.id", b.findElement(By.xpath("//dd[1]")).getText());
-        options.put("client.secret", b.findElement(By.xpath("//dd[2]"))
+        options.put("client_id", b.findElement(By.xpath("//dd[1]")).getText());
+        options.put("client_secret", b.findElement(By.xpath("//dd[2]"))
                 .getText());
-        options.put("issuer.uri", "https://connect-op.heroku.com");
+        options.put("issuer_uri", "https://connect-op.heroku.com");
         options.put("scope", "openid profile");
 
         final CallbackHandler handler = mock(CallbackHandler.class);

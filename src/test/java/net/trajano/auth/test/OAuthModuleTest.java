@@ -10,11 +10,14 @@ import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import javax.security.auth.message.MessagePolicy;
+
 import net.trajano.auth.OAuthModule;
 import net.trajano.auth.OpenIDConnectAuthModule;
 import net.trajano.auth.internal.Base64;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests the OAuthModule.
@@ -27,7 +30,6 @@ public class OAuthModuleTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final GZIPOutputStream os = new GZIPOutputStream(baos);
         os.write(payload.toString().getBytes("UTF-8"));
-        System.out.println(baos.toByteArray().length);
         os.close();
         final String encoded = Base64.encodeWithoutPadding(baos.toByteArray());
 
@@ -52,8 +54,11 @@ public class OAuthModuleTest {
         options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
                 "https://accounts.google.com/");
 
+        final MessagePolicy mockPolicy = Mockito.mock(MessagePolicy.class);
+        Mockito.when(mockPolicy.isMandatory()).thenReturn(true);
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
-        module.initialize(null, null, null, options);
+        module.initialize(mockPolicy, null, null, options);
     }
 
     /**
@@ -69,7 +74,10 @@ public class OAuthModuleTest {
         options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
                 "https://login.salesforce.com");
 
+        final MessagePolicy mockPolicy = Mockito.mock(MessagePolicy.class);
+        Mockito.when(mockPolicy.isMandatory()).thenReturn(true);
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
-        module.initialize(null, null, null, options);
+        module.initialize(mockPolicy, null, null, options);
     }
 }
