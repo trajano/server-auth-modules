@@ -1,6 +1,7 @@
 package net.trajano.auth;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -55,7 +56,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     /**
      * User Name Header option key.
      */
-    private static final String USERNAME_HEADER_KEY = "username_header";
+    public static final String USERNAME_HEADER_KEY = "username_header";
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.httpheadersam", MESSAGES);
@@ -72,6 +73,11 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
      * processes the callbacks which are objects that populate the "subject".
      */
     private CallbackHandler handler;
+
+    /**
+     * Mandatory flag.
+     */
+    private boolean mandatory;
 
     /**
      * User name header option.
@@ -152,7 +158,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
             @SuppressWarnings("rawtypes") final Map options)
                     throws AuthException {
         handler = h;
-
+        mandatory = requestPolicy.isMandatory();
         userNameHeader = (String) options.get(USERNAME_HEADER_KEY);
         if (userNameHeader == null) {
             LOG.log(Level.SEVERE, "missingOption", USERNAME_HEADER_KEY);
@@ -188,13 +194,22 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
                     throws AuthException {
         final HttpServletRequest req = (HttpServletRequest) messageInfo
                 .getRequestMessage();
+        final HttpServletResponse resp = (HttpServletResponse) messageInfo
+                .getResponseMessage();
         try {
+            if (!mandatory && !req.isSecure()) {
+                return AuthStatus.SUCCESS;
+            }
             if (!req.isSecure()) {
-                return AuthStatus.FAILURE;
+                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN,
+                        R.getString("SSLReq"));
+                return AuthStatus.SEND_FAILURE;
             }
             final String userName = req.getHeader(userNameHeader);
-            if (userName == null) {
+            if (userName == null && mandatory) {
                 return AuthStatus.FAILURE;
+            } else if (userName == null && !mandatory) {
+                return AuthStatus.SUCCESS;
             }
 
             handler.handle(new Callback[] {
