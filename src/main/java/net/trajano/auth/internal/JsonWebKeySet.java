@@ -88,13 +88,12 @@ public class JsonWebKeySet {
      */
     private PublicKey buildRSAPublicKey(final JsonObject keyJson)
             throws GeneralSecurityException {
-        final BigInteger modulus = new BigInteger(Base64.decode(keyJson
+        final BigInteger modulus = new BigInteger(1, Base64.decode(keyJson
                 .getString("n")));
-        final BigInteger publicExponent = new BigInteger(Base64.decode(keyJson
-                .getString("e")));
+        final BigInteger publicExponent = new BigInteger(1,
+                Base64.decode(keyJson.getString("e")));
         return KeyFactory.getInstance("RSA").generatePublic(
                 new RSAPublicKeySpec(modulus, publicExponent));
-
     }
 
     /**

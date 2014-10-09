@@ -4,6 +4,8 @@ import static javax.json.Json.createArrayBuilder;
 import static javax.json.Json.createObjectBuilder;
 import static org.junit.Assert.assertArrayEquals;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -11,6 +13,7 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.interfaces.RSAPublicKey;
 
+import javax.json.Json;
 import javax.json.stream.JsonParsingException;
 
 import net.trajano.auth.internal.Base64;
@@ -20,6 +23,8 @@ import net.trajano.auth.internal.Utils;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.base.Charsets;
+
 public class JwtTest {
     private JsonWebKeySet jwks;
     private PrivateKey privateKey;
@@ -27,7 +32,7 @@ public class JwtTest {
     @Before
     public void setKeys() throws GeneralSecurityException {
         final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(1024);
+        kpg.initialize(2048);
         final KeyPair kp = kpg.genKeyPair();
         final String e = Base64.encodeWithoutPadding(((RSAPublicKey) kp
                 .getPublic()).getPublicExponent().toByteArray());
@@ -38,9 +43,9 @@ public class JwtTest {
                 "keys",
                 createArrayBuilder().add(
                         createObjectBuilder().add("kty", "RSA")
-                        .add("alg", "RS256").add("use", "sig")
-                        .add("kid", "1234").add("e", e).add("n", n)))
-                        .build());
+                                .add("alg", "RS256").add("use", "sig")
+                                .add("kid", "1234").add("e", e).add("n", n)))
+                .build());
     }
 
     @Test(expected = JsonParsingException.class)
@@ -74,5 +79,17 @@ public class JwtTest {
                         + Base64.encodeWithoutPadding(message) + "."
                         + Base64.encodeWithoutPadding(sigbytes), jwks);
         assertArrayEquals(message, jwsPayload);
+    }
+
+    @Test
+    public void testWithGoogleData() throws Exception {
+        final JsonWebKeySet jwks = new JsonWebKeySet(Json.createReader(
+                Thread.currentThread().getContextClassLoader()
+                        .getResourceAsStream("googlecerts.json")).readObject());
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                Thread.currentThread().getContextClassLoader()
+                        .getResourceAsStream("jwt.txt")));
+        System.out.println(new String(Utils.getJwsPayload(reader.readLine(),
+                jwks), Charsets.UTF_8));
     }
 }

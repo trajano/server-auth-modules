@@ -70,10 +70,8 @@ public final class Utils {
             signature.initVerify(signingKey);
             signature.update((jwtParts[0] + "." + jwtParts[1]).getBytes());
             if (!signature.verify(jwtSignatureBytes)) {
-                // TODO fix the verification
-                System.out.println("signature verification failed");
-                // throw new GeneralSecurityException(
-                // "signature verification failed");
+                throw new GeneralSecurityException(
+                        "signature verification failed");
             }
         }
         return Base64.decode(jwtParts[1]);
@@ -136,10 +134,7 @@ public final class Utils {
      * @return algorithm name
      */
     public static String toJavaAlgorithm(final String alg) {
-        if ("RS256".equalsIgnoreCase(alg)) {
-            return "SHA256withRSA";
-        }
-        return alg;
+        return JsonWebAlgorithm.valueOf(alg).toJca();
     }
 
     /**
