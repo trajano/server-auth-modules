@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -18,6 +19,20 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 public final class Utils {
+    /**
+     * Logger.
+     */
+    private static final Logger LOG;
+
+    /**
+     * Messages resource path.
+     */
+    private static final String MESSAGES = "META-INF/Messages";
+
+    static {
+        LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
+    }
+
     /**
      * Gets the JWS Payload from a <a href=
      * "http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-30#section-3.1"
@@ -40,6 +55,7 @@ public final class Utils {
      */
     public static byte[] getJwsPayload(final String serialization,
             final JsonWebKeySet keyset) throws GeneralSecurityException {
+        LOG.finest("serialized payload = " + serialization);
         final String[] jwtParts = serialization.split("\\.");
 
         final JsonObject joseHeader = Json.createReader(

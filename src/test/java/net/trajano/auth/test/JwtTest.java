@@ -3,6 +3,7 @@ package net.trajano.auth.test;
 import static javax.json.Json.createArrayBuilder;
 import static javax.json.Json.createObjectBuilder;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -17,6 +18,7 @@ import javax.json.Json;
 import javax.json.stream.JsonParsingException;
 
 import net.trajano.auth.internal.Base64;
+import net.trajano.auth.internal.JsonWebAlgorithm;
 import net.trajano.auth.internal.JsonWebKeySet;
 import net.trajano.auth.internal.Utils;
 
@@ -43,9 +45,15 @@ public class JwtTest {
                 "keys",
                 createArrayBuilder().add(
                         createObjectBuilder().add("kty", "RSA")
-                                .add("alg", "RS256").add("use", "sig")
-                                .add("kid", "1234").add("e", e).add("n", n)))
-                .build());
+                        .add("alg", "RS256").add("use", "sig")
+                        .add("kid", "1234").add("e", e).add("n", n)))
+                        .build());
+    }
+
+    @Test
+    public void testEnum() {
+        assertEquals(JsonWebAlgorithm.RS256,
+                Enum.valueOf(JsonWebAlgorithm.class, "RS256"));
     }
 
     @Test(expected = JsonParsingException.class)
@@ -85,10 +93,10 @@ public class JwtTest {
     public void testWithGoogleData() throws Exception {
         final JsonWebKeySet jwks = new JsonWebKeySet(Json.createReader(
                 Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream("googlecerts.json")).readObject());
+                .getResourceAsStream("googlecerts.json")).readObject());
         final BufferedReader reader = new BufferedReader(new InputStreamReader(
                 Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream("jwt.txt")));
+                .getResourceAsStream("jwt.txt")));
         System.out.println(new String(Utils.getJwsPayload(reader.readLine(),
                 jwks), Charsets.UTF_8));
     }
