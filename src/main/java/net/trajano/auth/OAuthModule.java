@@ -235,6 +235,24 @@ public abstract class OAuthModule implements ServerAuthModule {
     }
 
     /**
+     * Client ID.
+     *
+     * @return the client ID.
+     */
+    protected String getClientId() {
+        return clientId;
+    }
+
+    /**
+     * Client Secret.
+     *
+     * @return the client secret.
+     */
+    protected String getClientSecret() {
+        return clientSecret;
+    }
+
+    /**
      * Gets the ID token. This ensures that both cookies are present, if not
      * then this will return <code>null</code>.
      *
@@ -291,7 +309,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            request
      * @return redirection endpoint URI.
      */
-    private URI getRedirectionEndpointUri(final HttpServletRequest req) {
+    protected URI getRedirectionEndpointUri(final HttpServletRequest req) {
         if (isNullOrEmpty(redirectionEndpointUri)) {
             final StringBuffer redirectUri = req.getRequestURL();
             // Get the third / character from the request URL should be the
@@ -305,6 +323,15 @@ public abstract class OAuthModule implements ServerAuthModule {
             return URI.create(req.getRequestURL().toString()).resolve(
                     redirectionEndpointUri);
         }
+    }
+
+    /**
+     * REST client.
+     *
+     * @return REST client
+     */
+    protected Client getRestClient() {
+        return restClient;
     }
 
     /**
@@ -336,7 +363,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            OpenID provider config
      * @return token response
      */
-    private OAuthToken getToken(final HttpServletRequest req,
+    protected OAuthToken getToken(final HttpServletRequest req,
             final OpenIDProviderConfiguration oidProviderConfig)
                     throws IOException {
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
