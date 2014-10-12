@@ -57,7 +57,7 @@ public class AuthSequenceTest {
     private final OpenIDProviderConfiguration googleOpenIdConfiguration = new OpenIDProviderConfiguration(
             Json.createReader(
                     Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream("META-INF/google-config.json"))
+                    .getResourceAsStream("META-INF/google-config.json"))
                     .readObject());
 
     /**
@@ -67,9 +67,9 @@ public class AuthSequenceTest {
             .<String, String> builder()
             .put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
                     "https://accounts.google.com")
-            .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
-            .put(OAuthModule.CLIENT_ID_KEY, "clientID")
-            .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret").build();
+                    .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
+                    .put(OAuthModule.CLIENT_ID_KEY, "clientID")
+                    .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret").build();
 
     /**
      * Posting data when unauthenticate is not allowed.
@@ -124,9 +124,9 @@ public class AuthSequenceTest {
                 "keys",
                 createArrayBuilder().add(
                         createObjectBuilder().add("kty", "RSA")
-                                .add("alg", "RS256").add("use", "sig")
-                                .add("kid", "1234").add("e", e).add("n", n)))
-                .build();
+                        .add("alg", "RS256").add("use", "sig")
+                        .add("kid", "1234").add("e", e).add("n", n)))
+                        .build();
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
 
@@ -136,13 +136,13 @@ public class AuthSequenceTest {
         when(
                 mockRestClient.target(URI
                         .create("https://accounts.google.com/.well-known/openid-configuration")))
-                .thenReturn(openIdConfigurationTarget);
+                        .thenReturn(openIdConfigurationTarget);
         final Builder openIdConfigurationBuilder = mock(Builder.class);
         when(openIdConfigurationTarget.request(MediaType.APPLICATION_JSON_TYPE))
-                .thenReturn(openIdConfigurationBuilder);
+        .thenReturn(openIdConfigurationBuilder);
 
         when(openIdConfigurationBuilder.get(OpenIDProviderConfiguration.class))
-                .thenReturn(googleOpenIdConfiguration);
+        .thenReturn(googleOpenIdConfiguration);
 
         final WebTarget tokenEndpointTarget = mock(WebTarget.class);
         when(
@@ -150,7 +150,9 @@ public class AuthSequenceTest {
                         .getTokenEndpoint())).thenReturn(tokenEndpointTarget);
         final Builder tokenEndpointBuilder = mock(Builder.class);
         when(tokenEndpointTarget.request(MediaType.APPLICATION_JSON_TYPE))
-                .thenReturn(tokenEndpointBuilder);
+        .thenReturn(tokenEndpointBuilder);
+        when(tokenEndpointBuilder.header(eq("Authorization"), anyString()))
+        .thenReturn(tokenEndpointBuilder);
 
         final OAuthToken oauthToken = new OAuthToken();
 
@@ -170,11 +172,11 @@ public class AuthSequenceTest {
                 + Base64.encodeWithoutPadding(sigbytes));
 
         when(tokenEndpointBuilder.post(any(Entity.class), eq(OAuthToken.class)))
-                .thenReturn(oauthToken);
+        .thenReturn(oauthToken);
 
         final WebTarget jwksTarget = mock(WebTarget.class);
         when(mockRestClient.target(googleOpenIdConfiguration.getJwksUri()))
-                .thenReturn(jwksTarget);
+        .thenReturn(jwksTarget);
         final Builder jwksBuilder = mock(Builder.class);
         when(jwksTarget.request(MediaType.APPLICATION_JSON_TYPE)).thenReturn(
                 jwksBuilder);
@@ -192,9 +194,9 @@ public class AuthSequenceTest {
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
         when(servletRequest.getRequestURL())
-                .thenReturn(
-                        new StringBuffer(
-                                "https://i.trajano.net:8443/app/oauth2?code=SplxlOBeZQQYbYS6WxSbIA&state=L3V0aWwvZWpiMg"));
+        .thenReturn(
+                new StringBuffer(
+                        "https://i.trajano.net:8443/app/oauth2?code=SplxlOBeZQQYbYS6WxSbIA&state=L3V0aWwvZWpiMg"));
         when(servletRequest.getRequestURI()).thenReturn("/app/oauth2");
         when(servletRequest.getContextPath()).thenReturn("/myapp");
         when(servletRequest.isSecure()).thenReturn(true);
@@ -254,9 +256,9 @@ public class AuthSequenceTest {
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
         when(servletRequest.getRequestURL())
-                .thenReturn(
-                        new StringBuffer(
-                                "https://i.trajano.net:8443/app/oauth2?code=1234&state=5678"));
+        .thenReturn(
+                new StringBuffer(
+                        "https://i.trajano.net:8443/app/oauth2?code=1234&state=5678"));
         when(servletRequest.getRequestURI()).thenReturn("/app/oauth2");
         when(servletRequest.getParameter("code")).thenReturn("1234");
         when(servletRequest.getParameter("state")).thenReturn("5678");
@@ -332,12 +334,12 @@ public class AuthSequenceTest {
         when(
                 mockRestClient.target(URI
                         .create("https://accounts.google.com/.well-known/openid-configuration")))
-                .thenReturn(openIdConfigurationTarget);
+                        .thenReturn(openIdConfigurationTarget);
         final Builder openIdConfigurationBuilder = mock(Builder.class);
         when(openIdConfigurationTarget.request(MediaType.APPLICATION_JSON_TYPE))
-                .thenReturn(openIdConfigurationBuilder);
+        .thenReturn(openIdConfigurationBuilder);
         when(openIdConfigurationBuilder.get(OpenIDProviderConfiguration.class))
-                .thenReturn(googleOpenIdConfiguration);
+        .thenReturn(googleOpenIdConfiguration);
 
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);
@@ -345,9 +347,9 @@ public class AuthSequenceTest {
                 .<String, String> builder()
                 .put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
                         "https://accounts.google.com")
-                .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
-                .put(OAuthModule.CLIENT_ID_KEY, "clientID")
-                .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret").build();
+                        .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
+                        .put(OAuthModule.CLIENT_ID_KEY, "clientID")
+                        .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret").build();
         module.initialize(mockRequestPolicy, null, null, options);
 
         final MessageInfo messageInfo = mock(MessageInfo.class);
@@ -368,8 +370,8 @@ public class AuthSequenceTest {
         assertEquals(AuthStatus.SEND_CONTINUE,
                 module.validateRequest(messageInfo, client, null));
         verify(servletResponse)
-                .sendRedirect(
-                        "https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L3V0aWwvZWpiMg");
+        .sendRedirect(
+                "https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L3V0aWwvZWpiMg");
     }
 
     @Test

@@ -1,7 +1,6 @@
 package net.trajano.auth;
 
 import static net.trajano.auth.internal.OAuthParameters.CLIENT_ID;
-import static net.trajano.auth.internal.OAuthParameters.CLIENT_SECRET;
 import static net.trajano.auth.internal.OAuthParameters.CODE;
 import static net.trajano.auth.internal.OAuthParameters.GRANT_TYPE;
 import static net.trajano.auth.internal.OAuthParameters.REDIRECT_URI;
@@ -42,6 +41,7 @@ import javax.security.auth.message.module.ServerAuthModule;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -96,6 +96,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     private static final Logger LOG;
 
     /**
+     * Logger for configuration.
+     */
+    private static final Logger LOGCONFIG;
+
+    /**
      * Messages resource path.
      */
     private static final String MESSAGES = "META-INF/Messages";
@@ -146,6 +151,8 @@ public abstract class OAuthModule implements ServerAuthModule {
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
+        LOGCONFIG = Logger.getLogger("net.trajano.auth.oauthsam.config",
+                MESSAGES);
         R = ResourceBundle.getBundle(MESSAGES);
     }
 
@@ -259,7 +266,7 @@ public abstract class OAuthModule implements ServerAuthModule {
     /**
      * Lets subclasses change the provider configuration.
      *
-     * @param restClient
+     * @param client
      *            REST client
      * @param options
      *            module options
@@ -268,8 +275,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      *             wraps exceptions thrown during processing
      */
     protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(
-            Client restClient, Map<String, String> options)
-                    throws AuthException;
+            Client client, Map<String, String> options) throws AuthException;
 
     /**
      * This gets the redirection endpoint URI.
@@ -331,18 +337,43 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return token response
      */
     private OAuthToken getToken(final HttpServletRequest req,
-            final OpenIDProviderConfiguration oidProviderConfig) {
+            final OpenIDProviderConfiguration oidProviderConfig)
+                    throws IOException {
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle(CODE, req.getParameter("code"));
-        requestData.putSingle(CLIENT_ID, clientId);
-        requestData.putSingle(CLIENT_SECRET, clientSecret);
         requestData.putSingle(GRANT_TYPE, "authorization_code");
         requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req)
                 .toASCIIString());
 
-        return restClient.target(oidProviderConfig.getTokenEndpoint())
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(requestData), OAuthToken.class);
+        try {
+            final String authorization = "Basic "
+                    + Base64.encode((clientId + ":" + clientSecret)
+                            .getBytes("UTF8"));
+            final OAuthToken authorizationTokenResponse = restClient
+                    .target(oidProviderConfig.getTokenEndpoint())
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("Authorization", authorization)
+                    .post(Entity.form(requestData), OAuthToken.class);
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("authorization token response =  "
+                        + authorizationTokenResponse);
+            }
+            return authorizationTokenResponse;
+        } catch (final BadRequestException e) {
+            // workaround for google that does not support BASIC authentication
+            // on their endpoint.
+            requestData.putSingle(CLIENT_ID, clientId);
+            requestData.putSingle(CLIENT_SECRET_KEY, clientSecret);
+            final OAuthToken authorizationTokenResponse = restClient
+                    .target(oidProviderConfig.getTokenEndpoint())
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.form(requestData), OAuthToken.class);
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("authorization token response =  "
+                        + authorizationTokenResponse);
+            }
+            return authorizationTokenResponse;
+        }
     }
 
     /**
@@ -512,7 +543,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                 throw new AuthException(MessageFormat.format(
                         R.getString("missingOption"), CLIENT_SECRET_KEY));
             }
-            LOG.log(Level.CONFIG, "options", moduleOptions);
+            LOGCONFIG.log(Level.CONFIG, "options", moduleOptions);
         } catch (final Exception e) {
             // Should not happen
             LOG.log(Level.SEVERE, "initializeException", e);

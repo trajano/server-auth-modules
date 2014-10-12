@@ -32,6 +32,13 @@ public class OAuthToken {
     private String idToken;
 
     /**
+     * The refresh token, which can be used to obtain new access tokens using
+     * the same authorization grant as described in Section 6.
+     */
+    @XmlElement(name = "refresh_token")
+    private String refreshToken;
+
+    /**
      * Token type.
      */
     @XmlElement(name = "token_type")
@@ -47,6 +54,10 @@ public class OAuthToken {
 
     public String getIdToken() {
         return idToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
     public String getTokenType() {
@@ -65,14 +76,18 @@ public class OAuthToken {
         this.idToken = idToken;
     }
 
+    public void setRefreshToken(final String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public void setTokenType(final String tokenType) {
         this.tokenType = tokenType;
     }
 
     @Override
     public String toString() {
-        return "TokenResponse [accessToken=" + accessToken + ", expiresIn="
-                + expiresIn + ", idToken=" + idToken + ", tokenType="
-                + tokenType + "]";
+        return "OAuthToken [accessToken=" + accessToken + ", expiresIn="
+                + expiresIn + ", idToken=" + idToken + ", refreshToken="
+                + refreshToken + ", tokenType=" + tokenType + "]";
     }
 }
