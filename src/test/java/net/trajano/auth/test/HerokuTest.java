@@ -51,7 +51,7 @@ public class HerokuTest {
     public void testConfig() throws Exception {
         final Client restClient = ClientBuilder.newClient();
         final OpenIDProviderConfiguration config = restClient
-                .target("https://connect-op.heroku.com/.well-known/openid-configuration")
+                .target("https://connect-op.herokuapp.com/.well-known/openid-configuration")
                 .request().get(OpenIDProviderConfiguration.class);
 
         new JsonWebKeySet(restClient.target(config.getJwksUri()).request()
@@ -67,7 +67,7 @@ public class HerokuTest {
     public void testWithTheModule() throws Exception {
 
         final WebDriver b = new FirefoxDriver();
-        b.get("https://connect-op.heroku.com");
+        b.get("https://connect-op.herokuapp.com");
         b.findElement(By.name("commit")).click();
         b.findElement(By.linkText("Register New Client")).click();
         b.findElement(By.id("client_name")).sendKeys("Test");
@@ -83,7 +83,7 @@ public class HerokuTest {
                     .getText());
             options.put("client_secret", b.findElement(By.xpath("//dd[2]"))
                     .getText());
-            options.put("issuer_uri", "https://connect-op.heroku.com");
+            options.put("issuer_uri", "https://connect-op.herokuapp.com");
             options.put(OAuthModule.COOKIE_CONTEXT_KEY, "/");
             options.put(OAuthModule.REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2");
 
@@ -101,9 +101,9 @@ public class HerokuTest {
             when(req.isSecure()).thenReturn(true);
             when(req.getMethod()).thenReturn("GET");
             when(req.getRequestURL())
-            .thenReturn(
-                    new StringBuffer(
-                            "https://www.trajano.net/app/somefile.jsp"));
+                    .thenReturn(
+                            new StringBuffer(
+                                    "https://www.trajano.net/app/somefile.jsp"));
             when(req.getRequestURI()).thenReturn("/app/somefile.jsp",
                     "/app/somefile.jsp");
 
@@ -184,7 +184,7 @@ public class HerokuTest {
             final TokenCookie tokenCookie = new TokenCookie(cookie.getValue(),
                     options.get(OAuthModule.CLIENT_ID_KEY),
                     options.get(OAuthModule.CLIENT_SECRET_KEY));
-            assertEquals("https://connect-op.heroku.com", tokenCookie
+            assertEquals("https://connect-op.herokuapp.com", tokenCookie
                     .getIdToken().getString("iss"));
 
             final Cookie ageCookie = cookieCapture.getAllValues().get(1);
@@ -207,7 +207,7 @@ public class HerokuTest {
     public void testWithTheModuleWithProfile() throws Exception {
 
         final WebDriver b = new FirefoxDriver();
-        b.get("https://connect-op.heroku.com");
+        b.get("https://connect-op.herokuapp.com");
         b.findElement(By.name("commit")).click();
         b.findElement(By.linkText("Register New Client")).click();
         b.findElement(By.id("client_name")).sendKeys("Test");
@@ -220,7 +220,7 @@ public class HerokuTest {
         options.put("client_id", b.findElement(By.xpath("//dd[1]")).getText());
         options.put("client_secret", b.findElement(By.xpath("//dd[2]"))
                 .getText());
-        options.put("issuer_uri", "https://connect-op.heroku.com");
+        options.put("issuer_uri", "https://connect-op.herokuapp.com");
         options.put("scope", "openid profile");
 
         final CallbackHandler handler = mock(CallbackHandler.class);
@@ -233,9 +233,9 @@ public class HerokuTest {
                     .mock(HttpServletRequest.class);
             when(req.getContextPath()).thenReturn("/app");
             when(req.getRequestURL())
-            .thenReturn(
-                    new StringBuffer(
-                            "https://www.trajano.net/app/somefile.jsp"));
+                    .thenReturn(
+                            new StringBuffer(
+                                    "https://www.trajano.net/app/somefile.jsp"));
 
             when(messageInfo.getRequestMessage()).thenReturn(req);
 
@@ -310,7 +310,7 @@ public class HerokuTest {
             final TokenCookie tokenCookie = new TokenCookie(cookie.getValue(),
                     options.get(OAuthModule.CLIENT_ID_KEY),
                     options.get(OAuthModule.CLIENT_SECRET_KEY));
-            assertEquals("https://connect-op.heroku.com", tokenCookie
+            assertEquals("https://connect-op.herokuapp.com", tokenCookie
                     .getIdToken().getString("iss"));
             assertNotNull(tokenCookie.getUserInfo());
         }
