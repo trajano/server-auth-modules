@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.json.Json;
@@ -55,7 +56,9 @@ public final class Utils {
      */
     public static byte[] getJwsPayload(final String serialization,
             final JsonWebKeySet keyset) throws GeneralSecurityException {
-        LOG.finest("serialized payload = " + serialization);
+        if (LOG.isLoggable(Level.FINEST)) {
+            LOG.finest("serialized payload = " + serialization);
+        }
         final String[] jwtParts = serialization.split("\\.");
 
         final JsonObject joseHeader = Json.createReader(
