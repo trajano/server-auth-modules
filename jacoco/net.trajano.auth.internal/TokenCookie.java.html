@@ -187,7 +187,7 @@ public class TokenCookie {
             throws GeneralSecurityException {
 <span class="fc" id="L188">        final SecretKey secret = buildSecretKey(clientId, clientSecret);</span>
 <span class="fc" id="L189">        final StringBuilder b = new StringBuilder(encode(idToken, secret));</span>
-<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        if (userInfo != null) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (userInfo != null) {</span>
 <span class="fc" id="L191">            b.append('.');</span>
 <span class="fc" id="L192">            b.append(encode(userInfo, secret));</span>
         }

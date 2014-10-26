@@ -1,16 +1,18 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./OAuthToken.html" title="net.trajano.auth.internal.OAuthToken" alt="" coords="16,16,109,43"/>
-<area shape="rect" id="node1" href="./OAuthToken.html" title="&lt;TABLE&gt;" alt="" coords="5,5,120,53"/>
-<area shape="rect" id="node2_1" href="./OAuthParameters.html" title="net.trajano.auth.internal.OAuthParameters" alt="" coords="155,16,280,43"/>
-<area shape="rect" id="node2" href="./OAuthParameters.html" title="&lt;TABLE&gt;" alt="" coords="144,5,291,53"/>
-<area shape="rect" id="node3_2" href="./Utils.html" title="net.trajano.auth.internal.Utils" alt="" coords="327,16,375,43"/>
-<area shape="rect" id="node3" href="./Utils.html" title="&lt;TABLE&gt;" alt="" coords="315,5,387,53"/>
-<area shape="rect" id="node4_3" href="./JsonWebKeySet.html" title="net.trajano.auth.internal.JsonWebKeySet" alt="" coords="422,16,541,43"/>
-<area shape="rect" id="node4" href="./JsonWebKeySet.html" title="&lt;TABLE&gt;" alt="" coords="411,5,551,53"/>
-<area shape="rect" id="node5_4" href="./Base64.html" title="net.trajano.auth.internal.Base64" alt="" coords="586,16,651,43"/>
-<area shape="rect" id="node5" href="./Base64.html" title="&lt;TABLE&gt;" alt="" coords="575,5,662,53"/>
-<area shape="rect" id="node6_5" href="./OpenIDProviderConfiguration.html" title="net.trajano.auth.internal.OpenIDProviderConfiguration" alt="" coords="697,16,887,43"/>
-<area shape="rect" id="node6" href="./OpenIDProviderConfiguration.html" title="&lt;TABLE&gt;" alt="" coords="686,5,898,53"/>
-<area shape="rect" id="node7_6" href="./TokenCookie.html" title="net.trajano.auth.internal.TokenCookie" alt="" coords="933,16,1030,43"/>
-<area shape="rect" id="node7" href="./TokenCookie.html" title="&lt;TABLE&gt;" alt="" coords="922,5,1041,53"/>
+<area shape="rect" id="node1_0" href="./JsonWebAlgorithm.html" title="net.trajano.auth.internal.JsonWebAlgorithm" alt="" coords="16,11,147,55"/>
+<area shape="rect" id="node1" href="./JsonWebAlgorithm.html" title="&lt;TABLE&gt;" alt="" coords="5,6,157,61"/>
+<area shape="rect" id="node2_1" href="./OAuthToken.html" title="net.trajano.auth.internal.OAuthToken" alt="" coords="192,20,285,47"/>
+<area shape="rect" id="node2" href="./OAuthToken.html" title="&lt;TABLE&gt;" alt="" coords="181,9,296,57"/>
+<area shape="rect" id="node3_2" href="./OAuthParameters.html" title="net.trajano.auth.internal.OAuthParameters" alt="" coords="331,20,456,47"/>
+<area shape="rect" id="node3" href="./OAuthParameters.html" title="&lt;TABLE&gt;" alt="" coords="320,9,467,57"/>
+<area shape="rect" id="node4_3" href="./Utils.html" title="net.trajano.auth.internal.Utils" alt="" coords="503,20,551,47"/>
+<area shape="rect" id="node4" href="./Utils.html" title="&lt;TABLE&gt;" alt="" coords="491,9,563,57"/>
+<area shape="rect" id="node5_4" href="./JsonWebKeySet.html" title="net.trajano.auth.internal.JsonWebKeySet" alt="" coords="598,20,717,47"/>
+<area shape="rect" id="node5" href="./JsonWebKeySet.html" title="&lt;TABLE&gt;" alt="" coords="587,9,727,57"/>
+<area shape="rect" id="node6_5" href="./Base64.html" title="net.trajano.auth.internal.Base64" alt="" coords="762,20,827,47"/>
+<area shape="rect" id="node6" href="./Base64.html" title="&lt;TABLE&gt;" alt="" coords="751,9,838,57"/>
+<area shape="rect" id="node7_6" href="./OpenIDProviderConfiguration.html" title="net.trajano.auth.internal.OpenIDProviderConfiguration" alt="" coords="873,20,1063,47"/>
+<area shape="rect" id="node7" href="./OpenIDProviderConfiguration.html" title="&lt;TABLE&gt;" alt="" coords="862,9,1074,57"/>
+<area shape="rect" id="node8_7" href="./TokenCookie.html" title="net.trajano.auth.internal.TokenCookie" alt="" coords="1109,20,1206,47"/>
+<area shape="rect" id="node8" href="./TokenCookie.html" title="&lt;TABLE&gt;" alt="" coords="1098,9,1217,57"/>
 </map>

@@ -1,12 +1,20 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./OAuthModuleTest.html" title="net.trajano.auth.test.OAuthModuleTest" alt="" coords="16,16,141,43"/>
-<area shape="rect" id="node1" href="./OAuthModuleTest.html" title="&lt;TABLE&gt;" alt="" coords="5,5,152,53"/>
-<area shape="rect" id="node2_1" href="./ConfigurationTest.html" title="net.trajano.auth.test.ConfigurationTest" alt="" coords="187,16,311,43"/>
-<area shape="rect" id="node2" href="./ConfigurationTest.html" title="&lt;TABLE&gt;" alt="" coords="177,5,322,53"/>
-<area shape="rect" id="node3_2" href="./HerokuTest.html" title="net.trajano.auth.test.HerokuTest" alt="" coords="357,16,446,43"/>
-<area shape="rect" id="node3" href="./HerokuTest.html" title="&lt;TABLE&gt;" alt="" coords="346,5,457,53"/>
-<area shape="rect" id="node4_3" href="./TestUtilityClasses.html" title="net.trajano.auth.test.TestUtilityClasses" alt="" coords="491,16,621,43"/>
-<area shape="rect" id="node4" href="./TestUtilityClasses.html" title="&lt;TABLE&gt;" alt="" coords="481,5,631,53"/>
-<area shape="rect" id="node5_4" href="./TokenCookieTest.html" title="net.trajano.auth.test.TokenCookieTest" alt="" coords="666,16,790,43"/>
-<area shape="rect" id="node5" href="./TokenCookieTest.html" title="&lt;TABLE&gt;" alt="" coords="655,5,801,53"/>
+<area shape="rect" id="node1_0" href="./ConfigurationIT.html" title="net.trajano.auth.test.ConfigurationIT" alt="" coords="15,16,124,43"/>
+<area shape="rect" id="node1" href="./ConfigurationIT.html" title="&lt;TABLE&gt;" alt="" coords="4,5,135,53"/>
+<area shape="rect" id="node2_1" href="./OAuthModuleTest.html" title="net.trajano.auth.test.OAuthModuleTest" alt="" coords="169,16,295,43"/>
+<area shape="rect" id="node2" href="./OAuthModuleTest.html" title="&lt;TABLE&gt;" alt="" coords="159,5,305,53"/>
+<area shape="rect" id="node3_2" href="./AuthSequenceIT.html" title="net.trajano.auth.test.AuthSequenceIT" alt="" coords="340,16,457,43"/>
+<area shape="rect" id="node3" href="./AuthSequenceIT.html" title="&lt;TABLE&gt;" alt="" coords="329,5,468,53"/>
+<area shape="rect" id="node4_3" href="./JwtTest.html" title="net.trajano.auth.test.JwtTest" alt="" coords="503,16,571,43"/>
+<area shape="rect" id="node4" href="./JwtTest.html" title="&lt;TABLE&gt;" alt="" coords="493,5,582,53"/>
+<area shape="rect" id="node5_4" href="./HttpHeaderAuthModuleTest.html" title="net.trajano.auth.test.HttpHeaderAuthModuleTest" alt="" coords="617,16,799,43"/>
+<area shape="rect" id="node5" href="./HttpHeaderAuthModuleTest.html" title="&lt;TABLE&gt;" alt="" coords="606,5,810,53"/>
+<area shape="rect" id="node6_5" href="./HerokuTest.html" title="net.trajano.auth.test.HerokuTest" alt="" coords="845,16,934,43"/>
+<area shape="rect" id="node6" href="./HerokuTest.html" title="&lt;TABLE&gt;" alt="" coords="834,5,945,53"/>
+<area shape="rect" id="node7_6" href="./TestUtilityClasses.html" title="net.trajano.auth.test.TestUtilityClasses" alt="" coords="979,16,1109,43"/>
+<area shape="rect" id="node7" href="./TestUtilityClasses.html" title="&lt;TABLE&gt;" alt="" coords="969,5,1119,53"/>
+<area shape="rect" id="node8_7" href="./AuthSequenceTest.html" title="net.trajano.auth.test.AuthSequenceTest" alt="" coords="1154,16,1286,43"/>
+<area shape="rect" id="node8" href="./AuthSequenceTest.html" title="&lt;TABLE&gt;" alt="" coords="1143,5,1297,53"/>
+<area shape="rect" id="node9_8" href="./TokenCookieTest.html" title="net.trajano.auth.test.TokenCookieTest" alt="" coords="1331,16,1455,43"/>
+<area shape="rect" id="node9" href="./TokenCookieTest.html" title="&lt;TABLE&gt;" alt="" coords="1321,5,1466,53"/>
 </map>

@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-<span class="nc" id="L15">public class OAuthToken {</span>
+<span class="fc" id="L15">public class OAuthToken {</span>
     /**
      * Access token.
      */
@@ -32,48 +32,63 @@ import javax.xml.bind.annotation.XmlRootElement;
     private String idToken;
 
     /**
+     * The refresh token, which can be used to obtain new access tokens using
+     * the same authorization grant as described in Section 6.
+     */
+    @XmlElement(name = &quot;refresh_token&quot;)
+    private String refreshToken;
+
+    /**
      * Token type.
      */
     @XmlElement(name = &quot;token_type&quot;)
     private String tokenType;
 
     public String getAccessToken() {
-<span class="nc" id="L41">        return accessToken;</span>
+<span class="nc" id="L48">        return accessToken;</span>
     }
 
     public int getExpiresIn() {
-<span class="nc" id="L45">        return expiresIn;</span>
+<span class="nc" id="L52">        return expiresIn;</span>
     }
 
     public String getIdToken() {
-<span class="nc" id="L49">        return idToken;</span>
+<span class="fc" id="L56">        return idToken;</span>
+    }
+
+    public String getRefreshToken() {
+<span class="nc" id="L60">        return refreshToken;</span>
     }
 
     public String getTokenType() {
-<span class="nc" id="L53">        return tokenType;</span>
+<span class="nc" id="L64">        return tokenType;</span>
     }
 
     public void setAccessToken(final String accessToken) {
-<span class="nc" id="L57">        this.accessToken = accessToken;</span>
-<span class="nc" id="L58">    }</span>
+<span class="nc" id="L68">        this.accessToken = accessToken;</span>
+<span class="nc" id="L69">    }</span>
 
     public void setExpiresIn(final int expiresIn) {
-<span class="nc" id="L61">        this.expiresIn = expiresIn;</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L72">        this.expiresIn = expiresIn;</span>
+<span class="nc" id="L73">    }</span>
 
     public void setIdToken(final String idToken) {
-<span class="nc" id="L65">        this.idToken = idToken;</span>
-<span class="nc" id="L66">    }</span>
+<span class="fc" id="L76">        this.idToken = idToken;</span>
+<span class="fc" id="L77">    }</span>
+
+    public void setRefreshToken(final String refreshToken) {
+<span class="nc" id="L80">        this.refreshToken = refreshToken;</span>
+<span class="nc" id="L81">    }</span>
 
     public void setTokenType(final String tokenType) {
-<span class="nc" id="L69">        this.tokenType = tokenType;</span>
-<span class="nc" id="L70">    }</span>
+<span class="nc" id="L84">        this.tokenType = tokenType;</span>
+<span class="nc" id="L85">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L74">        return &quot;TokenResponse [accessToken=&quot; + accessToken + &quot;, expiresIn=&quot;</span>
-                + expiresIn + &quot;, idToken=&quot; + idToken + &quot;, tokenType=&quot;
-                + tokenType + &quot;]&quot;;
+<span class="nc" id="L89">        return &quot;OAuthToken [accessToken=&quot; + accessToken + &quot;, expiresIn=&quot;</span>
+                + expiresIn + &quot;, idToken=&quot; + idToken + &quot;, refreshToken=&quot;
+                + refreshToken + &quot;, tokenType=&quot; + tokenType + &quot;]&quot;;
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

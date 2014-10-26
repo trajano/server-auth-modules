@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 Trajano</copyright>
     <item>
-      <title>File: 14,
+      <title>File: 15,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -144,6 +144,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.package-info.java">net/trajano/auth/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.JsonWebKeySet.java">net/trajano/auth/internal/JsonWebKeySet.java</a>
                 </td>
                 <td>
@@ -158,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.package-info.java">net/trajano/auth/package-info.java</a>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.JsonWebAlgorithm.java">net/trajano/auth/internal/JsonWebAlgorithm.java</a>
                 </td>
                 <td>
                   0

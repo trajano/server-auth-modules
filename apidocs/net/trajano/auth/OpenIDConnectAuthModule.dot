@@ -10,18 +10,18 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.auth.OAuthModule
-	c115 [label=<<table title="net.trajano.auth.OAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthModule.html">
+	c137 [label=<<table title="net.trajano.auth.OAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Helvetica-Oblique"> OAuthModule </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./OAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.OpenIDConnectAuthModule
-	c116 [label=<<table title="net.trajano.auth.OpenIDConnectAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./OpenIDConnectAuthModule.html">
+	c138 [label=<<table title="net.trajano.auth.OpenIDConnectAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./OpenIDConnectAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> OpenIDConnectAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="./OpenIDConnectAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.auth.OpenIDConnectAuthModule extends net.trajano.auth.OAuthModule
-	c115:p -> c116:p [dir=back,arrowtail=empty];
+	c137:p -> c138:p [dir=back,arrowtail=empty];
 }
 

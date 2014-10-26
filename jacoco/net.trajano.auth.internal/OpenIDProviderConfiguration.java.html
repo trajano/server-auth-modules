@@ -91,18 +91,18 @@ public class OpenIDProviderConfiguration {
      * @param jsonObject
      *            JSON object
      */
-<span class="nc" id="L94">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
-<span class="nc" id="L95">        setAuthorizationEndpoint(URI.create(jsonObject</span>
+<span class="fc" id="L94">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
+<span class="fc" id="L95">        setAuthorizationEndpoint(URI.create(jsonObject</span>
                 .getString(&quot;authorization_endpoint&quot;)));
-<span class="nc" id="L97">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
-<span class="nc" id="L98">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
-<span class="nc" id="L99">        setRevocationEndpoint(URI.create(jsonObject</span>
+<span class="fc" id="L97">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
+<span class="fc" id="L98">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
+<span class="fc" id="L99">        setRevocationEndpoint(URI.create(jsonObject</span>
                 .getString(&quot;revocation_endpoint&quot;)));
-<span class="nc" id="L101">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
-<span class="nc" id="L102">    }</span>
+<span class="fc" id="L101">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
+<span class="fc" id="L102">    }</span>
 
     public URI getAuthorizationEndpoint() {
-<span class="nc" id="L105">        return authorizationEndpoint;</span>
+<span class="fc" id="L105">        return authorizationEndpoint;</span>
     }
 
     public List&lt;String&gt; getIdTokenAlgValuesSupported() {
@@ -130,7 +130,7 @@ public class OpenIDProviderConfiguration {
     }
 
     public URI getTokenEndpoint() {
-<span class="nc" id="L133">        return tokenEndpoint;</span>
+<span class="fc" id="L133">        return tokenEndpoint;</span>
     }
 
     public List&lt;String&gt; getTokenEndpointAuthMethodsSupported() {
@@ -138,12 +138,12 @@ public class OpenIDProviderConfiguration {
     }
 
     public URI getUserinfoEndpoint() {
-<span class="nc" id="L141">        return userinfoEndpoint;</span>
+<span class="fc" id="L141">        return userinfoEndpoint;</span>
     }
 
     public void setAuthorizationEndpoint(final URI authorizationEndpoint) {
-<span class="nc" id="L145">        this.authorizationEndpoint = authorizationEndpoint;</span>
-<span class="nc" id="L146">    }</span>
+<span class="fc" id="L145">        this.authorizationEndpoint = authorizationEndpoint;</span>
+<span class="fc" id="L146">    }</span>
 
     public void setIdTokenAlgValuesSupported(
             final List&lt;String&gt; idTokenAlgValuesSupported) {
@@ -151,12 +151,12 @@ public class OpenIDProviderConfiguration {
 <span class="nc" id="L151">    }</span>
 
     public void setIssuer(final String issuer) {
-<span class="nc" id="L154">        this.issuer = issuer;</span>
-<span class="nc" id="L155">    }</span>
+<span class="fc" id="L154">        this.issuer = issuer;</span>
+<span class="fc" id="L155">    }</span>
 
     public void setJwksUri(final URI jwksUri) {
-<span class="nc" id="L158">        this.jwksUri = jwksUri;</span>
-<span class="nc" id="L159">    }</span>
+<span class="fc" id="L158">        this.jwksUri = jwksUri;</span>
+<span class="fc" id="L159">    }</span>
 
     public void setResponseTypesSupported(
             final List&lt;String&gt; responseTypesSupported) {
@@ -164,8 +164,8 @@ public class OpenIDProviderConfiguration {
 <span class="nc" id="L164">    }</span>
 
     public void setRevocationEndpoint(final URI revocationEndpoint) {
-<span class="nc" id="L167">        this.revocationEndpoint = revocationEndpoint;</span>
-<span class="nc" id="L168">    }</span>
+<span class="fc" id="L167">        this.revocationEndpoint = revocationEndpoint;</span>
+<span class="fc" id="L168">    }</span>
 
     public void setSubjectTypesSupported(
             final List&lt;String&gt; subjectTypesSupported) {
@@ -173,8 +173,8 @@ public class OpenIDProviderConfiguration {
 <span class="nc" id="L173">    }</span>
 
     public void setTokenEndpoint(final URI tokenEndpoint) {
-<span class="nc" id="L176">        this.tokenEndpoint = tokenEndpoint;</span>
-<span class="nc" id="L177">    }</span>
+<span class="fc" id="L176">        this.tokenEndpoint = tokenEndpoint;</span>
+<span class="fc" id="L177">    }</span>
 
     public void setTokenEndpointAuthMethodsSupported(
             final List&lt;String&gt; tokenEndpointAuthMethodsSupported) {

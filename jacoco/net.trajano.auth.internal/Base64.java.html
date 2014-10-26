@@ -192,7 +192,7 @@ public final class Base64 {
         } else {
 <span class="fc" id="L193">            buffer.append(ENCODE_MAP[p0]);</span>
 <span class="fc" id="L194">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="pc bpc" id="L195" title="1 of 2 branches missed.">            if (padding) {</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            if (padding) {</span>
 <span class="fc" id="L196">                buffer.append(&quot;==&quot;);</span>
             }
         }

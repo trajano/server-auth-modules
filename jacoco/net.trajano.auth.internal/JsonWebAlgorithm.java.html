@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JsonWebAlgorithm.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.internal</a> &gt; <span class="el_source">JsonWebAlgorithm.java</span></div><h1>JsonWebAlgorithm.java</h1><pre class="source lang-java linenums">package net.trajano.auth.internal;
+
+import javax.xml.bind.annotation.XmlEnumValue;
+
+/**
+ * See Appendix A &amp; B of
+ * http://self-issued.info/docs/draft-ietf-jose-json-web-algorithms-00.html.
+ */
+<span class="fc" id="L9">public enum JsonWebAlgorithm {</span>
+    /**
+     * Advanced Encryption Standard (AES) using 128 bit keys in Galois/Counter
+     * Mode.
+     */
+<span class="fc" id="L14">    A128GCM(&quot;AES/GCM/NoPadding&quot;),</span>
+    /**
+     * Advanced Encryption Standard (AES) Key Wrap Algorithm RFC 3394 [RFC3394]
+     * using 128 bit keys.
+     */
+<span class="fc" id="L19">    A128KW(null),</span>
+    /**
+     * Advanced Encryption Standard (AES) using 256 bit keys in Cipher Block
+     * Chaining mode.
+     */
+<span class="fc" id="L24">    A256CBC(&quot;AES/CBC/PKCS5Padding&quot;),</span>
+    /**
+     * Advanced Encryption Standard (AES) using 256 bit keys in Galois/Counter
+     * Mode.
+     */
+<span class="fc" id="L29">    A256GCM(&quot;AES/GCM/NoPadding&quot;),</span>
+    /**
+     * Advanced Encryption Standard (AES) Key Wrap Algorithm RFC 3394 [RFC3394]
+     * using 256 bit keys.
+     */
+<span class="fc" id="L34">    A256KW(null),</span>
+    /**
+     * Elliptic Curve Diffie-Hellman Ephemeral Static.
+     */
+<span class="fc" id="L38">    @XmlEnumValue(&quot;ECDH-ES&quot;)</span>
+    ECDH_ES(null),
+    /**
+     * ECDSA using P-256 curve and SHA-256 hash algorithm.
+     */
+<span class="fc" id="L43">    ES256(&quot;SHA256withECDSA&quot;),</span>
+    /**
+     * ECDSA using P-384 curve and SHA-384 hash algorithm.
+     */
+<span class="fc" id="L47">    ES384(&quot;SHA384withECDSA&quot;),</span>
+
+    /**
+     * ECDSA using P-521 curve and SHA-512 hash algorithm.
+     */
+<span class="fc" id="L52">    ES512(&quot;SHA512withECDSA&quot;),</span>
+    /**
+     * HMAC using SHA-256 hash algorithm.
+     */
+<span class="fc" id="L56">    HS256(&quot;HmacSHA256&quot;),</span>
+    /**
+     * HMAC using SHA-384 hash algorithm.
+     */
+<span class="fc" id="L60">    HS384(&quot;HmacSHA384&quot;),</span>
+    /**
+     * HMAC using SHA-512 hash algorithm.
+     */
+<span class="fc" id="L64">    HS512(&quot;HmacSHA512&quot;),</span>
+    /**
+     * RSA using SHA-256 hash algorithm.
+     */
+<span class="fc" id="L68">    RS256(&quot;SHA256withRSA&quot;),</span>
+    /**
+     * RSA using SHA-384 hash algorithm.
+     */
+<span class="fc" id="L72">    RS384(&quot;SHA384withRSA&quot;),</span>
+    /**
+     * RSA using SHA-512 hash algorithm.
+     */
+<span class="fc" id="L76">    RS512(&quot;SHA512withRSA&quot;),</span>
+    /**
+     * RSA using Optimal Asymmetric Encryption Padding (OAEP).
+     */
+<span class="fc" id="L80">    @XmlEnumValue(&quot;RSA-OAEP&quot;)</span>
+    RSA_OAEP(&quot;RSA/ECB/OAEPWithSHA-1AndMGF1Padding&quot;),
+    /**
+     * RSA using RSA-PKCS1-1.5 padding.
+     */
+<span class="fc" id="L85">    RSA1_5(&quot;RSA/ECB/PKCS1Padding&quot;);</span>
+
+    /**
+     * JCA Algorithm.
+     */
+    private final String jcaAlgorithm;
+
+    /**
+     * Assigns a JCA Algorithm to the JWA.
+     *
+     * @param jcaAlgorithm
+     *            JCA algorithm
+     */
+<span class="fc" id="L98">    private JsonWebAlgorithm(final String jcaAlgorithm) {</span>
+<span class="fc" id="L99">        this.jcaAlgorithm = jcaAlgorithm;</span>
+<span class="fc" id="L100">    }</span>
+
+    /**
+     * Returns the JCA Algorithm Name.
+     *
+     * @return JCA Algorithm Name.
+     */
+    public String toJca() {
+<span class="fc" id="L108">        return jcaAlgorithm;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

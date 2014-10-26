@@ -53,13 +53,13 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
     protected OpenIDProviderConfiguration getOpenIDProviderConfig(
             final Client restClient, final Map&lt;String, String&gt; options)
             throws AuthException {
-<span class="nc" id="L56">        final String issuerUri = options.get(ISSUER_URI_KEY);</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (issuerUri == null) {</span>
+<span class="fc" id="L56">        final String issuerUri = options.get(ISSUER_URI_KEY);</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (issuerUri == null) {</span>
 <span class="nc" id="L58">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, ISSUER_URI_KEY);</span>
 <span class="nc" id="L59">            throw new AuthException(MessageFormat.format(</span>
                     R.getString(&quot;missingOption&quot;), ISSUER_URI_KEY));
         }
-<span class="nc" id="L62">        return restClient</span>
+<span class="fc" id="L62">        return restClient</span>
                 .target(URI.create(issuerUri).resolve(
                         &quot;/.well-known/openid-configuration&quot;))
                 .request(MediaType.APPLICATION_JSON_TYPE)
