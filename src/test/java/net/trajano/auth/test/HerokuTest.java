@@ -44,8 +44,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Tests using Heroku.
+ * Tests using Heroku. Ignored for now as their SSL certificates are not
+ * configured correctly.
  */
+@Ignore
 public class HerokuTest {
     @Test
     public void testConfig() throws Exception {
@@ -101,9 +103,9 @@ public class HerokuTest {
             when(req.isSecure()).thenReturn(true);
             when(req.getMethod()).thenReturn("GET");
             when(req.getRequestURL())
-                    .thenReturn(
-                            new StringBuffer(
-                                    "https://www.trajano.net/app/somefile.jsp"));
+            .thenReturn(
+                    new StringBuffer(
+                            "https://www.trajano.net/app/somefile.jsp"));
             when(req.getRequestURI()).thenReturn("/app/somefile.jsp",
                     "/app/somefile.jsp");
 
@@ -233,9 +235,9 @@ public class HerokuTest {
                     .mock(HttpServletRequest.class);
             when(req.getContextPath()).thenReturn("/app");
             when(req.getRequestURL())
-                    .thenReturn(
-                            new StringBuffer(
-                                    "https://www.trajano.net/app/somefile.jsp"));
+            .thenReturn(
+                    new StringBuffer(
+                            "https://www.trajano.net/app/somefile.jsp"));
 
             when(messageInfo.getRequestMessage()).thenReturn(req);
 
