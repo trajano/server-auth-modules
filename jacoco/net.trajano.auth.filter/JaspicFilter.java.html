@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
     @Override
     public void doFilter(final ServletRequest request,
             final ServletResponse response, final FilterChain chain)
-                    throws IOException, ServletException {
+            throws IOException, ServletException {
         try {
 <span class="nc" id="L54">            final ServerAuthModule serverAuthModule = serverAuthModuleClass</span>
                     .newInstance();
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
 <span class="nc" id="L79">                chain.doFilter(</span>
                         new UserInjectedServletRequest(
                                 (HttpServletRequest) request, handler
-                                .getUserPrincipal()), response);
+                                        .getUserPrincipal()), response);
 <span class="nc bnc" id="L83" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SEND_FAILURE) {</span>
 
 <span class="nc bnc" id="L85" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SEND_SUCCESS) {</span>
@@ -113,8 +113,8 @@ import javax.servlet.http.HttpServletResponse;
             }
 <span class="nc" id="L114">            options.put(</span>
                     name,
-                    filterConfig.getInitParameter(name).replaceAll(&quot;$context&quot;,
-                            contextPath));
+                    filterConfig.getInitParameter(name).replaceAll(
+                            &quot;\\$context&quot;, contextPath));
 <span class="nc" id="L118">        }</span>
 <span class="nc" id="L119">    }</span>
 }
