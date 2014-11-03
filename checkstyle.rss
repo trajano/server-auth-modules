@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 Trajano</copyright>
     <item>
-      <title>File: 15,
+      <title>File: 21,
              Errors: 0,
-             Warnings: 0,
+             Warnings: 4,
              Infos: 0
       </title>
             <link>http://site.trajano.net/trajano/server-auth-modules//checkstyle.html</link>
@@ -46,7 +46,49 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.package-info.java">net/trajano/auth/filter/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.GoogleAuthModule.java">net/trajano/auth/GoogleAuthModule.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.HttpServletRequestResponseMessageInfo.java">net/trajano/auth/filter/HttpServletRequestResponseMessageInfo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OAuthParameters.java">net/trajano/auth/internal/OAuthParameters.java</a>
                 </td>
                 <td>
                   0
@@ -74,13 +116,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OAuthParameters.java">net/trajano/auth/internal/OAuthParameters.java</a>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.JaspicFilter.java">net/trajano/auth/filter/JaspicFilter.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  0
+                  2
                 </td>
                 <td>
                   0
@@ -200,6 +242,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.JaspicFilterCallbackHandler.java">net/trajano/auth/filter/JaspicFilterCallbackHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.TokenCookie.java">net/trajano/auth/internal/TokenCookie.java</a>
                 </td>
                 <td>
@@ -229,6 +285,34 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.OAuthModule.java">net/trajano/auth/OAuthModule.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.UserInjectedServletRequest.java">net/trajano/auth/filter/UserInjectedServletRequest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.BasicPrincipal.java">net/trajano/auth/filter/BasicPrincipal.java</a>
                 </td>
                 <td>
                   0

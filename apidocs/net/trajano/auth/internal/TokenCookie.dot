@@ -10,7 +10,7 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.auth.internal.TokenCookie
-	c171 [label=<<table title="net.trajano.auth.internal.TokenCookie" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./TokenCookie.html">
+	c337 [label=<<table title="net.trajano.auth.internal.TokenCookie" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./TokenCookie.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> TokenCookie </td></tr>
 		</table></td></tr>

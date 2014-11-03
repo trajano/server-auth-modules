@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JaspicFilter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.filter</a> &gt; <span class="el_source">JaspicFilter.java</span></div><h1>JaspicFilter.java</h1><pre class="source lang-java linenums">package net.trajano.auth.filter;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.security.auth.Subject;
+import javax.security.auth.message.AuthException;
+import javax.security.auth.message.AuthStatus;
+import javax.security.auth.message.MessagePolicy;
+import javax.security.auth.message.MessagePolicy.TargetPolicy;
+import javax.security.auth.message.module.ServerAuthModule;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * This is a filter that calls upon the JASPIC ServerAuthModules. This is used
+ * if JASPIC deployment is not an option because the servers are more locked
+ * down.
+ */
+<span class="nc" id="L30">public class JaspicFilter implements Filter {</span>
+
+    /**
+     * Server auth module class.
+     */
+    private static final String SERVER_AUTH_MODULE_CLASS = &quot;server_auth_module_class&quot;;
+    /**
+     * Options.
+     */
+    private Map&lt;String, String&gt; options;
+    /**
+     * {@link ServerAuthModule} class.
+     */
+    private Class&lt;? extends ServerAuthModule&gt; serverAuthModuleClass;
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L47">    }</span>
+
+    @Override
+    public void doFilter(final ServletRequest request,
+            final ServletResponse response, final FilterChain chain)
+                    throws IOException, ServletException {
+        try {
+<span class="nc" id="L54">            final ServerAuthModule serverAuthModule = serverAuthModuleClass</span>
+                    .newInstance();
+<span class="nc" id="L56">            final JaspicFilterCallbackHandler handler = new JaspicFilterCallbackHandler();</span>
+<span class="nc" id="L57">            serverAuthModule.initialize(new MessagePolicy(new TargetPolicy[0],</span>
+                    true), null, handler, options);
+            @SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L60">            final List&lt;Class&gt; supportedTypes = Arrays.asList(serverAuthModule</span>
+                    .getSupportedMessageTypes());
+<span class="nc bnc" id="L62" title="All 4 branches missed.">            if (!supportedTypes.contains(HttpServletRequest.class)</span>
+                    || !supportedTypes.contains(HttpServletResponse.class)) {
+<span class="nc" id="L64">                throw new ServletException(</span>
+                        &quot;The server auth module &quot;
+                                + serverAuthModuleClass
+                                + &quot; must support HttpServletRequest and HttpServletResponse message types.&quot;);
+            }
+<span class="nc" id="L69">            final HttpServletRequestResponseMessageInfo messageInfo = new HttpServletRequestResponseMessageInfo();</span>
+<span class="nc" id="L70">            messageInfo.setRequestMessage(request);</span>
+<span class="nc" id="L71">            messageInfo.setResponseMessage(response);</span>
+<span class="nc" id="L72">            final Subject clientSubject = new Subject();</span>
+<span class="nc" id="L73">            final AuthStatus authStatus = serverAuthModule.validateRequest(</span>
+                    messageInfo, clientSubject, null);
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            if (authStatus == AuthStatus.FAILURE) {</span>
+<span class="nc" id="L76">                throw new ServletException(&quot;Auth Failure&quot;);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SUCCESS) {</span>
+
+<span class="nc" id="L79">                chain.doFilter(</span>
+                        new UserInjectedServletRequest(
+                                (HttpServletRequest) request, handler
+                                .getUserPrincipal()), response);
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SEND_FAILURE) {</span>
+
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SEND_SUCCESS) {</span>
+            }
+<span class="nc" id="L87">            serverAuthModule.cleanSubject(messageInfo, clientSubject);</span>
+<span class="nc" id="L88">        } catch (final AuthException | InstantiationException</span>
+                | IllegalAccessException e) {
+<span class="nc" id="L90">            throw new ServletException(e);</span>
+<span class="nc" id="L91">        }</span>
+<span class="nc" id="L92">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    @Override
+    public void init(final FilterConfig filterConfig) throws ServletException {
+        try {
+<span class="nc" id="L98">            serverAuthModuleClass = (Class&lt;? extends ServerAuthModule&gt;) Class</span>
+                    .forName(filterConfig
+                            .getInitParameter(SERVER_AUTH_MODULE_CLASS));
+<span class="nc" id="L101">        } catch (final ClassNotFoundException e) {</span>
+<span class="nc" id="L102">            throw new ServletException(e);</span>
+<span class="nc" id="L103">        }</span>
+<span class="nc" id="L104">        final String contextPath = filterConfig.getServletContext()</span>
+                .getContextPath();
+<span class="nc" id="L106">        options = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L107">        final Enumeration&lt;String&gt; initParameterNames = filterConfig</span>
+                .getInitParameterNames();
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        while (initParameterNames.hasMoreElements()) {</span>
+<span class="nc" id="L110">            final String name = initParameterNames.nextElement();</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (name == SERVER_AUTH_MODULE_CLASS) {</span>
+<span class="nc" id="L112">                continue;</span>
+            }
+<span class="nc" id="L114">            options.put(</span>
+                    name,
+                    filterConfig.getInitParameter(name).replaceAll(&quot;$context&quot;,
+                            contextPath));
+<span class="nc" id="L118">        }</span>
+<span class="nc" id="L119">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

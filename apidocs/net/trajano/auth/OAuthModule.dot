@@ -10,31 +10,31 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.auth.OAuthModule
-	c100 [label=<<table title="net.trajano.auth.OAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./OAuthModule.html">
+	c236 [label=<<table title="net.trajano.auth.OAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./OAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Helvetica-Oblique"> OAuthModule </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./OAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.OpenIDConnectAuthModule
-	c101 [label=<<table title="net.trajano.auth.OpenIDConnectAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OpenIDConnectAuthModule.html">
+	c237 [label=<<table title="net.trajano.auth.OpenIDConnectAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OpenIDConnectAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> OpenIDConnectAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="./OpenIDConnectAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.GoogleAuthModule
-	c102 [label=<<table title="net.trajano.auth.GoogleAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GoogleAuthModule.html">
+	c238 [label=<<table title="net.trajano.auth.GoogleAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./GoogleAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> GoogleAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="./GoogleAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.auth.OAuthModule implements javax.security.auth.message.module.ServerAuthModule
-	c111:p -> c100:p [dir=back,arrowtail=empty,style=dashed];
+	c252:p -> c236:p [dir=back,arrowtail=empty,style=dashed];
 	//net.trajano.auth.OpenIDConnectAuthModule extends net.trajano.auth.OAuthModule
-	c100:p -> c101:p [dir=back,arrowtail=empty];
+	c236:p -> c237:p [dir=back,arrowtail=empty];
 	//net.trajano.auth.GoogleAuthModule extends net.trajano.auth.OAuthModule
-	c100:p -> c102:p [dir=back,arrowtail=empty];
+	c236:p -> c238:p [dir=back,arrowtail=empty];
 	// javax.security.auth.message.module.ServerAuthModule
-	c111 [label=<<table title="javax.security.auth.message.module.ServerAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html">
+	c252 [label=<<table title="javax.security.auth.message.module.ServerAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> ServerAuthModule </td></tr>

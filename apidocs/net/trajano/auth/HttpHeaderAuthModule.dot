@@ -10,15 +10,15 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.auth.HttpHeaderAuthModule
-	c62 [label=<<table title="net.trajano.auth.HttpHeaderAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./HttpHeaderAuthModule.html">
+	c129 [label=<<table title="net.trajano.auth.HttpHeaderAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./HttpHeaderAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> HttpHeaderAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="./HttpHeaderAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.auth.HttpHeaderAuthModule implements javax.security.auth.message.module.ServerAuthModule
-	c74:p -> c62:p [dir=back,arrowtail=empty,style=dashed];
+	c146:p -> c129:p [dir=back,arrowtail=empty,style=dashed];
 	// javax.security.auth.message.module.ServerAuthModule
-	c74 [label=<<table title="javax.security.auth.message.module.ServerAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html">
+	c146 [label=<<table title="javax.security.auth.message.module.ServerAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> ServerAuthModule </td></tr>

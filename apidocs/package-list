@@ -1,2 +1,3 @@
 net.trajano.auth
+net.trajano.auth.filter
 net.trajano.auth.internal

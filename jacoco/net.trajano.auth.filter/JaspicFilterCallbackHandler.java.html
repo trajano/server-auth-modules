@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JaspicFilterCallbackHandler.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.filter</a> &gt; <span class="el_source">JaspicFilterCallbackHandler.java</span></div><h1>JaspicFilterCallbackHandler.java</h1><pre class="source lang-java linenums">package net.trajano.auth.filter;
+
+import java.io.IOException;
+import java.security.Principal;
+
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.message.callback.CallerPrincipalCallback;
+import javax.security.auth.message.callback.GroupPrincipalCallback;
+
+/**
+ * JASPIC filter callback handler.
+ */
+<span class="nc" id="L15">public class JaspicFilterCallbackHandler implements CallbackHandler {</span>
+    /**
+     * User principal. This is set by the {@link CallerPrincipalCallback}.
+     */
+    private Principal userPrincipal;
+
+    public Principal getUserPrincipal() {
+<span class="nc" id="L22">        return userPrincipal;</span>
+    }
+
+    @Override
+    public void handle(final Callback[] callbacks) throws IOException,
+    UnsupportedCallbackException {
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        for (final Callback callback : callbacks) {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">            if (callback instanceof CallerPrincipalCallback) {</span>
+<span class="nc" id="L31">                final CallerPrincipalCallback cb = (CallerPrincipalCallback) callback;</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">                if (cb.getPrincipal() != null) {</span>
+<span class="nc" id="L33">                    cb.getSubject().getPrincipals().add(cb.getPrincipal());</span>
+<span class="nc" id="L34">                    userPrincipal = cb.getPrincipal();</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">                } else if (cb.getName() != null) {</span>
+<span class="nc" id="L36">                    final Principal p = new BasicPrincipal(cb.getName());</span>
+<span class="nc" id="L37">                    cb.getSubject().getPrincipals().add(p);</span>
+<span class="nc" id="L38">                    userPrincipal = p;</span>
+                }
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            } else if (callback instanceof GroupPrincipalCallback) {</span>
+<span class="nc" id="L41">                final GroupPrincipalCallback cb = (GroupPrincipalCallback) callback;</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">                for (final String group : cb.getGroups()) {</span>
+<span class="nc" id="L43">                    final Principal p = new BasicPrincipal(group);</span>
+<span class="nc" id="L44">                    cb.getSubject().getPrincipals().add(p);</span>
+                }
+<span class="nc" id="L46">            } else {</span>
+<span class="nc" id="L47">                throw new UnsupportedCallbackException(callback);</span>
+            }
+        }
+<span class="nc" id="L50">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
