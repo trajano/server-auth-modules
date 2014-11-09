@@ -1,20 +1,10 @@
 package net.trajano.auth.internal;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.security.GeneralSecurityException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -22,37 +12,8 @@ import javax.json.JsonObject;
  * Manages the token cookie.
  *
  * @author Archimedes
- *
  */
 public class TokenCookie {
-    /**
-     * Cipher algorithm to use. "AES"
-     */
-    private static final String CIPHER_ALGORITHM = "AES";
-
-    /**
-     * Build secret key.
-     *
-     * @param clientId
-     *            client ID (used for creating the {@link SecretKey})
-     * @param clientSecret
-     *            client secret (used for creating the {@link SecretKey})
-     * @return a secret key
-     * @throws GeneralSecurityException
-     *             crypto API problem
-     */
-    public static SecretKey buildSecretKey(final String clientId,
-            final String clientSecret) throws GeneralSecurityException {
-        final PBEKeySpec pbeSpec = new PBEKeySpec(clientSecret.toCharArray(),
-                clientId.getBytes(), 42, 128);
-
-        final SecretKeyFactory factory = SecretKeyFactory
-                .getInstance("PBKDF2WithHmacSHA1");
-        final SecretKey secret = new SecretKeySpec(factory.generateSecret(
-                pbeSpec).getEncoded(), "AES");
-        return secret;
-    }
-
     /**
      * ID Token.
      */
@@ -97,31 +58,22 @@ public class TokenCookie {
      *            client secret (used for creating the {@link SecretKey})
      * @throws GeneralSecurityException
      */
-    public TokenCookie(final String cookieValue, final String clientId,
-            final String clientSecret) throws GeneralSecurityException {
+    public TokenCookie(final String cookieValue, final String clientId, final String clientSecret) throws GeneralSecurityException {
         final String[] cookieValues = cookieValue.split("\\.");
-        final SecretKey secret = buildSecretKey(clientId, clientSecret);
-        final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secret);
+        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
 
         try {
-            idToken = Json.createReader(
-                    new GZIPInputStream(new CipherInputStream(
-                            new ByteArrayInputStream(Base64
-                                    .decode(cookieValues[0])), cipher)))
+            idToken = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[0])), secret))
                     .readObject();
             if (cookieValues.length == 1) {
                 userInfo = null;
             } else {
-                userInfo = Json.createReader(
-                        new GZIPInputStream(new CipherInputStream(
-                                new ByteArrayInputStream(Base64
-                                        .decode(cookieValues[1])), cipher)))
+                userInfo = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[1])), secret))
                         .readObject();
             }
         } catch (final IOException e) {
-                throw new GeneralSecurityException(e);
-            }
+            throw new GeneralSecurityException(e);
+        }
     }
 
     /**
@@ -134,18 +86,10 @@ public class TokenCookie {
      * @return encoded JSON object.
      * @throws GeneralSecurityException
      */
-    private String encode(final JsonObject jsonObject, final SecretKey secret)
-            throws GeneralSecurityException {
+    private String encode(final JsonObject jsonObject, final SecretKey secret) throws GeneralSecurityException {
         try {
-            final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, secret);
-
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);
-            final OutputStream zos = new GZIPOutputStream(
-                    new CipherOutputStream(baos, cipher));
-            zos.write(jsonObject.toString().getBytes("UTF-8"));
-            zos.close();
-            return Base64.encodeWithoutPadding(baos.toByteArray());
+            return Base64.encodeWithoutPadding(CipherUtil.encrypt(jsonObject.toString()
+                    .getBytes("UTF-8"), secret));
         } catch (final IOException e) {
             throw new GeneralSecurityException(e);
         }
@@ -161,8 +105,7 @@ public class TokenCookie {
      * @return maximum age of the token
      */
     public int getMaxAge() {
-        return idToken.getInt("exp")
-                - (int) (System.currentTimeMillis() / 1000);
+        return idToken.getInt("exp") - (int) (System.currentTimeMillis() / 1000);
     }
 
     public JsonObject getUserInfo() {
@@ -183,9 +126,8 @@ public class TokenCookie {
      * @return cookie value
      * @throws GeneralSecurityException
      */
-    public String toCookieValue(final String clientId, final String clientSecret)
-            throws GeneralSecurityException {
-        final SecretKey secret = buildSecretKey(clientId, clientSecret);
+    public String toCookieValue(final String clientId, final String clientSecret) throws GeneralSecurityException {
+        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
         final StringBuilder b = new StringBuilder(encode(idToken, secret));
         if (userInfo != null) {
             b.append('.');

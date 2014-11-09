@@ -54,22 +54,20 @@ public class AuthSequenceTest {
     /**
      * Google's OpenID Connect configuration.
      */
-    private final OpenIDProviderConfiguration googleOpenIdConfiguration = new OpenIDProviderConfiguration(
-            Json.createReader(
-                    Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream("META-INF/google-config.json"))
-                    .readObject());
+    private final OpenIDProviderConfiguration googleOpenIdConfiguration = new OpenIDProviderConfiguration(Json.createReader(Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("META-INF/google-config.json"))
+            .readObject());
 
     /**
      * Module options.
      */
-    private final Map<String, String> options = ImmutableMap
-            .<String, String> builder()
-            .put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
-                    "https://accounts.google.com")
-                    .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
-                    .put(OAuthModule.CLIENT_ID_KEY, "clientID")
-                    .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret").build();
+    private final Map<String, String> options = ImmutableMap.<String, String> builder()
+            .put(OpenIDConnectAuthModule.ISSUER_URI_KEY, "https://accounts.google.com")
+            .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
+            .put(OAuthModule.CLIENT_ID_KEY, "clientID")
+            .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret")
+            .build();
 
     /**
      * Posting data when unauthenticate is not allowed.
@@ -88,8 +86,7 @@ public class AuthSequenceTest {
 
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("POST");
-        when(servletRequest.getRequestURL()).thenReturn(
-                new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
         when(servletRequest.getRequestURI()).thenReturn("/util/ejb2");
         when(servletRequest.isSecure()).thenReturn(true);
 
@@ -99,10 +96,8 @@ public class AuthSequenceTest {
         when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SEND_FAILURE,
-                module.validateRequest(messageInfo, client, null));
-        verify(servletResponse).sendError(eq(HttpURLConnection.HTTP_FORBIDDEN),
-                anyString());
+        assertEquals(AuthStatus.SEND_FAILURE, module.validateRequest(messageInfo, client, null));
+        verify(servletResponse).sendError(eq(HttpURLConnection.HTTP_FORBIDDEN), anyString());
     }
 
     /**
@@ -115,71 +110,53 @@ public class AuthSequenceTest {
         final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(1024);
         final KeyPair kp = kpg.genKeyPair();
-        final String e = Base64.encodeWithoutPadding(((RSAPublicKey) kp
-                .getPublic()).getPublicExponent().toByteArray());
-        final String n = Base64.encodeWithoutPadding(((RSAPublicKey) kp
-                .getPublic()).getModulus().toByteArray());
+        final String e = Base64.encodeWithoutPadding(((RSAPublicKey) kp.getPublic()).getPublicExponent()
+                .toByteArray());
+        final String n = Base64.encodeWithoutPadding(((RSAPublicKey) kp.getPublic()).getModulus()
+                .toByteArray());
 
-        final JsonObject jwks = createObjectBuilder().add(
-                "keys",
-                createArrayBuilder().add(
-                        createObjectBuilder().add("kty", "RSA")
-                        .add("alg", "RS256").add("use", "sig")
-                        .add("kid", "1234").add("e", e).add("n", n)))
-                        .build();
+        final JsonObject jwks = createObjectBuilder().add("keys", createArrayBuilder().add(createObjectBuilder().add("kty", "RSA")
+                .add("alg", "RS256")
+                .add("use", "sig")
+                .add("kid", "1234")
+                .add("e", e)
+                .add("n", n)))
+                .build();
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
 
         final Client mockRestClient = mock(Client.class);
         module.setRestClient(mockRestClient);
         final WebTarget openIdConfigurationTarget = mock(WebTarget.class);
-        when(
-                mockRestClient.target(URI
-                        .create("https://accounts.google.com/.well-known/openid-configuration")))
-                        .thenReturn(openIdConfigurationTarget);
+        when(mockRestClient.target(URI.create("https://accounts.google.com/.well-known/openid-configuration"))).thenReturn(openIdConfigurationTarget);
         final Builder openIdConfigurationBuilder = mock(Builder.class);
-        when(openIdConfigurationTarget.request(MediaType.APPLICATION_JSON_TYPE))
-        .thenReturn(openIdConfigurationBuilder);
+        when(openIdConfigurationTarget.request(MediaType.APPLICATION_JSON_TYPE)).thenReturn(openIdConfigurationBuilder);
 
-        when(openIdConfigurationBuilder.get(OpenIDProviderConfiguration.class))
-        .thenReturn(googleOpenIdConfiguration);
+        when(openIdConfigurationBuilder.get(OpenIDProviderConfiguration.class)).thenReturn(googleOpenIdConfiguration);
 
         final WebTarget tokenEndpointTarget = mock(WebTarget.class);
-        when(
-                mockRestClient.target(googleOpenIdConfiguration
-                        .getTokenEndpoint())).thenReturn(tokenEndpointTarget);
+        when(mockRestClient.target(googleOpenIdConfiguration.getTokenEndpoint())).thenReturn(tokenEndpointTarget);
         final Builder tokenEndpointBuilder = mock(Builder.class);
-        when(tokenEndpointTarget.request(MediaType.APPLICATION_JSON_TYPE))
-        .thenReturn(tokenEndpointBuilder);
-        when(tokenEndpointBuilder.header(eq("Authorization"), anyString()))
-        .thenReturn(tokenEndpointBuilder);
+        when(tokenEndpointTarget.request(MediaType.APPLICATION_JSON_TYPE)).thenReturn(tokenEndpointBuilder);
+        when(tokenEndpointBuilder.header(eq("Authorization"), anyString())).thenReturn(tokenEndpointBuilder);
 
         final OAuthToken oauthToken = new OAuthToken();
 
-        final byte[] joseHeader = "{\"kid\":\"1234\",\"alg\":\"RS256\"}"
-                .getBytes(UTF_8);
-        final byte[] claimsJson = ("{\"aud\":\"clientID\",\"azp\":\"clientID\",\"exp\":"
-                + (System.currentTimeMillis() / 1000 + 86400) + ",\"iss\":\"accounts.google.com\",\"sub\":\"12312-2312\"}")
-                .getBytes(UTF_8);
+        final byte[] joseHeader = "{\"kid\":\"1234\",\"alg\":\"RS256\"}".getBytes(UTF_8);
+        final byte[] claimsJson = ("{\"aud\":\"clientID\",\"azp\":\"clientID\",\"exp\":" + (System.currentTimeMillis() / 1000 + 86400) + ",\"iss\":\"accounts.google.com\",\"sub\":\"12312-2312\"}").getBytes(UTF_8);
         final Signature sig = Signature.getInstance("SHA256withRSA");
         sig.initSign(kp.getPrivate());
-        sig.update((Base64.encodeWithoutPadding(joseHeader) + "." + Base64
-                .encodeWithoutPadding(claimsJson)).getBytes(UTF_8));
+        sig.update((Base64.encodeWithoutPadding(joseHeader) + "." + Base64.encodeWithoutPadding(claimsJson)).getBytes(UTF_8));
         final byte[] sigbytes = sig.sign();
 
-        oauthToken.setIdToken(Base64.encodeWithoutPadding(joseHeader) + "."
-                + Base64.encodeWithoutPadding(claimsJson) + "."
-                + Base64.encodeWithoutPadding(sigbytes));
+        oauthToken.setIdToken(Base64.encodeWithoutPadding(joseHeader) + "." + Base64.encodeWithoutPadding(claimsJson) + "." + Base64.encodeWithoutPadding(sigbytes));
 
-        when(tokenEndpointBuilder.post(any(Entity.class), eq(OAuthToken.class)))
-        .thenReturn(oauthToken);
+        when(tokenEndpointBuilder.post(any(Entity.class), eq(OAuthToken.class))).thenReturn(oauthToken);
 
         final WebTarget jwksTarget = mock(WebTarget.class);
-        when(mockRestClient.target(googleOpenIdConfiguration.getJwksUri()))
-        .thenReturn(jwksTarget);
+        when(mockRestClient.target(googleOpenIdConfiguration.getJwksUri())).thenReturn(jwksTarget);
         final Builder jwksBuilder = mock(Builder.class);
-        when(jwksTarget.request(MediaType.APPLICATION_JSON_TYPE)).thenReturn(
-                jwksBuilder);
+        when(jwksTarget.request(MediaType.APPLICATION_JSON_TYPE)).thenReturn(jwksBuilder);
 
         when(jwksBuilder.get(JsonObject.class)).thenReturn(jwks);
 
@@ -193,27 +170,22 @@ public class AuthSequenceTest {
 
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
-        when(servletRequest.getRequestURL())
-        .thenReturn(
-                new StringBuffer(
-                        "https://i.trajano.net:8443/app/oauth2?code=SplxlOBeZQQYbYS6WxSbIA&state=L3V0aWwvZWpiMg"));
+        when(servletRequest.getRemoteAddr()).thenReturn("8.8.8.8");
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("https://i.trajano.net:8443/app/oauth2?code=SplxlOBeZQQYbYS6WxSbIA&state=L3V0aWwvZWpiMg"));
         when(servletRequest.getRequestURI()).thenReturn("/app/oauth2");
         when(servletRequest.getContextPath()).thenReturn("/myapp");
         when(servletRequest.isSecure()).thenReturn(true);
-        when(servletRequest.getParameter("code")).thenReturn(
-                "SplxlOBeZQQYbYS6WxSbIA");
+        when(servletRequest.getParameter("code")).thenReturn("SplxlOBeZQQYbYS6WxSbIA");
         when(servletRequest.getParameter("state")).thenReturn("L3V0aWwvZWpiMg");
 
         when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
 
         final HttpServletResponse servletResponse = mock(HttpServletResponse.class);
-        when(servletResponse.encodeRedirectURL(anyString())).thenReturn(
-                "/util/ejb2");
+        when(servletResponse.encodeRedirectURL(anyString())).thenReturn("/util/ejb2");
         when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SEND_SUCCESS,
-                module.validateRequest(messageInfo, client, null));
+        assertEquals(AuthStatus.SEND_SUCCESS, module.validateRequest(messageInfo, client, null));
         verify(servletResponse).sendRedirect("/util/ejb2");
         verify(handler).handle(any(Callback[].class));
     }
@@ -233,8 +205,7 @@ public class AuthSequenceTest {
 
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
-        when(servletRequest.getRequestURL()).thenReturn(
-                new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
         when(servletRequest.getRequestURI()).thenReturn("/util/ejb2");
         when(servletRequest.isSecure()).thenReturn(true);
         assertFalse(module.isCallback(servletRequest));
@@ -255,10 +226,7 @@ public class AuthSequenceTest {
 
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
-        when(servletRequest.getRequestURL())
-        .thenReturn(
-                new StringBuffer(
-                        "https://i.trajano.net:8443/app/oauth2?code=1234&state=5678"));
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("https://i.trajano.net:8443/app/oauth2?code=1234&state=5678"));
         when(servletRequest.getRequestURI()).thenReturn("/app/oauth2");
         when(servletRequest.getParameter("code")).thenReturn("1234");
         when(servletRequest.getParameter("state")).thenReturn("5678");
@@ -289,8 +257,7 @@ public class AuthSequenceTest {
         when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SUCCESS,
-                module.validateRequest(messageInfo, client, null));
+        assertEquals(AuthStatus.SUCCESS, module.validateRequest(messageInfo, client, null));
         verifyZeroInteractions(h);
     }
 
@@ -319,8 +286,7 @@ public class AuthSequenceTest {
         when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SUCCESS,
-                module.validateRequest(messageInfo, client, null));
+        assertEquals(AuthStatus.SUCCESS, module.validateRequest(messageInfo, client, null));
         verifyZeroInteractions(h, mockRestClient);
     }
 
@@ -331,33 +297,26 @@ public class AuthSequenceTest {
         final Client mockRestClient = mock(Client.class);
         module.setRestClient(mockRestClient);
         final WebTarget openIdConfigurationTarget = mock(WebTarget.class);
-        when(
-                mockRestClient.target(URI
-                        .create("https://accounts.google.com/.well-known/openid-configuration")))
-                        .thenReturn(openIdConfigurationTarget);
+        when(mockRestClient.target(URI.create("https://accounts.google.com/.well-known/openid-configuration"))).thenReturn(openIdConfigurationTarget);
         final Builder openIdConfigurationBuilder = mock(Builder.class);
-        when(openIdConfigurationTarget.request(MediaType.APPLICATION_JSON_TYPE))
-        .thenReturn(openIdConfigurationBuilder);
-        when(openIdConfigurationBuilder.get(OpenIDProviderConfiguration.class))
-        .thenReturn(googleOpenIdConfiguration);
+        when(openIdConfigurationTarget.request(MediaType.APPLICATION_JSON_TYPE)).thenReturn(openIdConfigurationBuilder);
+        when(openIdConfigurationBuilder.get(OpenIDProviderConfiguration.class)).thenReturn(googleOpenIdConfiguration);
 
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);
-        final Map<String, String> options = ImmutableMap
-                .<String, String> builder()
-                .put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
-                        "https://accounts.google.com")
-                        .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
-                        .put(OAuthModule.CLIENT_ID_KEY, "clientID")
-                        .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret").build();
+        final Map<String, String> options = ImmutableMap.<String, String> builder()
+                .put(OpenIDConnectAuthModule.ISSUER_URI_KEY, "https://accounts.google.com")
+                .put(REDIRECTION_ENDPOINT_URI_KEY, "/app/oauth2")
+                .put(OAuthModule.CLIENT_ID_KEY, "clientID")
+                .put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret")
+                .build();
         module.initialize(mockRequestPolicy, null, null, options);
 
         final MessageInfo messageInfo = mock(MessageInfo.class);
 
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
-        when(servletRequest.getRequestURL()).thenReturn(
-                new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
         when(servletRequest.getRequestURI()).thenReturn("/util/ejb2");
         when(servletRequest.isSecure()).thenReturn(true);
 
@@ -367,11 +326,8 @@ public class AuthSequenceTest {
         when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SEND_CONTINUE,
-                module.validateRequest(messageInfo, client, null));
-        verify(servletResponse)
-        .sendRedirect(
-                "https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L3V0aWwvZWpiMg");
+        assertEquals(AuthStatus.SEND_CONTINUE, module.validateRequest(messageInfo, client, null));
+        verify(servletResponse).sendRedirect("https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L3V0aWwvZWpiMg");
     }
 
     @Test
@@ -393,10 +349,8 @@ public class AuthSequenceTest {
         when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SEND_FAILURE,
-                module.validateRequest(messageInfo, client, null));
-        verify(servletResponse).sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                "SSL Required");
+        assertEquals(AuthStatus.SEND_FAILURE, module.validateRequest(messageInfo, client, null));
+        verify(servletResponse).sendError(HttpURLConnection.HTTP_FORBIDDEN, "SSL Required");
     }
 
     @Test
@@ -418,9 +372,7 @@ public class AuthSequenceTest {
         when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SEND_FAILURE,
-                module.validateRequest(messageInfo, client, null));
-        verify(servletResponse).sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                "SSL Required");
+        assertEquals(AuthStatus.SEND_FAILURE, module.validateRequest(messageInfo, client, null));
+        verify(servletResponse).sendError(HttpURLConnection.HTTP_FORBIDDEN, "SSL Required");
     }
 }

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.crypto.SecretKey;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.security.auth.Subject;
@@ -52,6 +53,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import net.trajano.auth.internal.Base64;
+import net.trajano.auth.internal.CipherUtil;
 import net.trajano.auth.internal.JsonWebKeySet;
 import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
@@ -106,8 +108,8 @@ public abstract class OAuthModule implements ServerAuthModule {
     private static final String MESSAGES = "META-INF/Messages";
 
     /**
-     * Age cookie name. The value of this cookie is "1" and will expire based on
-     * the max age of the token.
+     * Age cookie name. The value of this cookie is an encrypted version of the
+     * IP Address and will expire based on the max age of the token.
      */
     public static final String NET_TRAJANO_AUTH_AGE = "net.trajano.auth.age";
 
@@ -205,6 +207,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     private String scope;
 
     /**
+     * Secret key used for module level ciphers.
+     */
+    private SecretKey secret;
+
+    /**
      * Token URI. This is set through "token_uri" option. This must start with a
      * forward slash. This value is optional. The calling the token URI will
      * return the contents of the JWT token object to the user. Make sure that
@@ -229,8 +236,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            subject
      */
     @Override
-    public void cleanSubject(final MessageInfo messageInfo,
-            final Subject subject) throws AuthException {
+    public void cleanSubject(final MessageInfo messageInfo, final Subject subject) throws AuthException {
         // Does nothing.
     }
 
@@ -259,8 +265,10 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @param req
      *            HTTP servlet request
      * @return ID token
+     * @throws GeneralSecurityException
+     * @throws IOException
      */
-    private String getIdToken(final HttpServletRequest req) {
+    private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException, IOException {
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
             return null;
@@ -272,6 +280,10 @@ public abstract class OAuthModule implements ServerAuthModule {
                     && !isNullOrEmpty(cookie.getValue())) {
                 idToken = cookie.getValue();
             } else if (NET_TRAJANO_AUTH_AGE.equals(cookie.getName())) {
+                if (!req.getRemoteAddr()
+                        .equals(new String(CipherUtil.decrypt(Base64.decode(cookie.getValue()), secret), "US-ASCII"))) {
+                    throw new AuthException(R.getString("ipaddressMismatch"));
+                }
                 foundAge = true;
             }
             if (idToken != null && foundAge) {
@@ -292,8 +304,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws AuthException
      *             wraps exceptions thrown during processing
      */
-    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(
-            Client client, Map<String, String> options) throws AuthException;
+    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(Client client, Map<String, String> options) throws AuthException;
 
     /**
      * This gets the redirection endpoint URI.
@@ -363,9 +374,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            OpenID provider config
      * @return token response
      */
-    protected OAuthToken getToken(final HttpServletRequest req,
-            final OpenIDProviderConfiguration oidProviderConfig)
-                    throws IOException {
+    protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle(CODE, req.getParameter("code"));
         requestData.putSingle(GRANT_TYPE, "authorization_code");
@@ -415,9 +424,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws GeneralSecurityException
      *             wraps exceptions thrown during processing
      */
-    protected JsonWebKeySet getWebKeys(final Map<String, String> options,
-            final OpenIDProviderConfiguration config)
-                    throws GeneralSecurityException {
+    protected JsonWebKeySet getWebKeys(final Map<String, String> options, final OpenIDProviderConfiguration config) throws GeneralSecurityException {
         return new JsonWebKeySet(restClient.target(config.getJwksUri())
                 .request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class));
     }
@@ -450,11 +457,8 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return status
      * @throws GeneralSecurityException
      */
-    private AuthStatus handleCallback(final HttpServletRequest req,
-            final HttpServletResponse resp, final Subject subject)
-                    throws GeneralSecurityException, IOException {
-        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
-                restClient, moduleOptions);
+    private AuthStatus handleCallback(final HttpServletRequest req, final HttpServletResponse resp, final Subject subject) throws GeneralSecurityException, IOException {
+        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
         final OAuthToken token = getToken(req, oidProviderConfig);
         final JsonWebKeySet webKeys = getWebKeys(moduleOptions,
                 oidProviderConfig);
@@ -509,7 +513,9 @@ public abstract class OAuthModule implements ServerAuthModule {
         idTokenCookie.setPath(requestCookieContext);
         resp.addCookie(idTokenCookie);
 
-        final Cookie ageCookie = new Cookie(NET_TRAJANO_AUTH_AGE, "1");
+        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
+        final Cookie ageCookie = new Cookie(NET_TRAJANO_AUTH_AGE, Base64.encodeWithoutPadding(CipherUtil.encrypt(req.getRemoteAddr()
+                .getBytes("US-ASCII"), secret)));
         if (isNullOrEmpty(req.getParameter("expires_in"))) {
             ageCookie.setMaxAge(3600);
 
@@ -541,10 +547,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void initialize(final MessagePolicy requestPolicy,
-            final MessagePolicy responsePolicy, final CallbackHandler h,
-            @SuppressWarnings("rawtypes") final Map options)
-                    throws AuthException {
+    public void initialize(final MessagePolicy requestPolicy, final MessagePolicy responsePolicy, final CallbackHandler h, @SuppressWarnings("rawtypes") final Map options) throws AuthException {
         handler = h;
         try {
             mandatory = requestPolicy.isMandatory();
@@ -571,6 +574,7 @@ public abstract class OAuthModule implements ServerAuthModule {
                         R.getString("missingOption"), CLIENT_SECRET_KEY));
             }
             LOGCONFIG.log(Level.CONFIG, "options", moduleOptions);
+            secret = CipherUtil.buildSecretKey(clientId, clientSecret);
         } catch (final Exception e) {
             // Should not happen
             LOG.log(Level.SEVERE, "initializeException", e);
@@ -610,12 +614,11 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            servlet request
      * @return token cookie.
      */
-    private TokenCookie processTokenCookie(final Subject subject,
-            final HttpServletRequest req) {
-        final String idToken = getIdToken(req);
-        TokenCookie tokenCookie = null;
-        if (idToken != null) {
-            try {
+    private TokenCookie processTokenCookie(final Subject subject, final HttpServletRequest req) {
+        try {
+            final String idToken = getIdToken(req);
+            TokenCookie tokenCookie = null;
+            if (idToken != null) {
                 tokenCookie = new TokenCookie(idToken, clientId, clientSecret);
                 validateIdToken(clientId, tokenCookie.getIdToken());
                 updateSubjectPrincipal(subject, tokenCookie.getIdToken());
@@ -625,13 +628,14 @@ public abstract class OAuthModule implements ServerAuthModule {
                             tokenCookie.getUserInfo());
                 }
 
-            } catch (final GeneralSecurityException e) {
-                LOG.log(Level.FINE, "invalidToken", e.getMessage());
-                LOG.throwing(this.getClass().getName(), "validateRequest", e);
-                return null;
             }
+            return tokenCookie;
+        } catch (final GeneralSecurityException | IOException e) {
+            LOG.log(Level.FINE, "invalidToken", e.getMessage());
+            LOG.throwing(this.getClass()
+                    .getName(), "validateRequest", e);
+            return null;
         }
-        return tokenCookie;
     }
 
     /**
@@ -649,9 +653,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return authentication status
      * @throws AuthException
      */
-    private AuthStatus redirectToAuthorizationEndpoint(
-            final HttpServletRequest req, final HttpServletResponse resp)
-                    throws AuthException {
+    private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req, final HttpServletResponse resp) throws AuthException {
         URI authorizationEndpointUri = null;
         try {
             final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
@@ -699,8 +701,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return {@link AuthStatus#SEND_SUCCESS}
      */
     @Override
-    public AuthStatus secureResponse(final MessageInfo messageInfo,
-            final Subject subject) throws AuthException {
+    public AuthStatus secureResponse(final MessageInfo messageInfo, final Subject subject) throws AuthException {
         return AuthStatus.SEND_SUCCESS;
     }
 
@@ -725,8 +726,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws AuthException
      * @throws GeneralSecurityException
      */
-    private void updateSubjectPrincipal(final Subject subject,
-            final JsonObject jwtPayload) throws GeneralSecurityException {
+    private void updateSubjectPrincipal(final Subject subject, final JsonObject jwtPayload) throws GeneralSecurityException {
         try {
             final String iss = googleWorkaround(jwtPayload.getString("iss"));
             handler.handle(new Callback[] {
@@ -759,14 +759,9 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return Auth status
      */
     @Override
-    public AuthStatus validateRequest(final MessageInfo messageInfo,
-            final Subject clientSubject, final Subject serviceSubject)
-                    throws AuthException {
-        final HttpServletRequest req = (HttpServletRequest) messageInfo
-                .getRequestMessage();
-
-        final HttpServletResponse resp = (HttpServletResponse) messageInfo
-                .getResponseMessage();
+    public AuthStatus validateRequest(final MessageInfo messageInfo, final Subject clientSubject, final Subject serviceSubject) throws AuthException {
+        final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();
+        final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();
 
         try {
             final TokenCookie tokenCookie = processTokenCookie(clientSubject,
@@ -833,6 +828,7 @@ public abstract class OAuthModule implements ServerAuthModule {
 
             return redirectToAuthorizationEndpoint(req, resp);
         } catch (final Exception e) {
+            e.printStackTrace();
             // Should not happen
             LOG.log(Level.SEVERE, "validationException", e.getMessage());
             LOG.throwing(this.getClass().getName(), "validateRequest", e);
