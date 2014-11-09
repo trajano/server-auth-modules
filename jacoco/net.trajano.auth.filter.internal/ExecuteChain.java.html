@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ExecuteChain.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.filter.internal</a> &gt; <span class="el_source">ExecuteChain.java</span></div><h1>ExecuteChain.java</h1><pre class="source lang-java linenums">package net.trajano.auth.filter.internal;
+
+import java.io.IOException;
+import java.security.PrivilegedExceptionAction;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Action that will perform the execution of a servlet filter chain as a
+ * privileged action.
+ */
+public class ExecuteChain implements PrivilegedExceptionAction&lt;Object&gt; {
+    /**
+     * Filter chain.
+     */
+    private transient final FilterChain chain;
+    /**
+     * Request.
+     */
+    private transient final HttpServletRequest request;
+    /**
+     * Response.
+     */
+    private transient final HttpServletResponse response;
+
+    /**
+     * Constructs the action.
+     *
+     * @param chain
+     *            filter chain
+     * @param request
+     *            servlet request
+     * @param response
+     *            servlet response
+     */
+<span class="nc" id="L39">    public ExecuteChain(final FilterChain chain, final HttpServletRequest request, final HttpServletResponse response) {</span>
+<span class="nc" id="L40">        this.chain = chain;</span>
+<span class="nc" id="L41">        this.request = request;</span>
+<span class="nc" id="L42">        this.response = response;</span>
+<span class="nc" id="L43">    }</span>
+
+    /**
+     * Executes the filter chain.
+     *
+     * @return &lt;code&gt;null&lt;/code&gt; as a return type is required.
+     */
+    @Override
+    public Object run() throws ServletException, IOException {
+<span class="nc" id="L52">        chain.doFilter(request, response);</span>
+<span class="nc" id="L53">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

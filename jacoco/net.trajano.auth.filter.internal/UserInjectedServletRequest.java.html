@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>UserInjectedServletRequest.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.filter.internal</a> &gt; <span class="el_source">UserInjectedServletRequest.java</span></div><h1>UserInjectedServletRequest.java</h1><pre class="source lang-java linenums">package net.trajano.auth.filter.internal;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
+
+/**
+ * A principal with the remote user data injected in.
+ */
+public class UserInjectedServletRequest implements HttpServletRequest {
+    /**
+     * Flag to indicate that the user is logged in.
+     */
+<span class="nc" id="L34">    private boolean loggedIn = true;</span>
+    /**
+     * Remote user.
+     */
+    private final String remoteUser;
+    /**
+     * Wrapped servlet request.
+     */
+    private final HttpServletRequest req;
+    /**
+     * User principal to send.
+     */
+    private final Principal userPrincipal;
+
+    /**
+     * Wraps the request.
+     *
+     * @param req
+     *            request to wrap
+     * @param userPrincipal
+     *            user principal containing the authenticated user
+     */
+    public UserInjectedServletRequest(final HttpServletRequest req,
+<span class="nc" id="L57">            final Principal userPrincipal) {</span>
+<span class="nc" id="L58">        this.req = req;</span>
+<span class="nc" id="L59">        remoteUser = userPrincipal.getName();</span>
+<span class="nc" id="L60">        this.userPrincipal = userPrincipal;</span>
+<span class="nc" id="L61">    }</span>
+
+    @Override
+    public boolean authenticate(final HttpServletResponse response) throws IOException,
+    ServletException {
+<span class="nc" id="L66">        return req.authenticate(response);</span>
+    }
+
+    @Override
+    public String changeSessionId() {
+<span class="nc" id="L71">        return req.changeSessionId();</span>
+    }
+
+    @Override
+    public AsyncContext getAsyncContext() {
+<span class="nc" id="L76">        return req.getAsyncContext();</span>
+    }
+
+    @Override
+    public Object getAttribute(final String name) {
+<span class="nc" id="L81">        return req.getAttribute(name);</span>
+    }
+
+    @Override
+    public Enumeration&lt;String&gt; getAttributeNames() {
+<span class="nc" id="L86">        return req.getAttributeNames();</span>
+    }
+
+    /**
+     * Sends &quot;BASIC&quot; when authenticated, &lt;code&gt;null&lt;/code&gt; otherwise.
+     *
+     * @return &quot;BASIC&quot; or &lt;code&gt;null&lt;/code&gt;.
+     */
+    @Override
+    public String getAuthType() {
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        return loggedIn ? &quot;BASIC&quot; : null;</span>
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+<span class="nc" id="L101">        return req.getCharacterEncoding();</span>
+    }
+
+    @Override
+    public int getContentLength() {
+<span class="nc" id="L106">        return req.getContentLength();</span>
+    }
+
+    @Override
+    public long getContentLengthLong() {
+<span class="nc" id="L111">        return req.getContentLengthLong();</span>
+    }
+
+    @Override
+    public String getContentType() {
+<span class="nc" id="L116">        return req.getContentType();</span>
+    }
+
+    @Override
+    public String getContextPath() {
+<span class="nc" id="L121">        return req.getContextPath();</span>
+    }
+
+    @Override
+    public Cookie[] getCookies() {
+<span class="nc" id="L126">        return req.getCookies();</span>
+    }
+
+    @Override
+    public long getDateHeader(final String name) {
+<span class="nc" id="L131">        return req.getDateHeader(name);</span>
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+<span class="nc" id="L136">        return req.getDispatcherType();</span>
+    }
+
+    @Override
+    public String getHeader(final String name) {
+<span class="nc" id="L141">        return req.getHeader(name);</span>
+    }
+
+    @Override
+    public Enumeration&lt;String&gt; getHeaderNames() {
+<span class="nc" id="L146">        return req.getHeaderNames();</span>
+    }
+
+    @Override
+    public Enumeration&lt;String&gt; getHeaders(final String name) {
+<span class="nc" id="L151">        return req.getHeaders(name);</span>
+    }
+
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
+<span class="nc" id="L156">        return req.getInputStream();</span>
+    }
+
+    @Override
+    public int getIntHeader(final String name) {
+<span class="nc" id="L161">        return req.getIntHeader(name);</span>
+    }
+
+    @Override
+    public String getLocalAddr() {
+<span class="nc" id="L166">        return req.getLocalAddr();</span>
+    }
+
+    @Override
+    public Locale getLocale() {
+<span class="nc" id="L171">        return req.getLocale();</span>
+    }
+
+    @Override
+    public Enumeration&lt;Locale&gt; getLocales() {
+<span class="nc" id="L176">        return req.getLocales();</span>
+    }
+
+    @Override
+    public String getLocalName() {
+<span class="nc" id="L181">        return req.getLocalName();</span>
+    }
+
+    @Override
+    public int getLocalPort() {
+<span class="nc" id="L186">        return req.getLocalPort();</span>
+    }
+
+    @Override
+    public String getMethod() {
+<span class="nc" id="L191">        return req.getMethod();</span>
+    }
+
+    @Override
+    public String getParameter(final String name) {
+<span class="nc" id="L196">        return req.getParameter(name);</span>
+    }
+
+    @Override
+    public Map&lt;String, String[]&gt; getParameterMap() {
+<span class="nc" id="L201">        return req.getParameterMap();</span>
+    }
+
+    @Override
+    public Enumeration&lt;String&gt; getParameterNames() {
+<span class="nc" id="L206">        return req.getParameterNames();</span>
+    }
+
+    @Override
+    public String[] getParameterValues(final String name) {
+<span class="nc" id="L211">        return req.getParameterValues(name);</span>
+    }
+
+    @Override
+    public Part getPart(final String name) throws IOException,
+    ServletException {
+<span class="nc" id="L217">        return req.getPart(name);</span>
+    }
+
+    @Override
+    public Collection&lt;Part&gt; getParts() throws IOException,
+    ServletException {
+<span class="nc" id="L223">        return req.getParts();</span>
+    }
+
+    @Override
+    public String getPathInfo() {
+<span class="nc" id="L228">        return req.getPathInfo();</span>
+    }
+
+    @Override
+    public String getPathTranslated() {
+<span class="nc" id="L233">        return req.getPathTranslated();</span>
+    }
+
+    @Override
+    public String getProtocol() {
+<span class="nc" id="L238">        return req.getProtocol();</span>
+    }
+
+    @Override
+    public String getQueryString() {
+<span class="nc" id="L243">        return req.getQueryString();</span>
+    }
+
+    @Override
+    public BufferedReader getReader() throws IOException {
+<span class="nc" id="L248">        return req.getReader();</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated deprecated by spec.
+     */
+    @Override
+    @Deprecated
+    public String getRealPath(final String path) {
+<span class="nc" id="L259">        return req.getRealPath(path);</span>
+    }
+
+    @Override
+    public String getRemoteAddr() {
+<span class="nc" id="L264">        return req.getRemoteAddr();</span>
+    }
+
+    @Override
+    public String getRemoteHost() {
+<span class="nc" id="L269">        return req.getRemoteHost();</span>
+    }
+
+    @Override
+    public int getRemotePort() {
+<span class="nc" id="L274">        return req.getRemotePort();</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return remote user if authenticated, &lt;code&gt;null&lt;/code&gt; otherwise.
+     */
+    @Override
+    public String getRemoteUser() {
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        return loggedIn ? remoteUser : null;</span>
+    }
+
+    @Override
+    public RequestDispatcher getRequestDispatcher(final String path) {
+<span class="nc" id="L289">        return req.getRequestDispatcher(path);</span>
+    }
+
+    @Override
+    public String getRequestedSessionId() {
+<span class="nc" id="L294">        return req.getRequestedSessionId();</span>
+    }
+
+    @Override
+    public String getRequestURI() {
+<span class="nc" id="L299">        return req.getRequestURI();</span>
+    }
+
+    @Override
+    public StringBuffer getRequestURL() {
+<span class="nc" id="L304">        return req.getRequestURL();</span>
+    }
+
+    @Override
+    public String getScheme() {
+<span class="nc" id="L309">        return req.getScheme();</span>
+    }
+
+    @Override
+    public String getServerName() {
+<span class="nc" id="L314">        return req.getServerName();</span>
+    }
+
+    @Override
+    public int getServerPort() {
+<span class="nc" id="L319">        return req.getServerPort();</span>
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+<span class="nc" id="L324">        return req.getServletContext();</span>
+    }
+
+    @Override
+    public String getServletPath() {
+<span class="nc" id="L329">        return req.getServletPath();</span>
+    }
+
+    @Override
+    public HttpSession getSession() {
+<span class="nc" id="L334">        return req.getSession();</span>
+    }
+
+    @Override
+    public HttpSession getSession(final boolean create) {
+<span class="nc" id="L339">        return req.getSession(create);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user principal if logged in. &lt;code&gt;null&lt;/code&gt; otherwise.
+     */
+    @Override
+    public Principal getUserPrincipal() {
+<span class="nc bnc" id="L349" title="All 2 branches missed.">        return loggedIn ? userPrincipal : null;</span>
+    }
+
+    @Override
+    public boolean isAsyncStarted() {
+<span class="nc" id="L354">        return req.isAsyncStarted();</span>
+    }
+
+    @Override
+    public boolean isAsyncSupported() {
+<span class="nc" id="L359">        return req.isAsyncSupported();</span>
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromCookie() {
+<span class="nc" id="L364">        return req.isRequestedSessionIdFromCookie();</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated deprecated by spec.
+     */
+    @Override
+    @Deprecated
+    public boolean isRequestedSessionIdFromUrl() {
+<span class="nc" id="L375">        return req.isRequestedSessionIdFromUrl();</span>
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromURL() {
+<span class="nc" id="L380">        return req.isRequestedSessionIdFromURL();</span>
+    }
+
+    @Override
+    public boolean isRequestedSessionIdValid() {
+<span class="nc" id="L385">        return req.isRequestedSessionIdValid();</span>
+    }
+
+    @Override
+    public boolean isSecure() {
+<span class="nc" id="L390">        return req.isSecure();</span>
+    }
+
+    @Override
+    public boolean isUserInRole(final String role) {
+<span class="nc" id="L395">        return req.isUserInRole(role);</span>
+    }
+
+    @Override
+    public void login(final String username,
+            final String password) throws ServletException {
+<span class="nc" id="L401">        req.login(username, password);</span>
+<span class="nc" id="L402">    }</span>
+
+    @Override
+    public void logout() throws ServletException {
+<span class="nc" id="L406">        loggedIn = false;</span>
+<span class="nc" id="L407">    }</span>
+
+    @Override
+    public void removeAttribute(final String name) {
+<span class="nc" id="L411">        req.removeAttribute(name);</span>
+<span class="nc" id="L412">    }</span>
+
+    @Override
+    public void setAttribute(final String name,
+            final Object o) {
+<span class="nc" id="L417">        req.setAttribute(name, o);</span>
+<span class="nc" id="L418">    }</span>
+
+    @Override
+    public void setCharacterEncoding(final String env) throws UnsupportedEncodingException {
+<span class="nc" id="L422">        req.setCharacterEncoding(env);</span>
+<span class="nc" id="L423">    }</span>
+
+    @Override
+    public AsyncContext startAsync() {
+<span class="nc" id="L427">        return req.startAsync();</span>
+    }
+
+    @Override
+    public AsyncContext startAsync(final ServletRequest servletRequest,
+            final ServletResponse servletResponse) {
+<span class="nc" id="L433">        return req.startAsync(servletRequest, servletResponse);</span>
+    }
+
+    @Override
+    public &lt;T extends HttpUpgradeHandler&gt; T upgrade(final Class&lt;T&gt; handlerClass) throws IOException,
+    ServletException {
+<span class="nc" id="L439">        return req.upgrade(handlerClass);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

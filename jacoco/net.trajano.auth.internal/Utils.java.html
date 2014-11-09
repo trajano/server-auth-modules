@@ -69,10 +69,10 @@ public final class Utils {
 <span class="fc bfc" id="L69" title="All 2 branches covered.">        if (!&quot;none&quot;.equals(joseHeader.getString(&quot;alg&quot;))) {</span>
 
             final String kid;
-<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            if (joseHeader.containsKey(&quot;kid&quot;)) {</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            if (joseHeader.containsKey(&quot;kid&quot;)) {</span>
 <span class="fc" id="L73">                kid = joseHeader.getString(&quot;kid&quot;);</span>
             } else {
-<span class="nc" id="L75">                kid = &quot;&quot;;</span>
+<span class="fc" id="L75">                kid = &quot;&quot;;</span>
             }
 <span class="fc" id="L77">            final PublicKey signingKey = keyset.getKey(kid, PublicKey.class);</span>
 
@@ -173,7 +173,7 @@ public final class Utils {
                     &quot;invalid 'aud' got' %s' expected '%s'&quot;,
                     idTokenJson.getString(&quot;aud&quot;), clientId));
         }
-<span class="pc bpc" id="L176" title="2 of 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;)</span>
+<span class="pc bpc" id="L176" title="1 of 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;)</span>
                 &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {
 <span class="nc" id="L178">            throw new GeneralSecurityException(String.format(</span>
                     &quot;invalid 'azp' got' %s' expected '%s'&quot;,
