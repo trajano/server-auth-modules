@@ -15,14 +15,13 @@ digraph G {
 <tr><td align="center" balign="center"> UserInjectedServletRequest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./UserInjectedServletRequest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	//net.trajano.auth.filter.internal.UserInjectedServletRequest implements javax.servlet.http.HttpServletRequest
-	c455:p -> c441:p [dir=back,arrowtail=empty,style=dashed];
-	// javax.servlet.http.HttpServletRequest
-	c455 [label=<<table title="javax.servlet.http.HttpServletRequest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/servlet/http/HttpServletRequest.html">
+	//net.trajano.auth.filter.internal.UserInjectedServletRequest extends javax.servlet.http.HttpServletRequestWrapper
+	c456:p -> c441:p [dir=back,arrowtail=empty];
+	// javax.servlet.http.HttpServletRequestWrapper
+	c456 [label=<<table title="javax.servlet.http.HttpServletRequestWrapper" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/servlet/http/HttpServletRequestWrapper.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
-<tr><td align="center" balign="center"> HttpServletRequest </td></tr>
+<tr><td align="center" balign="center"> HttpServletRequestWrapper </td></tr>
 		</table></td></tr>
-		</table>>, URL="http://java.sun.com/j2se/1.4.2/docs/api/javax/servlet/http/HttpServletRequest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="http://java.sun.com/j2se/1.4.2/docs/api/javax/servlet/http/HttpServletRequestWrapper.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 }
 

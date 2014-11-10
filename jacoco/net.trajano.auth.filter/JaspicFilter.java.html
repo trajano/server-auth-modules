@@ -84,35 +84,36 @@ import net.trajano.auth.filter.internal.UserInjectedServletRequest;
                     }
 <span class="nc" id="L85">                }</span>
 <span class="nc bnc" id="L86" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SEND_FAILURE) {</span>
-
+<span class="nc" id="L87">                response.flushBuffer();</span>
 <span class="nc bnc" id="L88" title="All 2 branches missed.">            } else if (authStatus == AuthStatus.SEND_SUCCESS) {</span>
+<span class="nc" id="L89">                response.flushBuffer();</span>
             }
-<span class="nc" id="L90">            serverAuthModule.cleanSubject(messageInfo, clientSubject);</span>
-<span class="nc" id="L91">        } catch (final AuthException | InstantiationException | IllegalAccessException | PrivilegedActionException e) {</span>
-<span class="nc" id="L92">            throw new ServletException(e);</span>
-<span class="nc" id="L93">        }</span>
-<span class="nc" id="L94">    }</span>
+<span class="nc" id="L91">            serverAuthModule.cleanSubject(messageInfo, clientSubject);</span>
+<span class="nc" id="L92">        } catch (final AuthException | InstantiationException | IllegalAccessException | PrivilegedActionException e) {</span>
+<span class="nc" id="L93">            throw new ServletException(e);</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         try {
-<span class="nc" id="L100">            serverAuthModuleClass = (Class&lt;? extends ServerAuthModule&gt;) Class.forName(filterConfig.getInitParameter(SERVER_AUTH_MODULE_CLASS));</span>
-<span class="nc" id="L101">        } catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L102">            throw new ServletException(e);</span>
-<span class="nc" id="L103">        }</span>
-<span class="nc" id="L104">        final String contextPath = filterConfig.getServletContext()</span>
+<span class="nc" id="L101">            serverAuthModuleClass = (Class&lt;? extends ServerAuthModule&gt;) Class.forName(filterConfig.getInitParameter(SERVER_AUTH_MODULE_CLASS));</span>
+<span class="nc" id="L102">        } catch (final ClassNotFoundException e) {</span>
+<span class="nc" id="L103">            throw new ServletException(e);</span>
+<span class="nc" id="L104">        }</span>
+<span class="nc" id="L105">        final String contextPath = filterConfig.getServletContext()</span>
                 .getContextPath();
-<span class="nc" id="L106">        options = new HashMap&lt;String, String&gt;();</span>
-<span class="nc" id="L107">        final Enumeration&lt;String&gt; initParameterNames = filterConfig.getInitParameterNames();</span>
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        while (initParameterNames.hasMoreElements()) {</span>
-<span class="nc" id="L109">            final String name = initParameterNames.nextElement();</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">            if (name == SERVER_AUTH_MODULE_CLASS) {</span>
-<span class="nc" id="L111">                continue;</span>
+<span class="nc" id="L107">        options = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L108">        final Enumeration&lt;String&gt; initParameterNames = filterConfig.getInitParameterNames();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        while (initParameterNames.hasMoreElements()) {</span>
+<span class="nc" id="L110">            final String name = initParameterNames.nextElement();</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (name == SERVER_AUTH_MODULE_CLASS) {</span>
+<span class="nc" id="L112">                continue;</span>
             }
-<span class="nc" id="L113">            options.put(name, filterConfig.getInitParameter(name)</span>
+<span class="nc" id="L114">            options.put(name, filterConfig.getInitParameter(name)</span>
                     .replaceAll(&quot;\\$context&quot;, contextPath));
-<span class="nc" id="L115">        }</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L116">        }</span>
+<span class="nc" id="L117">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

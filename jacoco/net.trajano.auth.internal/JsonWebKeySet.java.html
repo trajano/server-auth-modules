@@ -14,20 +14,17 @@ import javax.json.JsonValue;
 
 /**
  * JSON Web Key Set. Implements
- * http://tools.ietf.org/html/draft-ietf-jose-json-web-key-29
- *
- * TODO when supporting more methods, consider converting this to a composite
- * pattern.
+ * http://tools.ietf.org/html/draft-ietf-jose-json-web-key-29 TODO when
+ * supporting more methods, consider converting this to a composite pattern.
  *
  * @author Archimedes Trajano
- *
  */
 public class JsonWebKeySet {
     /**
      * Maps &quot;kid&quot; to the {@link Key}. Instances of this classes are short lived
      * and used in one thread context so concurrent use is not expected.
      */
-<span class="fc" id="L30">    private final Map&lt;String, Key&gt; keyMap = new HashMap&lt;&gt;(); // NOPMD</span>
+<span class="nc" id="L27">    private final Map&lt;String, Key&gt; keyMap = new HashMap&lt;&gt;(); // NOPMD</span>
 
     /**
      * Constructs the JSON Web Key using the JSON object. Unsupported key usage
@@ -38,24 +35,23 @@ public class JsonWebKeySet {
      * @throws GeneralSecurityException
      *             problem with the crypto APIs
      */
-<span class="fc" id="L41">    public JsonWebKeySet(final JsonObject obj) throws GeneralSecurityException {</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (final JsonValue v : obj.getJsonArray(&quot;keys&quot;)) {</span>
-<span class="fc" id="L43">            final JsonObject keyJson = (JsonObject) v;</span>
+<span class="nc" id="L38">    public JsonWebKeySet(final JsonObject obj) throws GeneralSecurityException {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (final JsonValue v : obj.getJsonArray(&quot;keys&quot;)) {</span>
+<span class="nc" id="L40">            final JsonObject keyJson = (JsonObject) v;</span>
             final String kid;
-<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (keyJson.containsKey(&quot;kid&quot;)) {</span>
-<span class="fc" id="L46">                kid = keyJson.getString(&quot;kid&quot;);</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            if (keyJson.containsKey(&quot;kid&quot;)) {</span>
+<span class="nc" id="L43">                kid = keyJson.getString(&quot;kid&quot;);</span>
             } else {
-<span class="fc" id="L48">                kid = &quot;&quot;;</span>
+<span class="nc" id="L45">                kid = &quot;&quot;;</span>
             }
-<span class="pc bpc" id="L50" title="2 of 4 branches missed.">            if (keyJson.containsKey(&quot;use&quot;)</span>
-                    &amp;&amp; &quot;sig&quot;.equals(keyJson.getString(&quot;use&quot;))) {
-<span class="fc" id="L52">                final PublicKey key = buildPublicKey(keyJson);</span>
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">                if (key != null) {</span>
-<span class="fc" id="L54">                    keyMap.put(kid, key);</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">            if (keyJson.containsKey(&quot;use&quot;) &amp;&amp; &quot;sig&quot;.equals(keyJson.getString(&quot;use&quot;))) {</span>
+<span class="nc" id="L48">                final PublicKey key = buildPublicKey(keyJson);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">                if (key != null) {</span>
+<span class="nc" id="L50">                    keyMap.put(kid, key);</span>
                 }
             }
-<span class="fc" id="L57">        }</span>
-<span class="fc" id="L58">    }</span>
+<span class="nc" id="L53">        }</span>
+<span class="nc" id="L54">    }</span>
 
     /**
      * This builds the {@link PublicKey} based on the &quot;kty&quot; value. Unsupported
@@ -67,13 +63,12 @@ public class JsonWebKeySet {
      * @throws GeneralSecurityException
      *             problem with the crypto APIs
      */
-    private PublicKey buildPublicKey(final JsonObject keyJson)
-            throws GeneralSecurityException {
-<span class="fc" id="L72">        final String kty = keyJson.getString(&quot;kty&quot;);</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (&quot;RSA&quot;.equals(kty)) {</span>
-<span class="fc" id="L74">            return buildRSAPublicKey(keyJson);</span>
+    private PublicKey buildPublicKey(final JsonObject keyJson) throws GeneralSecurityException {
+<span class="nc" id="L67">        final String kty = keyJson.getString(&quot;kty&quot;);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (&quot;RSA&quot;.equals(kty)) {</span>
+<span class="nc" id="L69">            return buildRSAPublicKey(keyJson);</span>
         }
-<span class="nc" id="L76">        return null;</span>
+<span class="nc" id="L71">        return null;</span>
     }
 
     /**
@@ -86,14 +81,11 @@ public class JsonWebKeySet {
      * @throws GeneralSecurityException
      *             problem with the crypto APIs
      */
-    private PublicKey buildRSAPublicKey(final JsonObject keyJson)
-            throws GeneralSecurityException {
-<span class="fc" id="L91">        final BigInteger modulus = new BigInteger(1, Base64.decode(keyJson</span>
-                .getString(&quot;n&quot;)));
-<span class="fc" id="L93">        final BigInteger publicExponent = new BigInteger(1,</span>
-                Base64.decode(keyJson.getString(&quot;e&quot;)));
-<span class="fc" id="L95">        return KeyFactory.getInstance(&quot;RSA&quot;).generatePublic(</span>
-                new RSAPublicKeySpec(modulus, publicExponent));
+    private PublicKey buildRSAPublicKey(final JsonObject keyJson) throws GeneralSecurityException {
+<span class="nc" id="L85">        final BigInteger modulus = new BigInteger(1, Base64.decode(keyJson.getString(&quot;n&quot;)));</span>
+<span class="nc" id="L86">        final BigInteger publicExponent = new BigInteger(1, Base64.decode(keyJson.getString(&quot;e&quot;)));</span>
+<span class="nc" id="L87">        return KeyFactory.getInstance(&quot;RSA&quot;)</span>
+                .generatePublic(new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     /**
@@ -104,7 +96,7 @@ public class JsonWebKeySet {
      * @return key
      */
     public Key getKey(final String kid) {
-<span class="nc" id="L107">        return keyMap.get(kid);</span>
+<span class="nc" id="L99">        return keyMap.get(kid);</span>
     }
 
     /**
@@ -120,7 +112,7 @@ public class JsonWebKeySet {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public &lt;T extends Key&gt; T getKey(final String kid, final Class&lt;T&gt; clazz) {
-<span class="fc" id="L123">        return (T) keyMap.get(kid);</span>
+<span class="nc" id="L115">        return (T) keyMap.get(kid);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

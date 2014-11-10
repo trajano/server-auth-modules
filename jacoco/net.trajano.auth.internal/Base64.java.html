@@ -11,7 +11,6 @@
  * &lt;/ul&gt;
  *
  * @author Archimedes Trajano
- *
  */
 public final class Base64 {
     /**
@@ -22,17 +21,16 @@ public final class Base64 {
     /**
      * Encoding map.
      */
-<span class="fc" id="L25">    private static final char[] ENCODE_MAP = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_&quot;</span>
-            .toCharArray();
+<span class="fc" id="L24">    private static final char[] ENCODE_MAP = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_&quot;.toCharArray();</span>
 
     static {
-<span class="fc" id="L29">        DECODE_MAP = new byte[128];</span>
-<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (byte b = 0; b &lt; 64; ++b) {</span>
-<span class="fc" id="L31">            DECODE_MAP[ENCODE_MAP[b]] = b;</span>
+<span class="fc" id="L27">        DECODE_MAP = new byte[128];</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (byte b = 0; b &lt; 64; ++b) {</span>
+<span class="fc" id="L29">            DECODE_MAP[ENCODE_MAP[b]] = b;</span>
         }
-<span class="fc" id="L33">        DECODE_MAP['+'] = 62;</span>
-<span class="fc" id="L34">        DECODE_MAP['/'] = 63;</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L31">        DECODE_MAP['+'] = 62;</span>
+<span class="fc" id="L32">        DECODE_MAP['/'] = 63;</span>
+<span class="fc" id="L33">    }</span>
 
     /**
      * Decodes a base64 string.
@@ -42,9 +40,9 @@ public final class Base64 {
      * @return bytes
      */
     public static byte[] decode(final String base64String) {
-<span class="fc" id="L45">        final byte[] buffer = new byte[decodeLength(base64String)];</span>
-<span class="fc" id="L46">        decode(base64String, buffer, 0);</span>
-<span class="fc" id="L47">        return buffer;</span>
+<span class="fc" id="L43">        final byte[] buffer = new byte[decodeLength(base64String)];</span>
+<span class="fc" id="L44">        decode(base64String, buffer, 0);</span>
+<span class="fc" id="L45">        return buffer;</span>
     }
 
     /**
@@ -58,29 +56,28 @@ public final class Base64 {
      *            offset
      * @return amount of bytes decoded.
      */
-    public static int decode(final String base64String, final byte[] buffer,
-            final int offset) {
-<span class="fc" id="L63">        int p = 0;</span>
-<span class="fc" id="L64">        final byte[] base64Chars = base64String.getBytes();</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (int i = 0; i &lt; base64Chars.length; ++i) {</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (i % 4 == 0) {</span>
-<span class="fc" id="L67">                buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 2);</span>
-<span class="pc bpc" id="L68" title="1 of 4 branches missed.">            } else if (i % 4 == 1 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
-<span class="fc" id="L69">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] &gt;&gt; 4;</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (offset + i - p &lt; buffer.length) {</span>
-<span class="fc" id="L71">                buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 4);</span>
-            }
-<span class="fc bfc" id="L73" title="All 4 branches covered.">            } else if (i % 4 == 2 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
-<span class="fc" id="L74">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] &gt;&gt;&gt; 2;</span>
-<span class="fc bfc" id="L75" title="All 2 branches covered.">                if (offset + i - p &lt; buffer.length) {</span>
-<span class="fc" id="L76">                    buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 6);</span>
+    public static int decode(final String base64String, final byte[] buffer, final int offset) {
+<span class="fc" id="L60">        int p = 0;</span>
+<span class="fc" id="L61">        final byte[] base64Chars = base64String.getBytes();</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (int i = 0; i &lt; base64Chars.length; ++i) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            if (i % 4 == 0) {</span>
+<span class="fc" id="L64">                buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 2);</span>
+<span class="pc bpc" id="L65" title="1 of 4 branches missed.">            } else if (i % 4 == 1 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
+<span class="fc" id="L66">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] &gt;&gt; 4;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">                if (offset + i - p &lt; buffer.length) {</span>
+<span class="fc" id="L68">                    buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 4);</span>
                 }
-<span class="fc bfc" id="L78" title="All 4 branches covered.">            } else if (i % 4 == 3 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
-<span class="fc" id="L79">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]];</span>
-<span class="fc" id="L80">                p++;</span>
+<span class="fc bfc" id="L70" title="All 4 branches covered.">            } else if (i % 4 == 2 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
+<span class="fc" id="L71">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]] &gt;&gt;&gt; 2;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                if (offset + i - p &lt; buffer.length) {</span>
+<span class="fc" id="L73">                    buffer[offset + i - p] = (byte) (DECODE_MAP[base64Chars[i]] &lt;&lt; 6);</span>
+                }
+<span class="fc bfc" id="L75" title="All 4 branches covered.">            } else if (i % 4 == 3 &amp;&amp; offset + i - p - 1 &lt; buffer.length) {</span>
+<span class="fc" id="L76">                buffer[offset + i - p - 1] |= DECODE_MAP[base64Chars[i]];</span>
+<span class="fc" id="L77">                p++;</span>
             }
         }
-<span class="fc" id="L83">        return decodeLength(base64String);</span>
+<span class="fc" id="L80">        return decodeLength(base64String);</span>
     }
 
     /**
@@ -91,15 +88,15 @@ public final class Base64 {
      * @return byte length of the decoded text.
      */
     public static int decodeLength(final String base64String) {
-<span class="fc" id="L94">        final int originalLength = base64String.length();</span>
-<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (originalLength == 0) {</span>
-<span class="fc" id="L96">            return 0;</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">        } else if (base64String.charAt(originalLength - 2) == '=') {</span>
-<span class="fc" id="L98">            return (originalLength - 2) * 3 / 4;</span>
-<span class="fc bfc" id="L99" title="All 2 branches covered.">        } else if (base64String.charAt(originalLength - 1) == '=') {</span>
-<span class="fc" id="L100">            return (originalLength - 1) * 3 / 4;</span>
+<span class="fc" id="L91">        final int originalLength = base64String.length();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (originalLength == 0) {</span>
+<span class="fc" id="L93">            return 0;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        } else if (base64String.charAt(originalLength - 2) == '=') {</span>
+<span class="fc" id="L95">            return (originalLength - 2) * 3 / 4;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        } else if (base64String.charAt(originalLength - 1) == '=') {</span>
+<span class="fc" id="L97">            return (originalLength - 1) * 3 / 4;</span>
         } else {
-<span class="fc" id="L102">            return originalLength * 3 / 4;</span>
+<span class="fc" id="L99">            return originalLength * 3 / 4;</span>
         }
     }
 
@@ -111,7 +108,7 @@ public final class Base64 {
      * @return Base64 string
      */
     public static String encode(final byte[] bytes) {
-<span class="fc" id="L114">        return encode(bytes, 0, bytes.length, true);</span>
+<span class="fc" id="L111">        return encode(bytes, 0, bytes.length, true);</span>
     }
 
     /**
@@ -125,9 +122,8 @@ public final class Base64 {
      *            number of bytes to encode
      * @return Base64 string
      */
-    public static String encode(final byte[] bytes, final int offset,
-            final int length) {
-<span class="fc" id="L130">        return encode(bytes, offset, length, true);</span>
+    public static String encode(final byte[] bytes, final int offset, final int length) {
+<span class="fc" id="L126">        return encode(bytes, offset, length, true);</span>
     }
 
     /**
@@ -143,61 +139,60 @@ public final class Base64 {
      *            add padding if needed.
      * @return Base64 string
      */
-    public static String encode(final byte[] bytes, final int offset,
-            final int length, final boolean padding) {
-<span class="fc" id="L148">        final StringBuilder buffer = new StringBuilder(length * 3);</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">        for (int i = offset; i &lt; offset + length; i += 3) {</span>
+    public static String encode(final byte[] bytes, final int offset, final int length, final boolean padding) {
+<span class="fc" id="L143">        final StringBuilder buffer = new StringBuilder(length * 3);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        for (int i = offset; i &lt; offset + length; i += 3) {</span>
             // p's are the segments for each byte. For every triple there are 6
             // segments
-<span class="fc" id="L152">            int p0 = bytes[i] &amp; 0xFC;</span>
-<span class="fc" id="L153">            p0 &gt;&gt;= 2;</span>
+<span class="fc" id="L147">            int p0 = bytes[i] &amp; 0xFC;</span>
+<span class="fc" id="L148">            p0 &gt;&gt;= 2;</span>
 
-<span class="fc" id="L155">        int p1 = bytes[i] &amp; 0x03;</span>
-<span class="fc" id="L156">        p1 &lt;&lt;= 4;</span>
+<span class="fc" id="L150">            int p1 = bytes[i] &amp; 0x03;</span>
+<span class="fc" id="L151">            p1 &lt;&lt;= 4;</span>
 
-        int p2;
-        int p3;
-<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (i + 1 &lt; offset + length) {</span>
-<span class="fc" id="L161">            p2 = bytes[i + 1] &amp; 0xF0;</span>
-<span class="fc" id="L162">            p2 &gt;&gt;= 4;</span>
-<span class="fc" id="L163">        p3 = bytes[i + 1] &amp; 0x0F;</span>
-<span class="fc" id="L164">        p3 &lt;&lt;= 2;</span>
-        } else {
-<span class="fc" id="L166">            p2 = 0;</span>
-<span class="fc" id="L167">            p3 = 0;</span>
-        }
-        int p4;
-        int p5;
-<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (i + 2 &lt; offset + length) {</span>
-<span class="fc" id="L172">            p4 = bytes[i + 2] &amp; 0xC0;</span>
-<span class="fc" id="L173">            p4 &gt;&gt;= 6;</span>
-<span class="fc" id="L174">        p5 = bytes[i + 2] &amp; 0x3F;</span>
-        } else {
-<span class="fc" id="L176">            p4 = 0;</span>
-<span class="fc" id="L177">            p5 = 0;</span>
-        }
-
-<span class="fc bfc" id="L180" title="All 2 branches covered.">        if (i + 2 &lt; offset + length) {</span>
-<span class="fc" id="L181">            buffer.append(ENCODE_MAP[p0]);</span>
-<span class="fc" id="L182">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="fc" id="L183">            buffer.append(ENCODE_MAP[p3 | p4]);</span>
-<span class="fc" id="L184">            buffer.append(ENCODE_MAP[p5]);</span>
-<span class="fc bfc" id="L185" title="All 2 branches covered.">        } else if (i + 1 &lt; offset + length) {</span>
-<span class="fc" id="L186">            buffer.append(ENCODE_MAP[p0]);</span>
-<span class="fc" id="L187">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="fc" id="L188">            buffer.append(ENCODE_MAP[p3]);</span>
-<span class="fc bfc" id="L189" title="All 2 branches covered.">            if (padding) {</span>
-<span class="fc" id="L190">                buffer.append('=');</span>
+            int p2;
+            int p3;
+<span class="fc bfc" id="L155" title="All 2 branches covered.">            if (i + 1 &lt; offset + length) {</span>
+<span class="fc" id="L156">                p2 = bytes[i + 1] &amp; 0xF0;</span>
+<span class="fc" id="L157">                p2 &gt;&gt;= 4;</span>
+<span class="fc" id="L158">                p3 = bytes[i + 1] &amp; 0x0F;</span>
+<span class="fc" id="L159">                p3 &lt;&lt;= 2;</span>
+            } else {
+<span class="fc" id="L161">                p2 = 0;</span>
+<span class="fc" id="L162">                p3 = 0;</span>
             }
-        } else {
-<span class="fc" id="L193">            buffer.append(ENCODE_MAP[p0]);</span>
-<span class="fc" id="L194">            buffer.append(ENCODE_MAP[p1 | p2]);</span>
-<span class="fc bfc" id="L195" title="All 2 branches covered.">            if (padding) {</span>
-<span class="fc" id="L196">                buffer.append(&quot;==&quot;);</span>
+            int p4;
+            int p5;
+<span class="fc bfc" id="L166" title="All 2 branches covered.">            if (i + 2 &lt; offset + length) {</span>
+<span class="fc" id="L167">                p4 = bytes[i + 2] &amp; 0xC0;</span>
+<span class="fc" id="L168">                p4 &gt;&gt;= 6;</span>
+<span class="fc" id="L169">                p5 = bytes[i + 2] &amp; 0x3F;</span>
+            } else {
+<span class="fc" id="L171">                p4 = 0;</span>
+<span class="fc" id="L172">                p5 = 0;</span>
+            }
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (i + 2 &lt; offset + length) {</span>
+<span class="fc" id="L176">                buffer.append(ENCODE_MAP[p0]);</span>
+<span class="fc" id="L177">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
+<span class="fc" id="L178">                buffer.append(ENCODE_MAP[p3 | p4]);</span>
+<span class="fc" id="L179">                buffer.append(ENCODE_MAP[p5]);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">            } else if (i + 1 &lt; offset + length) {</span>
+<span class="fc" id="L181">                buffer.append(ENCODE_MAP[p0]);</span>
+<span class="fc" id="L182">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
+<span class="fc" id="L183">                buffer.append(ENCODE_MAP[p3]);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">                if (padding) {</span>
+<span class="fc" id="L185">                    buffer.append('=');</span>
+                }
+            } else {
+<span class="fc" id="L188">                buffer.append(ENCODE_MAP[p0]);</span>
+<span class="fc" id="L189">                buffer.append(ENCODE_MAP[p1 | p2]);</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">                if (padding) {</span>
+<span class="fc" id="L191">                    buffer.append(&quot;==&quot;);</span>
+                }
             }
         }
-        }
-<span class="fc" id="L200">        return buffer.toString();</span>
+<span class="fc" id="L195">        return buffer.toString();</span>
     }
 
     /**
@@ -208,14 +203,14 @@ public final class Base64 {
      * @return Base64 string
      */
     public static String encodeWithoutPadding(final byte[] bytes) {
-<span class="fc" id="L211">        return encode(bytes, 0, bytes.length, false);</span>
+<span class="fc" id="L206">        return encode(bytes, 0, bytes.length, false);</span>
     }
 
     /**
      * Prevent instantiation of utility class.
      */
-<span class="fc" id="L217">    private Base64() {</span>
+<span class="fc" id="L212">    private Base64() {</span>
 
-<span class="fc" id="L219">    }</span>
+<span class="fc" id="L214">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

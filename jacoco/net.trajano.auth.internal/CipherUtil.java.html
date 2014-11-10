@@ -29,13 +29,13 @@ public final class CipherUtil {
     public static InputStream buildDecryptStream(final InputStream inputStream, final SecretKey secret) throws GeneralSecurityException, IOException {
 <span class="fc" id="L30">        final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
 <span class="fc" id="L31">        cipher.init(Cipher.DECRYPT_MODE, secret);</span>
-<span class="fc" id="L32">        return new CipherInputStream(new GZIPInputStream(inputStream), cipher);</span>
+<span class="fc" id="L32">        return new GZIPInputStream(new CipherInputStream(inputStream, cipher));</span>
     }
 
     public static OutputStream buildEncryptStream(final OutputStream outputStream, final SecretKey secret) throws GeneralSecurityException, IOException {
 <span class="fc" id="L36">        final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);</span>
 <span class="fc" id="L37">        cipher.init(Cipher.ENCRYPT_MODE, secret);</span>
-<span class="fc" id="L38">        return new CipherOutputStream(new GZIPOutputStream(outputStream), cipher);</span>
+<span class="fc" id="L38">        return new GZIPOutputStream(new CipherOutputStream(outputStream, cipher));</span>
     }
 
     /**
@@ -53,40 +53,39 @@ public final class CipherUtil {
 <span class="fc" id="L53">        final PBEKeySpec pbeSpec = new PBEKeySpec(clientSecret.toCharArray(), clientId.getBytes(), 42, 128);</span>
 
 <span class="fc" id="L55">        final SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA1&quot;);</span>
-<span class="fc" id="L56">        final SecretKey secret = new SecretKeySpec(factory.generateSecret(pbeSpec)</span>
+<span class="fc" id="L56">        return new SecretKeySpec(factory.generateSecret(pbeSpec)</span>
                 .getEncoded(), CIPHER_ALGORITHM);
-<span class="fc" id="L58">        return secret;</span>
     }
 
     public static byte[] decrypt(final byte[] cipherText, final SecretKey secret) throws GeneralSecurityException, IOException {
-<span class="fc" id="L62">        final ByteArrayInputStream is = new ByteArrayInputStream(cipherText);</span>
-<span class="fc" id="L63">        final InputStream zis = CipherUtil.buildDecryptStream(is, secret);</span>
+<span class="fc" id="L61">        final ByteArrayInputStream is = new ByteArrayInputStream(cipherText);</span>
+<span class="fc" id="L62">        final InputStream zis = CipherUtil.buildDecryptStream(is, secret);</span>
 
-<span class="fc" id="L65">        final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
+<span class="fc" id="L64">        final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
 
-<span class="fc" id="L67">        int ch = zis.read();</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">        while (ch != -1) {</span>
-<span class="fc" id="L69">            baos.write(ch);</span>
-<span class="fc" id="L70">            ch = zis.read();</span>
+<span class="fc" id="L66">        int ch = zis.read();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        while (ch != -1) {</span>
+<span class="fc" id="L68">            baos.write(ch);</span>
+<span class="fc" id="L69">            ch = zis.read();</span>
         }
-<span class="fc" id="L72">        zis.close();</span>
-<span class="fc" id="L73">        baos.close();</span>
-<span class="fc" id="L74">        return baos.toByteArray();</span>
+<span class="fc" id="L71">        zis.close();</span>
+<span class="fc" id="L72">        baos.close();</span>
+<span class="fc" id="L73">        return baos.toByteArray();</span>
     }
 
     public static byte[] encrypt(final byte[] clearText, final SecretKey secret) throws GeneralSecurityException, IOException {
-<span class="fc" id="L78">        final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
-<span class="fc" id="L79">        final OutputStream zos = CipherUtil.buildEncryptStream(baos, secret);</span>
-<span class="fc" id="L80">        zos.write(clearText);</span>
-<span class="fc" id="L81">        zos.close();</span>
-<span class="fc" id="L82">        return baos.toByteArray();</span>
+<span class="fc" id="L77">        final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);</span>
+<span class="fc" id="L78">        final OutputStream zos = CipherUtil.buildEncryptStream(baos, secret);</span>
+<span class="fc" id="L79">        zos.write(clearText);</span>
+<span class="fc" id="L80">        zos.close();</span>
+<span class="fc" id="L81">        return baos.toByteArray();</span>
     }
 
     /**
      * Prevent instantiation of utility class.
      */
-<span class="fc" id="L88">    private CipherUtil() {</span>
-<span class="fc" id="L89">    }</span>
+<span class="fc" id="L87">    private CipherUtil() {</span>
+<span class="fc" id="L88">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

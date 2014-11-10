@@ -92,37 +92,38 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>                      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>                  }
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>              } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (authStatus == AuthStatus.SEND_FAILURE) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>                  response.flushBuffer();
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>              } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (authStatus == AuthStatus.SEND_SUCCESS) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>              }
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>              serverAuthModule.cleanSubject(messageInfo, clientSubject);
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> AuthException | InstantiationException | IllegalAccessException | PrivilegedActionException e) {
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(e);
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          }
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      @Override
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> init(<strong class="jxr_keyword">final</strong> FilterConfig filterConfig) <strong class="jxr_keyword">throws</strong> ServletException {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>             serverAuthModuleClass = (Class&lt;? <strong class="jxr_keyword">extends</strong> ServerAuthModule&gt;) Class.forName(filterConfig.getInitParameter(SERVER_AUTH_MODULE_CLASS));
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ClassNotFoundException e) {
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(e);
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         }
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <strong class="jxr_keyword">final</strong> String contextPath = filterConfig.getServletContext()
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>                 .getContextPath();
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         options = <strong class="jxr_keyword">new</strong> HashMap&lt;String, String&gt;();
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>         <strong class="jxr_keyword">final</strong> Enumeration&lt;String&gt; initParameterNames = filterConfig.getInitParameterNames();
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">while</strong> (initParameterNames.hasMoreElements()) {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>             <strong class="jxr_keyword">final</strong> String name = initParameterNames.nextElement();
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <strong class="jxr_keyword">if</strong> (name == SERVER_AUTH_MODULE_CLASS) {
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>                 <strong class="jxr_keyword">continue</strong>;
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>             }
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>             options.put(name, filterConfig.getInitParameter(name)
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>                     .replaceAll(<span class="jxr_string">"&#92;&#92;$context"</span>, contextPath));
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>         }
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     }
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                  response.flushBuffer();
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              serverAuthModule.cleanSubject(messageInfo, clientSubject);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> AuthException | InstantiationException | IllegalAccessException | PrivilegedActionException e) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(e);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          }
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      @Override
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> init(<strong class="jxr_keyword">final</strong> FilterConfig filterConfig) <strong class="jxr_keyword">throws</strong> ServletException {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>             serverAuthModuleClass = (Class&lt;? <strong class="jxr_keyword">extends</strong> ServerAuthModule&gt;) Class.forName(filterConfig.getInitParameter(SERVER_AUTH_MODULE_CLASS));
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ClassNotFoundException e) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(e);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <strong class="jxr_keyword">final</strong> String contextPath = filterConfig.getServletContext()
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>                 .getContextPath();
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         options = <strong class="jxr_keyword">new</strong> HashMap&lt;String, String&gt;();
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">final</strong> Enumeration&lt;String&gt; initParameterNames = filterConfig.getInitParameterNames();
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">while</strong> (initParameterNames.hasMoreElements()) {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <strong class="jxr_keyword">final</strong> String name = initParameterNames.nextElement();
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>             <strong class="jxr_keyword">if</strong> (name == SERVER_AUTH_MODULE_CLASS) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             }
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>             options.put(name, filterConfig.getInitParameter(name)
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                     .replaceAll(<span class="jxr_string">"&#92;&#92;$context"</span>, contextPath));
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     }
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014 <a href="http://www.trajano.net/">Trajano</a>. All rights reserved.</div>

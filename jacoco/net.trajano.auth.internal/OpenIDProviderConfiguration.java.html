@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * OpenID Provider configuration.
  *
  * @author Archimedes Trajano
- *
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -81,9 +80,9 @@ public class OpenIDProviderConfiguration {
     /**
      * Constructs the object with the defaults.
      */
-<span class="fc" id="L84">    public OpenIDProviderConfiguration() {</span>
+<span class="nc" id="L83">    public OpenIDProviderConfiguration() {</span>
 
-<span class="fc" id="L86">    }</span>
+<span class="nc" id="L85">    }</span>
 
     /**
      * Constructs the object using JSON.
@@ -91,111 +90,97 @@ public class OpenIDProviderConfiguration {
      * @param jsonObject
      *            JSON object
      */
-<span class="fc" id="L94">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
-<span class="fc" id="L95">        setAuthorizationEndpoint(URI.create(jsonObject</span>
-                .getString(&quot;authorization_endpoint&quot;)));
-<span class="fc" id="L97">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
-<span class="fc" id="L98">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
-<span class="fc" id="L99">        setRevocationEndpoint(URI.create(jsonObject</span>
-                .getString(&quot;revocation_endpoint&quot;)));
-<span class="fc" id="L101">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
-<span class="fc" id="L102">    }</span>
+<span class="nc" id="L93">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
+<span class="nc" id="L94">        setAuthorizationEndpoint(URI.create(jsonObject.getString(&quot;authorization_endpoint&quot;)));</span>
+<span class="nc" id="L95">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
+<span class="nc" id="L96">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
+<span class="nc" id="L97">        setRevocationEndpoint(URI.create(jsonObject.getString(&quot;revocation_endpoint&quot;)));</span>
+<span class="nc" id="L98">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
+<span class="nc" id="L99">    }</span>
 
     public URI getAuthorizationEndpoint() {
-<span class="fc" id="L105">        return authorizationEndpoint;</span>
+<span class="nc" id="L102">        return authorizationEndpoint;</span>
     }
 
     public List&lt;String&gt; getIdTokenAlgValuesSupported() {
-<span class="nc" id="L109">        return idTokenAlgValuesSupported;</span>
+<span class="nc" id="L106">        return idTokenAlgValuesSupported;</span>
     }
 
     public String getIssuer() {
-<span class="fc" id="L113">        return issuer;</span>
+<span class="nc" id="L110">        return issuer;</span>
     }
 
     public URI getJwksUri() {
-<span class="fc" id="L117">        return jwksUri;</span>
+<span class="nc" id="L114">        return jwksUri;</span>
     }
 
     public List&lt;String&gt; getResponseTypesSupported() {
-<span class="nc" id="L121">        return responseTypesSupported;</span>
+<span class="nc" id="L118">        return responseTypesSupported;</span>
     }
 
     public URI getRevocationEndpoint() {
-<span class="nc" id="L125">        return revocationEndpoint;</span>
+<span class="nc" id="L122">        return revocationEndpoint;</span>
     }
 
     public List&lt;String&gt; getSubjectTypesSupported() {
-<span class="nc" id="L129">        return subjectTypesSupported;</span>
+<span class="nc" id="L126">        return subjectTypesSupported;</span>
     }
 
     public URI getTokenEndpoint() {
-<span class="fc" id="L133">        return tokenEndpoint;</span>
+<span class="nc" id="L130">        return tokenEndpoint;</span>
     }
 
     public List&lt;String&gt; getTokenEndpointAuthMethodsSupported() {
-<span class="nc" id="L137">        return tokenEndpointAuthMethodsSupported;</span>
+<span class="nc" id="L134">        return tokenEndpointAuthMethodsSupported;</span>
     }
 
     public URI getUserinfoEndpoint() {
-<span class="fc" id="L141">        return userinfoEndpoint;</span>
+<span class="nc" id="L138">        return userinfoEndpoint;</span>
     }
 
     public void setAuthorizationEndpoint(final URI authorizationEndpoint) {
-<span class="fc" id="L145">        this.authorizationEndpoint = authorizationEndpoint;</span>
-<span class="fc" id="L146">    }</span>
+<span class="nc" id="L142">        this.authorizationEndpoint = authorizationEndpoint;</span>
+<span class="nc" id="L143">    }</span>
 
-    public void setIdTokenAlgValuesSupported(
-            final List&lt;String&gt; idTokenAlgValuesSupported) {
-<span class="nc" id="L150">        this.idTokenAlgValuesSupported = idTokenAlgValuesSupported;</span>
-<span class="nc" id="L151">    }</span>
+    public void setIdTokenAlgValuesSupported(final List&lt;String&gt; idTokenAlgValuesSupported) {
+<span class="nc" id="L146">        this.idTokenAlgValuesSupported = idTokenAlgValuesSupported;</span>
+<span class="nc" id="L147">    }</span>
 
     public void setIssuer(final String issuer) {
-<span class="fc" id="L154">        this.issuer = issuer;</span>
-<span class="fc" id="L155">    }</span>
+<span class="nc" id="L150">        this.issuer = issuer;</span>
+<span class="nc" id="L151">    }</span>
 
     public void setJwksUri(final URI jwksUri) {
-<span class="fc" id="L158">        this.jwksUri = jwksUri;</span>
-<span class="fc" id="L159">    }</span>
+<span class="nc" id="L154">        this.jwksUri = jwksUri;</span>
+<span class="nc" id="L155">    }</span>
 
-    public void setResponseTypesSupported(
-            final List&lt;String&gt; responseTypesSupported) {
-<span class="nc" id="L163">        this.responseTypesSupported = responseTypesSupported;</span>
-<span class="nc" id="L164">    }</span>
+    public void setResponseTypesSupported(final List&lt;String&gt; responseTypesSupported) {
+<span class="nc" id="L158">        this.responseTypesSupported = responseTypesSupported;</span>
+<span class="nc" id="L159">    }</span>
 
     public void setRevocationEndpoint(final URI revocationEndpoint) {
-<span class="fc" id="L167">        this.revocationEndpoint = revocationEndpoint;</span>
-<span class="fc" id="L168">    }</span>
+<span class="nc" id="L162">        this.revocationEndpoint = revocationEndpoint;</span>
+<span class="nc" id="L163">    }</span>
 
-    public void setSubjectTypesSupported(
-            final List&lt;String&gt; subjectTypesSupported) {
-<span class="nc" id="L172">        this.subjectTypesSupported = subjectTypesSupported;</span>
-<span class="nc" id="L173">    }</span>
+    public void setSubjectTypesSupported(final List&lt;String&gt; subjectTypesSupported) {
+<span class="nc" id="L166">        this.subjectTypesSupported = subjectTypesSupported;</span>
+<span class="nc" id="L167">    }</span>
 
     public void setTokenEndpoint(final URI tokenEndpoint) {
-<span class="fc" id="L176">        this.tokenEndpoint = tokenEndpoint;</span>
-<span class="fc" id="L177">    }</span>
+<span class="nc" id="L170">        this.tokenEndpoint = tokenEndpoint;</span>
+<span class="nc" id="L171">    }</span>
 
-    public void setTokenEndpointAuthMethodsSupported(
-            final List&lt;String&gt; tokenEndpointAuthMethodsSupported) {
-<span class="nc" id="L181">        this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;</span>
-<span class="nc" id="L182">    }</span>
+    public void setTokenEndpointAuthMethodsSupported(final List&lt;String&gt; tokenEndpointAuthMethodsSupported) {
+<span class="nc" id="L174">        this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;</span>
+<span class="nc" id="L175">    }</span>
 
     public void setUserinfoEndpoint(final URI userinfoEndpoint) {
-<span class="nc" id="L185">        this.userinfoEndpoint = userinfoEndpoint;</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L178">        this.userinfoEndpoint = userinfoEndpoint;</span>
+<span class="nc" id="L179">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L190">        return &quot;OpenIDProviderConfigurationResponse [authorizationEndpoint=&quot;</span>
-                + authorizationEndpoint + &quot;, idTokenAlgValuesSupported=&quot;
-                + idTokenAlgValuesSupported + &quot;, issuer=&quot; + issuer
-                + &quot;, jwksUri=&quot; + jwksUri + &quot;, responseTypesSupported=&quot;
-                + responseTypesSupported + &quot;, revocationEndpoint=&quot;
-                + revocationEndpoint + &quot;, subjectTypesSupported=&quot;
-                + subjectTypesSupported + &quot;, tokenEndpoint=&quot; + tokenEndpoint
-                + &quot;, tokenEndpointAuthMethodsSupported=&quot;
-                + tokenEndpointAuthMethodsSupported + &quot;]&quot;;
+<span class="nc" id="L183">        return &quot;OpenIDProviderConfigurationResponse [authorizationEndpoint=&quot; + authorizationEndpoint + &quot;, idTokenAlgValuesSupported=&quot; + idTokenAlgValuesSupported + &quot;, issuer=&quot; + issuer + &quot;, jwksUri=&quot; + jwksUri + &quot;, responseTypesSupported=&quot; + responseTypesSupported + &quot;, revocationEndpoint=&quot; + revocationEndpoint + &quot;, subjectTypesSupported=&quot; + subjectTypesSupported + &quot;, tokenEndpoint=&quot; + tokenEndpoint + &quot;, tokenEndpointAuthMethodsSupported=&quot; + tokenEndpointAuthMethodsSupported + &quot;]&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

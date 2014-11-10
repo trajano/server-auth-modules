@@ -23,30 +23,35 @@ import javax.security.auth.message.callback.GroupPrincipalCallback;
     }
 
     @Override
-    public void handle(final Callback[] callbacks) throws IOException,
-    UnsupportedCallbackException {
+    public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 
-<span class="nc bnc" id="L29" title="All 2 branches missed.">        for (final Callback callback : callbacks) {</span>
-<span class="nc bnc" id="L30" title="All 2 branches missed.">            if (callback instanceof CallerPrincipalCallback) {</span>
-<span class="nc" id="L31">                final CallerPrincipalCallback cb = (CallerPrincipalCallback) callback;</span>
-<span class="nc bnc" id="L32" title="All 2 branches missed.">                if (cb.getPrincipal() != null) {</span>
-<span class="nc" id="L33">                    cb.getSubject().getPrincipals().add(cb.getPrincipal());</span>
-<span class="nc" id="L34">                    userPrincipal = cb.getPrincipal();</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">                } else if (cb.getName() != null) {</span>
-<span class="nc" id="L36">                    final Principal p = new BasicPrincipal(cb.getName());</span>
-<span class="nc" id="L37">                    cb.getSubject().getPrincipals().add(p);</span>
-<span class="nc" id="L38">                    userPrincipal = p;</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        for (final Callback callback : callbacks) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (callback instanceof CallerPrincipalCallback) {</span>
+<span class="nc" id="L30">                final CallerPrincipalCallback cb = (CallerPrincipalCallback) callback;</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">                if (cb.getPrincipal() != null) {</span>
+<span class="nc" id="L32">                    cb.getSubject()</span>
+                            .getPrincipals()
+                            .add(cb.getPrincipal());
+<span class="nc" id="L35">                    userPrincipal = cb.getPrincipal();</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">                } else if (cb.getName() != null) {</span>
+<span class="nc" id="L37">                    final Principal p = new BasicPrincipal(cb.getName());</span>
+<span class="nc" id="L38">                    cb.getSubject()</span>
+                            .getPrincipals()
+                            .add(p);
+<span class="nc" id="L41">                    userPrincipal = p;</span>
                 }
-<span class="nc bnc" id="L40" title="All 2 branches missed.">            } else if (callback instanceof GroupPrincipalCallback) {</span>
-<span class="nc" id="L41">                final GroupPrincipalCallback cb = (GroupPrincipalCallback) callback;</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">                for (final String group : cb.getGroups()) {</span>
-<span class="nc" id="L43">                    final Principal p = new BasicPrincipal(group);</span>
-<span class="nc" id="L44">                    cb.getSubject().getPrincipals().add(p);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            } else if (callback instanceof GroupPrincipalCallback) {</span>
+<span class="nc" id="L44">                final GroupPrincipalCallback cb = (GroupPrincipalCallback) callback;</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">                for (final String group : cb.getGroups()) {</span>
+<span class="nc" id="L46">                    final Principal p = new BasicPrincipal(group);</span>
+<span class="nc" id="L47">                    cb.getSubject()</span>
+                            .getPrincipals()
+                            .add(p);
                 }
-<span class="nc" id="L46">            } else {</span>
-<span class="nc" id="L47">                throw new UnsupportedCallbackException(callback);</span>
+<span class="nc" id="L51">            } else {</span>
+<span class="nc" id="L52">                throw new UnsupportedCallbackException(callback);</span>
             }
         }
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L55">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

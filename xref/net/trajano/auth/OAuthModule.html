@@ -125,31 +125,31 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String NET_TRAJANO_AUTH_ID = <span class="jxr_string">"net.trajano.auth.id"</span>;
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">     * User info attribute name.</em>
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">     * Resource bundle.</em>
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String NET_TRAJANO_AUTH_USERINFO = <span class="jxr_string">"net.trajano.auth.userinfo"</span>;
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> ResourceBundle R;
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> 
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L125" href="#L125">125</a> <em class="jxr_javadoccomment">     * Resource bundle.</em>
-<a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> ResourceBundle R;
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">     * Redirection endpoint URI key. The value is optional and defaults to the</em>
-<a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">     * context root of the application.</em>
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> <em class="jxr_javadoccomment">     * Redirection endpoint URI key. The value is optional and defaults to the</em>
+<a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">     * context root of the application.</em>
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String REDIRECTION_ENDPOINT_URI_KEY = <span class="jxr_string">"redirection_endpoint"</span>;
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">     * Scope option key. The value is optional and defaults to "openid"</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String REDIRECTION_ENDPOINT_URI_KEY = <span class="jxr_string">"redirection_endpoint"</span>;
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String SCOPE_KEY = <span class="jxr_string">"scope"</span>;
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * Scope option key. The value is optional and defaults to "openid"</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String SCOPE_KEY = <span class="jxr_string">"scope"</span>;
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * Token URI key. The value is optional and if not specified, the token</em>
-<a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     * request functionality will not be available.</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * Token URI key. The value is optional and if not specified, the token</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     * request functionality will not be available.</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String TOKEN_URI_KEY = <span class="jxr_string">"token_uri"</span>;
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> 
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     * User info attribute name.</em>
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String TOKEN_URI_KEY = <span class="jxr_string">"token_uri"</span>;
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String USERINFO_KEY = <span class="jxr_string">"auth_userinfo"</span>;
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> 
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> <em class="jxr_javadoccomment">     * User Info URI key. The value is optional and if not specified, the</em>
@@ -606,7 +606,7 @@
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>                 updateSubjectPrincipal(subject, tokenCookie.getIdToken());
 <a class="jxr_linenumber" name="L599" href="#L599">599</a> 
 <a class="jxr_linenumber" name="L600" href="#L600">600</a>                 <strong class="jxr_keyword">if</strong> (tokenCookie.getUserInfo() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>                     req.setAttribute(NET_TRAJANO_AUTH_USERINFO, tokenCookie.getUserInfo());
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>                     req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());
 <a class="jxr_linenumber" name="L602" href="#L602">602</a>                 }
 <a class="jxr_linenumber" name="L603" href="#L603">603</a> 
 <a class="jxr_linenumber" name="L604" href="#L604">604</a>             }
@@ -650,8 +650,8 @@
 <a class="jxr_linenumber" name="L642" href="#L642">642</a>                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
 <a class="jxr_linenumber" name="L643" href="#L643">643</a>                             .toString())
 <a class="jxr_linenumber" name="L644" href="#L644">644</a>                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>                     .queryParam(STATE, state)
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>                     .build();
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>                             .queryParam(STATE, state)
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>                             .build();
 <a class="jxr_linenumber" name="L647" href="#L647">647</a> 
 <a class="jxr_linenumber" name="L648" href="#L648">648</a>             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
 <a class="jxr_linenumber" name="L649" href="#L649">649</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_CONTINUE;
@@ -745,7 +745,7 @@
 <a class="jxr_linenumber" name="L737" href="#L737">737</a>                     .equals(tokenUri)) {
 <a class="jxr_linenumber" name="L738" href="#L738">738</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L739" href="#L739">739</a>                 resp.getWriter()
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>                         .print(tokenCookie.getIdToken());
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>                 .print(tokenCookie.getIdToken());
 <a class="jxr_linenumber" name="L741" href="#L741">741</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L742" href="#L742">742</a>             }
 <a class="jxr_linenumber" name="L743" href="#L743">743</a> 
@@ -753,7 +753,7 @@
 <a class="jxr_linenumber" name="L745" href="#L745">745</a>                     .equals(userInfoUri)) {
 <a class="jxr_linenumber" name="L746" href="#L746">746</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L747" href="#L747">747</a>                 resp.getWriter()
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>                         .print(tokenCookie.getUserInfo());
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>                 .print(tokenCookie.getUserInfo());
 <a class="jxr_linenumber" name="L749" href="#L749">749</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L750" href="#L750">750</a>             }
 <a class="jxr_linenumber" name="L751" href="#L751">751</a> 
@@ -802,15 +802,14 @@
 <a class="jxr_linenumber" name="L794" href="#L794">794</a> 
 <a class="jxr_linenumber" name="L795" href="#L795">795</a>             <strong class="jxr_keyword">return</strong> redirectToAuthorizationEndpoint(req, resp);
 <a class="jxr_linenumber" name="L796" href="#L796">796</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
-<a class="jxr_linenumber" name="L797" href="#L797">797</a>             e.printStackTrace();
-<a class="jxr_linenumber" name="L798" href="#L798">798</a>             <em class="jxr_comment">// Should not happen</em>
-<a class="jxr_linenumber" name="L799" href="#L799">799</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"validationException"</span>, e.getMessage());
-<a class="jxr_linenumber" name="L800" href="#L800">800</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
-<a class="jxr_linenumber" name="L801" href="#L801">801</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
-<a class="jxr_linenumber" name="L802" href="#L802">802</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"validationException"</span>), e.getMessage()));
-<a class="jxr_linenumber" name="L803" href="#L803">803</a>         }
-<a class="jxr_linenumber" name="L804" href="#L804">804</a>     }
-<a class="jxr_linenumber" name="L805" href="#L805">805</a> }
+<a class="jxr_linenumber" name="L797" href="#L797">797</a>             <em class="jxr_comment">// Should not happen</em>
+<a class="jxr_linenumber" name="L798" href="#L798">798</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"validationException"</span>, e.getMessage());
+<a class="jxr_linenumber" name="L799" href="#L799">799</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
+<a class="jxr_linenumber" name="L800" href="#L800">800</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
+<a class="jxr_linenumber" name="L801" href="#L801">801</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"validationException"</span>), e.getMessage()));
+<a class="jxr_linenumber" name="L802" href="#L802">802</a>         }
+<a class="jxr_linenumber" name="L803" href="#L803">803</a>     }
+<a class="jxr_linenumber" name="L804" href="#L804">804</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014 <a href="http://www.trajano.net/">Trajano</a>. All rights reserved.</div>

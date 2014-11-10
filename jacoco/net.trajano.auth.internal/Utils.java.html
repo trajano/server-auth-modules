@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
  * requiring to install additional JAR files, this class was created.
  *
  * @author Archimedes Trajano
- *
  */
 public final class Utils {
     /**
@@ -31,8 +30,8 @@ public final class Utils {
     private static final String MESSAGES = &quot;META-INF/Messages&quot;;
 
     static {
-<span class="fc" id="L34">        LOG = Logger.getLogger(&quot;net.trajano.auth.oauthsam&quot;, MESSAGES);</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L33">        LOG = Logger.getLogger(&quot;net.trajano.auth.oauthsam&quot;, MESSAGES);</span>
+<span class="fc" id="L34">    }</span>
 
     /**
      * Gets the JWS Payload from a &lt;a href=
@@ -54,46 +53,41 @@ public final class Utils {
      * @throws GeneralSecurityException
      *             problem with crypto APIs or signature was not valid
      */
-    public static byte[] getJwsPayload(final String serialization,
-            final JsonWebKeySet keyset) throws GeneralSecurityException {
-<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (LOG.isLoggable(Level.FINEST)) {</span>
-<span class="nc" id="L60">            LOG.finest(&quot;serialized payload = &quot; + serialization);</span>
+    public static byte[] getJwsPayload(final String serialization, final JsonWebKeySet keyset) throws GeneralSecurityException {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (LOG.isLoggable(Level.FINEST)) {</span>
+<span class="nc" id="L58">            LOG.finest(&quot;serialized payload = &quot; + serialization);</span>
         }
-<span class="fc" id="L62">        final String[] jwtParts = serialization.split(&quot;\\.&quot;);</span>
+<span class="nc" id="L60">        final String[] jwtParts = serialization.split(&quot;\\.&quot;);</span>
 
-<span class="fc" id="L64">        final JsonObject joseHeader = Json.createReader(</span>
-                new ByteArrayInputStream(Base64.decode(jwtParts[0])))
+<span class="nc" id="L62">        final JsonObject joseHeader = Json.createReader(new ByteArrayInputStream(Base64.decode(jwtParts[0])))</span>
                 .readObject();
 
         // Handle plaintext JWTs
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (!&quot;none&quot;.equals(joseHeader.getString(&quot;alg&quot;))) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (!&quot;none&quot;.equals(joseHeader.getString(&quot;alg&quot;))) {</span>
 
             final String kid;
-<span class="fc bfc" id="L72" title="All 2 branches covered.">            if (joseHeader.containsKey(&quot;kid&quot;)) {</span>
-<span class="fc" id="L73">                kid = joseHeader.getString(&quot;kid&quot;);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (joseHeader.containsKey(&quot;kid&quot;)) {</span>
+<span class="nc" id="L70">                kid = joseHeader.getString(&quot;kid&quot;);</span>
             } else {
-<span class="fc" id="L75">                kid = &quot;&quot;;</span>
+<span class="nc" id="L72">                kid = &quot;&quot;;</span>
             }
-<span class="fc" id="L77">            final PublicKey signingKey = keyset.getKey(kid, PublicKey.class);</span>
+<span class="nc" id="L74">            final PublicKey signingKey = keyset.getKey(kid, PublicKey.class);</span>
 
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">            if (signingKey == null) {</span>
-<span class="nc" id="L80">                throw new GeneralSecurityException(&quot;No key with id &quot; + kid</span>
-                        + &quot; defined&quot;);
+<span class="nc bnc" id="L76" title="All 2 branches missed.">            if (signingKey == null) {</span>
+<span class="nc" id="L77">                throw new GeneralSecurityException(&quot;No key with id &quot; + kid + &quot; defined&quot;);</span>
             }
 
-<span class="fc" id="L84">            final Signature signature = Signature</span>
-                    .getInstance(toJavaAlgorithm(joseHeader.getString(&quot;alg&quot;)));
+<span class="nc" id="L80">            final Signature signature = Signature.getInstance(toJavaAlgorithm(joseHeader.getString(&quot;alg&quot;)));</span>
 
-<span class="fc" id="L87">            final byte[] jwtSignatureBytes = Base64.decode(jwtParts[2]);</span>
+<span class="nc" id="L82">            final byte[] jwtSignatureBytes = Base64.decode(jwtParts[2]);</span>
 
-<span class="fc" id="L89">            signature.initVerify(signingKey);</span>
-<span class="fc" id="L90">            signature.update((jwtParts[0] + &quot;.&quot; + jwtParts[1]).getBytes());</span>
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">            if (!signature.verify(jwtSignatureBytes)) {</span>
-<span class="nc" id="L92">                throw new GeneralSecurityException(</span>
-                        &quot;signature verification failed&quot;);
+<span class="nc" id="L84">            signature.initVerify(signingKey);</span>
+<span class="nc" id="L85">            signature.update((jwtParts[0] + &quot;.&quot; + jwtParts[1]).getBytes());</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (!signature.verify(jwtSignatureBytes)) {</span>
+<span class="nc" id="L87">                throw new GeneralSecurityException(&quot;signature verification failed&quot;);</span>
             }
         }
-<span class="fc" id="L96">        return Base64.decode(jwtParts[1]);</span>
+<span class="nc" id="L90">        return Base64.decode(jwtParts[1]);</span>
     }
 
     /**
@@ -104,7 +98,7 @@ public final class Utils {
      * @return &lt;code&gt;true&lt;/code&gt; if the request uses the GET method.
      */
     public static boolean isGetRequest(final HttpServletRequest req) {
-<span class="fc" id="L107">        return &quot;GET&quot;.equals(req.getMethod());</span>
+<span class="fc" id="L101">        return &quot;GET&quot;.equals(req.getMethod());</span>
     }
 
     /**
@@ -115,7 +109,7 @@ public final class Utils {
      * @return &lt;code&gt;true&lt;/code&gt; if the request uses the HEAD method.
      */
     public static boolean isHeadRequest(final HttpServletRequest req) {
-<span class="fc" id="L118">        return &quot;HEAD&quot;.equals(req.getMethod());</span>
+<span class="fc" id="L112">        return &quot;HEAD&quot;.equals(req.getMethod());</span>
     }
 
     /**
@@ -126,7 +120,8 @@ public final class Utils {
      * @return true if string is null or empty.
      */
     public static boolean isNullOrEmpty(final String s) {
-<span class="fc bfc" id="L129" title="All 4 branches covered.">        return s == null || s.trim().length() == 0;</span>
+<span class="fc bfc" id="L123" title="All 4 branches covered.">        return s == null || s.trim()</span>
+                .length() == 0;
     }
 
     /**
@@ -137,7 +132,7 @@ public final class Utils {
      * @return &lt;code&gt;true&lt;/code&gt; if the request uses the GET or HEAD method.
      */
     public static boolean isRetrievalRequest(final HttpServletRequest req) {
-<span class="fc bfc" id="L140" title="All 4 branches covered.">        return isGetRequest(req) || isHeadRequest(req);</span>
+<span class="fc bfc" id="L135" title="All 4 branches covered.">        return isGetRequest(req) || isHeadRequest(req);</span>
     }
 
     /**
@@ -153,7 +148,8 @@ public final class Utils {
      * @return algorithm name
      */
     public static String toJavaAlgorithm(final String alg) {
-<span class="fc" id="L156">        return JsonWebAlgorithm.valueOf(alg).toJca();</span>
+<span class="nc" id="L151">        return JsonWebAlgorithm.valueOf(alg)</span>
+                .toJca();
     }
 
     /**
@@ -165,34 +161,26 @@ public final class Utils {
      *            ID Token JSON.
      * @throws GeneralSecurityException
      */
-    public static void validateIdToken(final String clientId,
-            final JsonObject idTokenJson) throws GeneralSecurityException {
+    public static void validateIdToken(final String clientId, final JsonObject idTokenJson) throws GeneralSecurityException {
         // TODO handle multiple audiences
-<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (!clientId.equals(idTokenJson.getString(&quot;aud&quot;))) {</span>
-<span class="nc" id="L172">            throw new GeneralSecurityException(String.format(</span>
-                    &quot;invalid 'aud' got' %s' expected '%s'&quot;,
-                    idTokenJson.getString(&quot;aud&quot;), clientId));
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (!clientId.equals(idTokenJson.getString(&quot;aud&quot;))) {</span>
+<span class="nc" id="L167">            throw new GeneralSecurityException(String.format(&quot;invalid 'aud' got' %s' expected '%s'&quot;, idTokenJson.getString(&quot;aud&quot;), clientId));</span>
         }
-<span class="pc bpc" id="L176" title="1 of 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;)</span>
-                &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {
-<span class="nc" id="L178">            throw new GeneralSecurityException(String.format(</span>
-                    &quot;invalid 'azp' got' %s' expected '%s'&quot;,
-                    idTokenJson.getString(&quot;azp&quot;), clientId));
+<span class="nc bnc" id="L169" title="All 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;) &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {</span>
+<span class="nc" id="L170">            throw new GeneralSecurityException(String.format(&quot;invalid 'azp' got' %s' expected '%s'&quot;, idTokenJson.getString(&quot;azp&quot;), clientId));</span>
         }
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">        if (idTokenJson.containsKey(&quot;exp&quot;)) {</span>
-<span class="fc" id="L183">            final long delta = System.currentTimeMillis()</span>
-                    - idTokenJson.getInt(&quot;exp&quot;) * 1000L;
-<span class="pc bpc" id="L185" title="1 of 2 branches missed.">            if (delta &gt;= 0) {</span>
-<span class="nc" id="L186">                throw new GeneralSecurityException(&quot;expired &quot; + delta</span>
-                        + &quot;ms ago&quot;);
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (idTokenJson.containsKey(&quot;exp&quot;)) {</span>
+<span class="nc" id="L173">            final long delta = System.currentTimeMillis() - idTokenJson.getInt(&quot;exp&quot;) * 1000L;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">            if (delta &gt;= 0) {</span>
+<span class="nc" id="L175">                throw new GeneralSecurityException(&quot;expired &quot; + delta + &quot;ms ago&quot;);</span>
             }
         }
-<span class="fc" id="L190">    }</span>
+<span class="nc" id="L178">    }</span>
 
     /**
      * Prevent instantiation of utility class.
      */
-<span class="fc" id="L195">    private Utils() {</span>
-<span class="fc" id="L196">    }</span>
+<span class="fc" id="L183">    private Utils() {</span>
+<span class="fc" id="L184">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
