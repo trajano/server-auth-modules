@@ -90,13 +90,13 @@ public class OpenIDProviderConfiguration {
      * @param jsonObject
      *            JSON object
      */
-<span class="nc" id="L93">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
-<span class="nc" id="L94">        setAuthorizationEndpoint(URI.create(jsonObject.getString(&quot;authorization_endpoint&quot;)));</span>
-<span class="nc" id="L95">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
-<span class="nc" id="L96">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
-<span class="nc" id="L97">        setRevocationEndpoint(URI.create(jsonObject.getString(&quot;revocation_endpoint&quot;)));</span>
-<span class="nc" id="L98">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
-<span class="nc" id="L99">    }</span>
+<span class="fc" id="L93">    public OpenIDProviderConfiguration(final JsonObject jsonObject) {</span>
+<span class="fc" id="L94">        setAuthorizationEndpoint(URI.create(jsonObject.getString(&quot;authorization_endpoint&quot;)));</span>
+<span class="fc" id="L95">        setTokenEndpoint(URI.create(jsonObject.getString(&quot;token_endpoint&quot;)));</span>
+<span class="fc" id="L96">        setIssuer(jsonObject.getString(&quot;issuer&quot;));</span>
+<span class="fc" id="L97">        setRevocationEndpoint(URI.create(jsonObject.getString(&quot;revocation_endpoint&quot;)));</span>
+<span class="fc" id="L98">        setJwksUri(URI.create(jsonObject.getString(&quot;jwks_uri&quot;)));</span>
+<span class="fc" id="L99">    }</span>
 
     public URI getAuthorizationEndpoint() {
 <span class="nc" id="L102">        return authorizationEndpoint;</span>
@@ -139,36 +139,36 @@ public class OpenIDProviderConfiguration {
     }
 
     public void setAuthorizationEndpoint(final URI authorizationEndpoint) {
-<span class="nc" id="L142">        this.authorizationEndpoint = authorizationEndpoint;</span>
-<span class="nc" id="L143">    }</span>
+<span class="fc" id="L142">        this.authorizationEndpoint = authorizationEndpoint;</span>
+<span class="fc" id="L143">    }</span>
 
     public void setIdTokenAlgValuesSupported(final List&lt;String&gt; idTokenAlgValuesSupported) {
 <span class="nc" id="L146">        this.idTokenAlgValuesSupported = idTokenAlgValuesSupported;</span>
 <span class="nc" id="L147">    }</span>
 
     public void setIssuer(final String issuer) {
-<span class="nc" id="L150">        this.issuer = issuer;</span>
-<span class="nc" id="L151">    }</span>
+<span class="fc" id="L150">        this.issuer = issuer;</span>
+<span class="fc" id="L151">    }</span>
 
     public void setJwksUri(final URI jwksUri) {
-<span class="nc" id="L154">        this.jwksUri = jwksUri;</span>
-<span class="nc" id="L155">    }</span>
+<span class="fc" id="L154">        this.jwksUri = jwksUri;</span>
+<span class="fc" id="L155">    }</span>
 
     public void setResponseTypesSupported(final List&lt;String&gt; responseTypesSupported) {
 <span class="nc" id="L158">        this.responseTypesSupported = responseTypesSupported;</span>
 <span class="nc" id="L159">    }</span>
 
     public void setRevocationEndpoint(final URI revocationEndpoint) {
-<span class="nc" id="L162">        this.revocationEndpoint = revocationEndpoint;</span>
-<span class="nc" id="L163">    }</span>
+<span class="fc" id="L162">        this.revocationEndpoint = revocationEndpoint;</span>
+<span class="fc" id="L163">    }</span>
 
     public void setSubjectTypesSupported(final List&lt;String&gt; subjectTypesSupported) {
 <span class="nc" id="L166">        this.subjectTypesSupported = subjectTypesSupported;</span>
 <span class="nc" id="L167">    }</span>
 
     public void setTokenEndpoint(final URI tokenEndpoint) {
-<span class="nc" id="L170">        this.tokenEndpoint = tokenEndpoint;</span>
-<span class="nc" id="L171">    }</span>
+<span class="fc" id="L170">        this.tokenEndpoint = tokenEndpoint;</span>
+<span class="fc" id="L171">    }</span>
 
     public void setTokenEndpointAuthMethodsSupported(final List&lt;String&gt; tokenEndpointAuthMethodsSupported) {
 <span class="nc" id="L174">        this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;</span>
