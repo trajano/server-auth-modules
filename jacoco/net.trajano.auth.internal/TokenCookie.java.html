@@ -129,7 +129,7 @@ public class TokenCookie {
     public String toCookieValue(final String clientId, final String clientSecret) throws GeneralSecurityException {
 <span class="fc" id="L130">        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);</span>
 <span class="fc" id="L131">        final StringBuilder b = new StringBuilder(encode(idToken, secret));</span>
-<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (userInfo != null) {</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (userInfo != null) {</span>
 <span class="fc" id="L133">            b.append('.');</span>
 <span class="fc" id="L134">            b.append(encode(userInfo, secret));</span>
         }

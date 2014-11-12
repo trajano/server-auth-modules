@@ -87,7 +87,7 @@ function toggleDisplay(elementId) {
 <td>0</td>
 <td>0</td>
 <td>0%</td>
-<td>0.101</td></tr></table><br />
+<td>4.749</td></tr></table><br />
 <p>Note: failures are anticipated and checked for with assertions while errors are unanticipated.</p><br /></div>
 <div class="section">
 <h2>Package List<a name="Package_List"></a></h2><a name="Package_List"></a>
@@ -108,7 +108,7 @@ function toggleDisplay(elementId) {
 <td>0</td>
 <td>0</td>
 <td>0%</td>
-<td>0.101</td></tr></table><br />
+<td>4.749</td></tr></table><br />
 <p>Note: package statistics are not computed recursively, they only sum up all of its testsuites numbers.</p>
 <div class="section">
 <h3>net.trajano.auth.test<a name="net.trajano.auth.test"></a></h3><a name="net.trajano.auth.test"></a>
@@ -130,7 +130,7 @@ function toggleDisplay(elementId) {
 <td>0</td>
 <td>0</td>
 <td>0%</td>
-<td>0.101</td></tr>
+<td>3.973</td></tr>
 <tr class="a">
 <td><a href="#net.trajano.auth.testConfigurationIT"><img src="images/icon_error_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.testConfigurationIT">ConfigurationIT</a></td>
@@ -139,7 +139,7 @@ function toggleDisplay(elementId) {
 <td>0</td>
 <td>0</td>
 <td>0%</td>
-<td>0</td></tr></table></div><br /></div>
+<td>0.776</td></tr></table></div><br /></div>
 <div class="section">
 <h2>Test Cases<a name="Test_Cases"></a></h2><a name="Test_Cases"></a>
 <p>[<a href="#Summary">Summary</a>] [<a href="#Package_List">Package List</a>] [<a href="#Test_Cases">Test Cases</a>]</p>
@@ -150,17 +150,17 @@ function toggleDisplay(elementId) {
 <td><a href="#net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpoint"><img src="images/icon_error_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpoint">testRedirectToEndpoint</a>
 <div class="detailToggle" style="display:inline"><a href="javascript:toggleDisplay(&apos;net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpoint&apos;);"><span style="display:inline;" id="net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointoff"> + </span><span style="display:none;" id="net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointon"> - </span>[ Detail ]</a></div></td>
-<td>0.101</td></tr>
+<td>3.973</td></tr>
 <tr class="b">
 <td></td>
-<td>java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td>
+<td>Problem validating request: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration..</td>
 <td></td></tr>
 <tr class="a">
 <td></td>
 <td>
 <div id="net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointerror" style="display:none;">
 <div>
-<pre>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilderat java.net.URLClassLoader$1.run(URLClassLoader.java:366)at java.net.URLClassLoader$1.run(URLClassLoader.java:355)at java.security.AccessController.doPrivileged(Native Method)at java.net.URLClassLoader.findClass(URLClassLoader.java:354)at java.lang.ClassLoader.loadClass(ClassLoader.java:425)at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)at java.lang.ClassLoader.loadClass(ClassLoader.java:358)at java.lang.Class.forName0(Native Method)at java.lang.Class.forName(Class.java:190)at javax.ws.rs.client.FactoryFinder.newInstance(FactoryFinder.java:113)at javax.ws.rs.client.FactoryFinder.find(FactoryFinder.java:206)at javax.ws.rs.client.ClientBuilder.newBuilder(ClientBuilder.java:86)at javax.ws.rs.client.ClientBuilder.newClient(ClientBuilder.java:114)at net.trajano.auth.OAuthModule.&lt;init&gt;(OAuthModule.java:199)at net.trajano.auth.OpenIDConnectAuthModule.&lt;init&gt;(OpenIDConnectAuthModule.java:22)at net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpoint(AuthSequenceIT.java:28)</pre></div></div></td>
+<pre>javax.security.auth.message.AuthException: Problem validating request: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration..at net.trajano.auth.OAuthModule.validateRequest(OAuthModule.java:801)at net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpoint(AuthSequenceIT.java:54)</pre></div></div></td>
 <td></td></tr></table></div>
 <div class="section">
 <h3>ConfigurationIT<a name="ConfigurationIT"></a></h3><a name="net.trajano.auth.testConfigurationIT"></a>
@@ -169,49 +169,49 @@ function toggleDisplay(elementId) {
 <td><a href="#net.trajano.auth.test.ConfigurationIT.testSalesforceOpenIdConfiguration"><img src="images/icon_error_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.test.ConfigurationIT.testSalesforceOpenIdConfiguration">testSalesforceOpenIdConfiguration</a>
 <div class="detailToggle" style="display:inline"><a href="javascript:toggleDisplay(&apos;net_trajano_auth_test_ConfigurationIT_testSalesforceOpenIdConfiguration&apos;);"><span style="display:inline;" id="net_trajano_auth_test_ConfigurationIT_testSalesforceOpenIdConfigurationoff"> + </span><span style="display:none;" id="net_trajano_auth_test_ConfigurationIT_testSalesforceOpenIdConfigurationon"> - </span>[ Detail ]</a></div></td>
-<td>0</td></tr>
+<td>0.281</td></tr>
 <tr class="b">
 <td></td>
-<td>java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td>
+<td>MessageBodyReader not found for media type=application/json; charset=UTF-8, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.</td>
 <td></td></tr>
 <tr class="a">
 <td></td>
 <td>
 <div id="net_trajano_auth_test_ConfigurationIT_testSalesforceOpenIdConfigurationerror" style="display:none;">
 <div>
-<pre>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilderat java.net.URLClassLoader$1.run(URLClassLoader.java:366)at java.net.URLClassLoader$1.run(URLClassLoader.java:355)at java.security.AccessController.doPrivileged(Native Method)at java.net.URLClassLoader.findClass(URLClassLoader.java:354)at java.lang.ClassLoader.loadClass(ClassLoader.java:425)at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)at java.lang.ClassLoader.loadClass(ClassLoader.java:358)at java.lang.Class.forName0(Native Method)at java.lang.Class.forName(Class.java:190)at javax.ws.rs.client.FactoryFinder.newInstance(FactoryFinder.java:113)at javax.ws.rs.client.FactoryFinder.find(FactoryFinder.java:206)at javax.ws.rs.client.ClientBuilder.newBuilder(ClientBuilder.java:86)at javax.ws.rs.client.ClientBuilder.newClient(ClientBuilder.java:114)at net.trajano.auth.test.ConfigurationIT.testSalesforceOpenIdConfiguration(ConfigurationIT.java:57)</pre></div></div></td>
+<pre>org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyReader not found for media type=application/json; charset=UTF-8, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.at org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$TerminalReaderInterceptor.aroundReadFrom(ReaderInterceptorExecutor.java:230)at org.glassfish.jersey.message.internal.ReaderInterceptorExecutor.proceed(ReaderInterceptorExecutor.java:154)at org.glassfish.jersey.message.internal.MessageBodyFactory.readFrom(MessageBodyFactory.java:1124)at org.glassfish.jersey.message.internal.InboundMessageContext.readEntity(InboundMessageContext.java:851)at org.glassfish.jersey.message.internal.InboundMessageContext.readEntity(InboundMessageContext.java:783)at org.glassfish.jersey.client.ClientResponse.readEntity(ClientResponse.java:326)at org.glassfish.jersey.client.JerseyInvocation.translate(JerseyInvocation.java:786)at org.glassfish.jersey.client.JerseyInvocation.access$500(JerseyInvocation.java:91)at org.glassfish.jersey.client.JerseyInvocation$2.call(JerseyInvocation.java:683)at org.glassfish.jersey.internal.Errors.process(Errors.java:315)at org.glassfish.jersey.internal.Errors.process(Errors.java:297)at org.glassfish.jersey.internal.Errors.process(Errors.java:228)at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:424)at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:679)at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:408)at org.glassfish.jersey.client.JerseyInvocation$Builder.get(JerseyInvocation.java:308)at net.trajano.auth.test.ConfigurationIT.testSalesforceOpenIdConfiguration(ConfigurationIT.java:58)</pre></div></div></td>
 <td></td></tr>
 <tr class="b">
 <td><a href="#net.trajano.auth.test.ConfigurationIT.testGoogleOpenIdConfiguration"><img src="images/icon_error_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.test.ConfigurationIT.testGoogleOpenIdConfiguration">testGoogleOpenIdConfiguration</a>
 <div class="detailToggle" style="display:inline"><a href="javascript:toggleDisplay(&apos;net_trajano_auth_test_ConfigurationIT_testGoogleOpenIdConfiguration&apos;);"><span style="display:inline;" id="net_trajano_auth_test_ConfigurationIT_testGoogleOpenIdConfigurationoff"> + </span><span style="display:none;" id="net_trajano_auth_test_ConfigurationIT_testGoogleOpenIdConfigurationon"> - </span>[ Detail ]</a></div></td>
-<td>0</td></tr>
+<td>0.225</td></tr>
 <tr class="a">
 <td></td>
-<td>java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td>
+<td>MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.</td>
 <td></td></tr>
 <tr class="b">
 <td></td>
 <td>
 <div id="net_trajano_auth_test_ConfigurationIT_testGoogleOpenIdConfigurationerror" style="display:none;">
 <div>
-<pre>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilderat java.net.URLClassLoader$1.run(URLClassLoader.java:366)at java.net.URLClassLoader$1.run(URLClassLoader.java:355)at java.security.AccessController.doPrivileged(Native Method)at java.net.URLClassLoader.findClass(URLClassLoader.java:354)at java.lang.ClassLoader.loadClass(ClassLoader.java:425)at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)at java.lang.ClassLoader.loadClass(ClassLoader.java:358)at java.lang.Class.forName0(Native Method)at java.lang.Class.forName(Class.java:190)at javax.ws.rs.client.FactoryFinder.newInstance(FactoryFinder.java:113)at javax.ws.rs.client.FactoryFinder.find(FactoryFinder.java:206)at javax.ws.rs.client.ClientBuilder.newBuilder(ClientBuilder.java:86)at javax.ws.rs.client.ClientBuilder.newClient(ClientBuilder.java:114)at net.trajano.auth.test.ConfigurationIT.testGoogleOpenIdConfiguration(ConfigurationIT.java:27)</pre></div></div></td>
+<pre>org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.at org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$TerminalReaderInterceptor.aroundReadFrom(ReaderInterceptorExecutor.java:230)at org.glassfish.jersey.message.internal.ReaderInterceptorExecutor.proceed(ReaderInterceptorExecutor.java:154)at org.glassfish.jersey.message.internal.MessageBodyFactory.readFrom(MessageBodyFactory.java:1124)at org.glassfish.jersey.message.internal.InboundMessageContext.readEntity(InboundMessageContext.java:851)at org.glassfish.jersey.message.internal.InboundMessageContext.readEntity(InboundMessageContext.java:783)at org.glassfish.jersey.client.ClientResponse.readEntity(ClientResponse.java:326)at org.glassfish.jersey.client.JerseyInvocation.translate(JerseyInvocation.java:786)at org.glassfish.jersey.client.JerseyInvocation.access$500(JerseyInvocation.java:91)at org.glassfish.jersey.client.JerseyInvocation$2.call(JerseyInvocation.java:683)at org.glassfish.jersey.internal.Errors.process(Errors.java:315)at org.glassfish.jersey.internal.Errors.process(Errors.java:297)at org.glassfish.jersey.internal.Errors.process(Errors.java:228)at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:424)at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:679)at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:408)at org.glassfish.jersey.client.JerseyInvocation$Builder.get(JerseyInvocation.java:308)at net.trajano.auth.test.ConfigurationIT.testGoogleOpenIdConfiguration(ConfigurationIT.java:27)</pre></div></div></td>
 <td></td></tr>
 <tr class="a">
 <td><a href="#net.trajano.auth.test.ConfigurationIT.testJwkRetrieval"><img src="images/icon_error_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.test.ConfigurationIT.testJwkRetrieval">testJwkRetrieval</a>
 <div class="detailToggle" style="display:inline"><a href="javascript:toggleDisplay(&apos;net_trajano_auth_test_ConfigurationIT_testJwkRetrieval&apos;);"><span style="display:inline;" id="net_trajano_auth_test_ConfigurationIT_testJwkRetrievaloff"> + </span><span style="display:none;" id="net_trajano_auth_test_ConfigurationIT_testJwkRetrievalon"> - </span>[ Detail ]</a></div></td>
-<td>0</td></tr>
+<td>0.27</td></tr>
 <tr class="b">
 <td></td>
-<td>java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td>
+<td>MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.</td>
 <td></td></tr>
 <tr class="a">
 <td></td>
 <td>
 <div id="net_trajano_auth_test_ConfigurationIT_testJwkRetrievalerror" style="display:none;">
 <div>
-<pre>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilderat java.net.URLClassLoader$1.run(URLClassLoader.java:366)at java.net.URLClassLoader$1.run(URLClassLoader.java:355)at java.security.AccessController.doPrivileged(Native Method)at java.net.URLClassLoader.findClass(URLClassLoader.java:354)at java.lang.ClassLoader.loadClass(ClassLoader.java:425)at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)at java.lang.ClassLoader.loadClass(ClassLoader.java:358)at java.lang.Class.forName0(Native Method)at java.lang.Class.forName(Class.java:190)at javax.ws.rs.client.FactoryFinder.newInstance(FactoryFinder.java:113)at javax.ws.rs.client.FactoryFinder.find(FactoryFinder.java:206)at javax.ws.rs.client.ClientBuilder.newBuilder(ClientBuilder.java:86)at javax.ws.rs.client.ClientBuilder.newClient(ClientBuilder.java:114)at net.trajano.auth.test.ConfigurationIT.testJwkRetrieval(ConfigurationIT.java:40)</pre></div></div></td>
+<pre>org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.at org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$TerminalReaderInterceptor.aroundReadFrom(ReaderInterceptorExecutor.java:230)at org.glassfish.jersey.message.internal.ReaderInterceptorExecutor.proceed(ReaderInterceptorExecutor.java:154)at org.glassfish.jersey.message.internal.MessageBodyFactory.readFrom(MessageBodyFactory.java:1124)at org.glassfish.jersey.message.internal.InboundMessageContext.readEntity(InboundMessageContext.java:851)at org.glassfish.jersey.message.internal.InboundMessageContext.readEntity(InboundMessageContext.java:783)at org.glassfish.jersey.client.ClientResponse.readEntity(ClientResponse.java:326)at org.glassfish.jersey.client.JerseyInvocation.translate(JerseyInvocation.java:786)at org.glassfish.jersey.client.JerseyInvocation.access$500(JerseyInvocation.java:91)at org.glassfish.jersey.client.JerseyInvocation$2.call(JerseyInvocation.java:683)at org.glassfish.jersey.internal.Errors.process(Errors.java:315)at org.glassfish.jersey.internal.Errors.process(Errors.java:297)at org.glassfish.jersey.internal.Errors.process(Errors.java:228)at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:424)at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:679)at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:408)at org.glassfish.jersey.client.JerseyInvocation$Builder.get(JerseyInvocation.java:308)at net.trajano.auth.test.ConfigurationIT.testJwkRetrieval(ConfigurationIT.java:41)</pre></div></div></td>
 <td></td></tr></table></div><br /></div>
 <div class="section">
 <h2>Failure Details<a name="Failure_Details"></a></h2><a name="Failure_Details"></a>
@@ -222,27 +222,27 @@ function toggleDisplay(elementId) {
 <td><a name="net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpoint"></a>testRedirectToEndpoint</td></tr>
 <tr class="b">
 <td></td>
-<td>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td></tr>                                                                
+<td>javax.security.auth.message.AuthException: Problem validating request: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration..</td></tr>        
 <tr class="a">
 <td></td>
 <td>
-<div id="testRedirectToEndpointerror"><a href="./xref-test/net/trajano/auth/test/AuthSequenceIT.html#28">net.trajano.auth.test.AuthSequenceIT:28</a></div></td></tr>
+<div id="testRedirectToEndpointerror"><a href="./xref-test/net/trajano/auth/test/AuthSequenceIT.html#54">net.trajano.auth.test.AuthSequenceIT:54</a></div></td></tr>
 <tr class="b">
 <td><img src="images/icon_error_sml.gif" alt="" /></td>
 <td><a name="net.trajano.auth.test.ConfigurationIT.testSalesforceOpenIdConfiguration"></a>testSalesforceOpenIdConfiguration</td></tr>
 <tr class="a">
 <td></td>
-<td>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td></tr>                                                        
+<td>org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyReader not found for media type=application/json; charset=UTF-8, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.</td></tr>                                                                    
 <tr class="b">
 <td></td>
 <td>
-<div id="testSalesforceOpenIdConfigurationerror"><a href="./xref-test/net/trajano/auth/test/ConfigurationIT.html#57">net.trajano.auth.test.ConfigurationIT:57</a></div></td></tr>
+<div id="testSalesforceOpenIdConfigurationerror"><a href="./xref-test/net/trajano/auth/test/ConfigurationIT.html#58">net.trajano.auth.test.ConfigurationIT:58</a></div></td></tr>
 <tr class="a">
 <td><img src="images/icon_error_sml.gif" alt="" /></td>
 <td><a name="net.trajano.auth.test.ConfigurationIT.testGoogleOpenIdConfiguration"></a>testGoogleOpenIdConfiguration</td></tr>
 <tr class="b">
 <td></td>
-<td>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td></tr>                                                        
+<td>org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.</td></tr>                                                                    
 <tr class="a">
 <td></td>
 <td>
@@ -252,11 +252,11 @@ function toggleDisplay(elementId) {
 <td><a name="net.trajano.auth.test.ConfigurationIT.testJwkRetrieval"></a>testJwkRetrieval</td></tr>
 <tr class="a">
 <td></td>
-<td>java.lang.RuntimeException: java.lang.ClassNotFoundException: org.glassfish.jersey.client.JerseyClientBuilder</td></tr>                                                        
+<td>org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyReader not found for media type=application/json, type=class net.trajano.auth.internal.OpenIDProviderConfiguration, genericType=class net.trajano.auth.internal.OpenIDProviderConfiguration.</td></tr>                                                                    
 <tr class="b">
 <td></td>
 <td>
-<div id="testJwkRetrievalerror"><a href="./xref-test/net/trajano/auth/test/ConfigurationIT.html#40">net.trajano.auth.test.ConfigurationIT:40</a></div></td></tr></table><br /></div>
+<div id="testJwkRetrievalerror"><a href="./xref-test/net/trajano/auth/test/ConfigurationIT.html#41">net.trajano.auth.test.ConfigurationIT:41</a></div></td></tr></table><br /></div>
 	      </div>
 	    </article>
 	  </div>

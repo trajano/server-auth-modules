@@ -163,19 +163,19 @@ public final class Utils {
      */
     public static void validateIdToken(final String clientId, final JsonObject idTokenJson) throws GeneralSecurityException {
         // TODO handle multiple audiences
-<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (!clientId.equals(idTokenJson.getString(&quot;aud&quot;))) {</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        if (!clientId.equals(idTokenJson.getString(&quot;aud&quot;))) {</span>
 <span class="nc" id="L167">            throw new GeneralSecurityException(String.format(&quot;invalid 'aud' got' %s' expected '%s'&quot;, idTokenJson.getString(&quot;aud&quot;), clientId));</span>
         }
-<span class="nc bnc" id="L169" title="All 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;) &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {</span>
+<span class="pc bpc" id="L169" title="2 of 4 branches missed.">        if (idTokenJson.containsKey(&quot;azp&quot;) &amp;&amp; !clientId.equals(idTokenJson.getString(&quot;azp&quot;))) {</span>
 <span class="nc" id="L170">            throw new GeneralSecurityException(String.format(&quot;invalid 'azp' got' %s' expected '%s'&quot;, idTokenJson.getString(&quot;azp&quot;), clientId));</span>
         }
-<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (idTokenJson.containsKey(&quot;exp&quot;)) {</span>
-<span class="nc" id="L173">            final long delta = System.currentTimeMillis() - idTokenJson.getInt(&quot;exp&quot;) * 1000L;</span>
-<span class="nc bnc" id="L174" title="All 2 branches missed.">            if (delta &gt;= 0) {</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">        if (idTokenJson.containsKey(&quot;exp&quot;)) {</span>
+<span class="fc" id="L173">            final long delta = System.currentTimeMillis() - idTokenJson.getInt(&quot;exp&quot;) * 1000L;</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">            if (delta &gt;= 0) {</span>
 <span class="nc" id="L175">                throw new GeneralSecurityException(&quot;expired &quot; + delta + &quot;ms ago&quot;);</span>
             }
         }
-<span class="nc" id="L178">    }</span>
+<span class="fc" id="L178">    }</span>
 
     /**
      * Prevent instantiation of utility class.
