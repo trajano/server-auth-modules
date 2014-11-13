@@ -65,8 +65,8 @@ public class TokenCookie {
         try {
 <span class="fc" id="L66">            idToken = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[0])), secret))</span>
                     .readObject();
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            if (cookieValues.length == 1) {</span>
-<span class="nc" id="L69">                userInfo = null;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            if (cookieValues.length == 1) {</span>
+<span class="fc" id="L69">                userInfo = null;</span>
             } else {
 <span class="fc" id="L71">                userInfo = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[1])), secret))</span>
                         .readObject();
@@ -96,7 +96,7 @@ public class TokenCookie {
     }
 
     public JsonObject getIdToken() {
-<span class="nc" id="L99">        return idToken;</span>
+<span class="fc" id="L99">        return idToken;</span>
     }
 
     /**

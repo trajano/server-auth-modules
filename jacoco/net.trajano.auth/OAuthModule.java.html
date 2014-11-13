@@ -426,8 +426,8 @@ import net.trajano.auth.internal.Utils;
      * @return updated issuer
      */
     private String googleWorkaround(final String issuer) {
-<span class="pc bpc" id="L429" title="1 of 2 branches missed.">        if (issuer.startsWith(HTTPS_PREFIX)) {</span>
-<span class="nc" id="L430">            return issuer;</span>
+<span class="fc bfc" id="L429" title="All 2 branches covered.">        if (issuer.startsWith(HTTPS_PREFIX)) {</span>
+<span class="fc" id="L430">            return issuer;</span>
         }
 <span class="fc" id="L432">        return HTTPS_PREFIX + issuer;</span>
     }
@@ -464,7 +464,7 @@ import net.trajano.auth.internal.Utils;
 <span class="fc" id="L464">        updateSubjectPrincipal(subject, claimsSet);</span>
 
         final TokenCookie tokenCookie;
-<span class="pc bpc" id="L467" title="3 of 4 branches missed.">        if (oidProviderConfig.getUserinfoEndpoint() != null &amp;&amp; Pattern.compile(&quot;\\bprofile\\b&quot;)</span>
+<span class="pc bpc" id="L467" title="1 of 4 branches missed.">        if (oidProviderConfig.getUserinfoEndpoint() != null &amp;&amp; Pattern.compile(&quot;\\bprofile\\b&quot;)</span>
                 .matcher(scope)
                 .find()) {
 <span class="nc" id="L470">            final Response userInfoResponse = restClient.target(oidProviderConfig.getUserinfoEndpoint())</span>
@@ -482,10 +482,10 @@ import net.trajano.auth.internal.Utils;
         }
 
         final String requestCookieContext;
-<span class="pc bpc" id="L485" title="1 of 2 branches missed.">        if (isNullOrEmpty(cookieContext)) {</span>
+<span class="fc bfc" id="L485" title="All 2 branches covered.">        if (isNullOrEmpty(cookieContext)) {</span>
 <span class="fc" id="L486">            requestCookieContext = req.getContextPath();</span>
         } else {
-<span class="nc" id="L488">            requestCookieContext = cookieContext;</span>
+<span class="fc" id="L488">            requestCookieContext = cookieContext;</span>
         }
 
 <span class="fc" id="L491">        final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, tokenCookie.toCookieValue(clientId, clientSecret));</span>
@@ -793,12 +793,12 @@ import net.trajano.auth.internal.Utils;
             }
 
 <span class="fc" id="L795">            return redirectToAuthorizationEndpoint(req, resp);</span>
-<span class="fc" id="L796">        } catch (final Exception e) {</span>
+<span class="nc" id="L796">        } catch (final Exception e) {</span>
             // Should not happen
-<span class="fc" id="L798">            LOG.log(Level.SEVERE, &quot;validationException&quot;, e.getMessage());</span>
-<span class="fc" id="L799">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L798">            LOG.log(Level.SEVERE, &quot;validationException&quot;, e.getMessage());</span>
+<span class="nc" id="L799">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;validateRequest&quot;, e);
-<span class="fc" id="L801">            throw new AuthException(MessageFormat.format(R.getString(&quot;validationException&quot;), e.getMessage()));</span>
+<span class="nc" id="L801">            throw new AuthException(MessageFormat.format(R.getString(&quot;validationException&quot;), e.getMessage()));</span>
         }
     }
 }
