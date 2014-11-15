@@ -86,8 +86,6 @@ public class OAuthToken {
 
     @Override
     public String toString() {
-        return "OAuthToken [accessToken=" + accessToken + ", expiresIn="
-                + expiresIn + ", idToken=" + idToken + ", refreshToken="
-                + refreshToken + ", tokenType=" + tokenType + "]";
+        return "OAuthToken [accessToken=" + accessToken + ", expiresIn=" + expiresIn + ", idToken=" + idToken + ", refreshToken=" + refreshToken + ", tokenType=" + tokenType + "]";
     }
 }

@@ -64,14 +64,13 @@ import net.trajano.auth.internal.Utils;
  * OAuth 2.0 server authentication module. This is an implementation of the <a
  * href="http://tools.ietf.org/html/rfc6749">OAuth 2.0 authentication
  * framework</a>. This assumes no HttpSessions which makes it useful for RESTful
- * applications and uses the OAuth token to manage the authentication state.
- *
- * The e-mail addresses are not requested.
+ * applications and uses the OAuth token to manage the authentication state. The
+ * e-mail addresses are not requested.
  *
  * @author Archimedes Trajano
- *
  */
-public abstract class OAuthModule implements ServerAuthModule {
+public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext {
+
     /**
      * Client ID option key and JSON key.
      */
@@ -119,11 +118,6 @@ public abstract class OAuthModule implements ServerAuthModule {
     public static final String NET_TRAJANO_AUTH_ID = "net.trajano.auth.id";
 
     /**
-     * User info attribute name.
-     */
-    private static final String NET_TRAJANO_AUTH_USERINFO = "net.trajano.auth.userinfo";
-
-    /**
      * Resource bundle.
      */
     private static final ResourceBundle R;
@@ -132,7 +126,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * Redirection endpoint URI key. The value is optional and defaults to the
      * context root of the application.
      */
-    public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection_endpoint";
+    public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection_endpoint"; //$NON-NLS-1$
 
     /**
      * Scope option key. The value is optional and defaults to "openid"
@@ -146,6 +140,11 @@ public abstract class OAuthModule implements ServerAuthModule {
     public static final String TOKEN_URI_KEY = "token_uri";
 
     /**
+     * User info attribute name.
+     */
+    public static final String USERINFO_KEY = "auth_userinfo";
+
+    /**
      * User Info URI key. The value is optional and if not specified, the
      * userinfo request functionality will not be available.
      */
@@ -153,8 +152,7 @@ public abstract class OAuthModule implements ServerAuthModule {
 
     static {
         LOG = Logger.getLogger("net.trajano.auth.oauthsam", MESSAGES);
-        LOGCONFIG = Logger.getLogger("net.trajano.auth.oauthsam.config",
-                MESSAGES);
+        LOGCONFIG = Logger.getLogger("net.trajano.auth.oauthsam.config", MESSAGES);
         R = ResourceBundle.getBundle(MESSAGES);
     }
 
@@ -236,7 +234,9 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            subject
      */
     @Override
-    public void cleanSubject(final MessageInfo messageInfo, final Subject subject) throws AuthException {
+    public void cleanSubject(final MessageInfo messageInfo,
+            final Subject subject) throws AuthException {
+
         // Does nothing.
     }
 
@@ -246,6 +246,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return the client ID.
      */
     protected String getClientId() {
+
         return clientId;
     }
 
@@ -255,6 +256,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return the client secret.
      */
     protected String getClientSecret() {
+
         return clientSecret;
     }
 
@@ -268,7 +270,9 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws GeneralSecurityException
      * @throws IOException
      */
-    private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException, IOException {
+    private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
+    IOException {
+
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
             return null;
@@ -276,8 +280,7 @@ public abstract class OAuthModule implements ServerAuthModule {
         String idToken = null;
         boolean foundAge = false;
         for (final Cookie cookie : cookies) {
-            if (NET_TRAJANO_AUTH_ID.equals(cookie.getName())
-                    && !isNullOrEmpty(cookie.getValue())) {
+            if (NET_TRAJANO_AUTH_ID.equals(cookie.getName()) && !isNullOrEmpty(cookie.getValue())) {
                 idToken = cookie.getValue();
             } else if (NET_TRAJANO_AUTH_AGE.equals(cookie.getName())) {
                 if (!req.getRemoteAddr()
@@ -304,7 +307,8 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws AuthException
      *             wraps exceptions thrown during processing
      */
-    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(Client client, Map<String, String> options) throws AuthException;
+    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(Client client,
+            Map<String, String> options) throws AuthException;
 
     /**
      * This gets the redirection endpoint URI.
@@ -321,18 +325,17 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return redirection endpoint URI.
      */
     protected URI getRedirectionEndpointUri(final HttpServletRequest req) {
+
         if (isNullOrEmpty(redirectionEndpointUri)) {
             final StringBuffer redirectUri = req.getRequestURL();
             // Get the third / character from the request URL should be the
             // start of the path.
-            redirectUri.replace(
-                    redirectUri.indexOf("/", redirectUri.indexOf("/",
-                            redirectUri.indexOf("/") + 1) + 1), redirectUri
-                            .length(), req.getContextPath());
+            redirectUri.replace(redirectUri.indexOf("/", redirectUri.indexOf("/", redirectUri.indexOf("/") + 1) + 1), redirectUri.length(), req.getContextPath());
             return URI.create(redirectUri.toString());
         } else {
-            return URI.create(req.getRequestURL().toString()).resolve(
-                    redirectionEndpointUri);
+            return URI.create(req.getRequestURL()
+                    .toString())
+                    .resolve(redirectionEndpointUri);
         }
     }
 
@@ -342,6 +345,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return REST client
      */
     protected Client getRestClient() {
+
         return restClient;
     }
 
@@ -361,8 +365,8 @@ public abstract class OAuthModule implements ServerAuthModule {
     @SuppressWarnings("rawtypes")
     @Override
     public Class[] getSupportedMessageTypes() {
-        return new Class<?>[] { HttpServletRequest.class,
-                HttpServletResponse.class };
+
+        return new Class<?>[] { HttpServletRequest.class, HttpServletResponse.class };
     }
 
     /**
@@ -374,25 +378,22 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            OpenID provider config
      * @return token response
      */
-    protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
+    protected OAuthToken getToken(final HttpServletRequest req,
+            final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
+
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle(CODE, req.getParameter("code"));
         requestData.putSingle(GRANT_TYPE, "authorization_code");
-        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req)
-                .toASCIIString());
+        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req).toASCIIString());
 
         try {
-            final String authorization = "Basic "
-                    + Base64.encode((clientId + ":" + clientSecret)
-                            .getBytes("UTF8"));
-            final OAuthToken authorizationTokenResponse = restClient
-                    .target(oidProviderConfig.getTokenEndpoint())
+            final String authorization = "Basic " + Base64.encode((clientId + ":" + clientSecret).getBytes("UTF8"));
+            final OAuthToken authorizationTokenResponse = restClient.target(oidProviderConfig.getTokenEndpoint())
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .header("Authorization", authorization)
                     .post(Entity.form(requestData), OAuthToken.class);
             if (LOG.isLoggable(Level.FINEST)) {
-                LOG.finest("authorization token response =  "
-                        + authorizationTokenResponse);
+                LOG.finest("authorization token response =  " + authorizationTokenResponse);
             }
             return authorizationTokenResponse;
         } catch (final BadRequestException e) {
@@ -400,13 +401,11 @@ public abstract class OAuthModule implements ServerAuthModule {
             // on their endpoint.
             requestData.putSingle(CLIENT_ID, clientId);
             requestData.putSingle(CLIENT_SECRET_KEY, clientSecret);
-            final OAuthToken authorizationTokenResponse = restClient
-                    .target(oidProviderConfig.getTokenEndpoint())
+            final OAuthToken authorizationTokenResponse = restClient.target(oidProviderConfig.getTokenEndpoint())
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.form(requestData), OAuthToken.class);
             if (LOG.isLoggable(Level.FINEST)) {
-                LOG.finest("authorization token response =  "
-                        + authorizationTokenResponse);
+                LOG.finest("authorization token response =  " + authorizationTokenResponse);
             }
             return authorizationTokenResponse;
         }
@@ -424,9 +423,12 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws GeneralSecurityException
      *             wraps exceptions thrown during processing
      */
-    protected JsonWebKeySet getWebKeys(final Map<String, String> options, final OpenIDProviderConfiguration config) throws GeneralSecurityException {
+    protected JsonWebKeySet getWebKeys(final Map<String, String> options,
+            final OpenIDProviderConfiguration config) throws GeneralSecurityException {
+
         return new JsonWebKeySet(restClient.target(config.getJwksUri())
-                .request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class));
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(JsonObject.class));
     }
 
     /**
@@ -439,6 +441,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return updated issuer
      */
     private String googleWorkaround(final String issuer) {
+
         if (issuer.startsWith(HTTPS_PREFIX)) {
             return issuer;
         }
@@ -457,41 +460,39 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return status
      * @throws GeneralSecurityException
      */
-    private AuthStatus handleCallback(final HttpServletRequest req, final HttpServletResponse resp, final Subject subject) throws GeneralSecurityException, IOException {
+    private AuthStatus handleCallback(final HttpServletRequest req,
+            final HttpServletResponse resp,
+            final Subject subject) throws GeneralSecurityException,
+            IOException {
+
         final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
         final OAuthToken token = getToken(req, oidProviderConfig);
-        final JsonWebKeySet webKeys = getWebKeys(moduleOptions,
-                oidProviderConfig);
+        final JsonWebKeySet webKeys = getWebKeys(moduleOptions, oidProviderConfig);
 
         LOG.log(Level.FINEST, "tokenValue", token);
-        final JsonObject claimsSet = Json.createReader(
-                new ByteArrayInputStream(Utils.getJwsPayload(
-                        token.getIdToken(), webKeys))).readObject();
+        final JsonObject claimsSet = Json.createReader(new ByteArrayInputStream(Utils.getJwsPayload(token.getIdToken(), webKeys)))
+                .readObject();
 
         validateIdToken(clientId, claimsSet);
 
         final String iss = googleWorkaround(claimsSet.getString("iss"));
         final String issuer = googleWorkaround(oidProviderConfig.getIssuer());
         if (!iss.equals(issuer)) {
-            LOG.log(Level.SEVERE, "issuerMismatch",
-                    new Object[] { iss, issuer });
-            throw new GeneralSecurityException(MessageFormat.format(
-                    R.getString("issuerMismatch"), iss, issuer));
+            LOG.log(Level.SEVERE, "issuerMismatch", new Object[] { iss, issuer });
+            throw new GeneralSecurityException(MessageFormat.format(R.getString("issuerMismatch"), iss, issuer));
         }
         updateSubjectPrincipal(subject, claimsSet);
 
         final TokenCookie tokenCookie;
-        if (oidProviderConfig.getUserinfoEndpoint() != null
-                && Pattern.compile("\\bprofile\\b").matcher(scope).find()) {
-            final Response userInfoResponse = restClient
-                    .target(oidProviderConfig.getUserinfoEndpoint())
+        if (oidProviderConfig.getUserinfoEndpoint() != null && Pattern.compile("\\bprofile\\b")
+                .matcher(scope)
+                .find()) {
+            final Response userInfoResponse = restClient.target(oidProviderConfig.getUserinfoEndpoint())
                     .request(MediaType.APPLICATION_JSON_TYPE)
-                    .header("Authorization",
-                            token.getTokenType() + " " + token.getAccessToken())
-                            .get();
+                    .header("Authorization", token.getTokenType() + " " + token.getAccessToken())
+                    .get();
             if (userInfoResponse.getStatus() == 200) {
-                tokenCookie = new TokenCookie(claimsSet,
-                        userInfoResponse.readEntity(JsonObject.class));
+                tokenCookie = new TokenCookie(claimsSet, userInfoResponse.readEntity(JsonObject.class));
             } else {
                 LOG.log(Level.WARNING, "unableToGetProfile");
                 tokenCookie = new TokenCookie(claimsSet);
@@ -507,9 +508,9 @@ public abstract class OAuthModule implements ServerAuthModule {
             requestCookieContext = cookieContext;
         }
 
-        final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID,
-                tokenCookie.toCookieValue(clientId, clientSecret));
+        final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, tokenCookie.toCookieValue(clientId, clientSecret));
         idTokenCookie.setMaxAge(-1);
+        idTokenCookie.setSecure(true);
         idTokenCookie.setPath(requestCookieContext);
         resp.addCookie(idTokenCookie);
 
@@ -520,10 +521,10 @@ public abstract class OAuthModule implements ServerAuthModule {
             ageCookie.setMaxAge(3600);
 
         } else {
-            ageCookie
-            .setMaxAge(Integer.parseInt(req.getParameter("expires_in")));
+            ageCookie.setMaxAge(Integer.parseInt(req.getParameter("expires_in")));
         }
         ageCookie.setPath(requestCookieContext);
+        idTokenCookie.setSecure(true);
         resp.addCookie(ageCookie);
 
         final String stateEncoded = req.getParameter("state");
@@ -547,7 +548,11 @@ public abstract class OAuthModule implements ServerAuthModule {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void initialize(final MessagePolicy requestPolicy, final MessagePolicy responsePolicy, final CallbackHandler h, @SuppressWarnings("rawtypes") final Map options) throws AuthException {
+    public void initialize(final MessagePolicy requestPolicy,
+            final MessagePolicy responsePolicy,
+            final CallbackHandler h,
+            @SuppressWarnings("rawtypes") final Map options) throws AuthException {
+
         handler = h;
         try {
             mandatory = requestPolicy.isMandatory();
@@ -555,12 +560,10 @@ public abstract class OAuthModule implements ServerAuthModule {
             clientId = moduleOptions.get(CLIENT_ID_KEY);
             if (clientId == null) {
                 LOG.log(Level.SEVERE, "missingOption", CLIENT_ID_KEY);
-                throw new AuthException(MessageFormat.format(
-                        R.getString("missingOption"), CLIENT_ID_KEY));
+                throw new AuthException(MessageFormat.format(R.getString("missingOption"), CLIENT_ID_KEY));
             }
             cookieContext = moduleOptions.get(COOKIE_CONTEXT_KEY);
-            redirectionEndpointUri = moduleOptions
-                    .get(REDIRECTION_ENDPOINT_URI_KEY);
+            redirectionEndpointUri = moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY);
             tokenUri = moduleOptions.get(TOKEN_URI_KEY);
             userInfoUri = moduleOptions.get(USERINFO_URI_KEY);
             scope = moduleOptions.get(SCOPE_KEY);
@@ -570,16 +573,14 @@ public abstract class OAuthModule implements ServerAuthModule {
             clientSecret = moduleOptions.get(CLIENT_SECRET_KEY);
             if (clientSecret == null) {
                 LOG.log(Level.SEVERE, "missingOption", CLIENT_SECRET_KEY);
-                throw new AuthException(MessageFormat.format(
-                        R.getString("missingOption"), CLIENT_SECRET_KEY));
+                throw new AuthException(MessageFormat.format(R.getString("missingOption"), CLIENT_SECRET_KEY));
             }
             LOGCONFIG.log(Level.CONFIG, "options", moduleOptions);
             secret = CipherUtil.buildSecretKey(clientId, clientSecret);
         } catch (final Exception e) {
             // Should not happen
             LOG.log(Level.SEVERE, "initializeException", e);
-            throw new AuthException(MessageFormat.format(
-                    R.getString("initializeException"), e.getMessage()));
+            throw new AuthException(MessageFormat.format(R.getString("initializeException"), e.getMessage()));
         }
     }
 
@@ -595,11 +596,9 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return the module is called by the resource owner.
      */
     public boolean isCallback(final HttpServletRequest req) {
-        return moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY).equals(
-                req.getRequestURI())
-                && isRetrievalRequest(req)
-                && !isNullOrEmpty(req.getParameter(CODE))
-                && !isNullOrEmpty(req.getParameter(STATE));
+
+        return moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)
+                .equals(req.getRequestURI()) && isRetrievalRequest(req) && !isNullOrEmpty(req.getParameter(CODE)) && !isNullOrEmpty(req.getParameter(STATE));
     }
 
     /**
@@ -614,7 +613,9 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            servlet request
      * @return token cookie.
      */
-    private TokenCookie processTokenCookie(final Subject subject, final HttpServletRequest req) {
+    private TokenCookie processTokenCookie(final Subject subject,
+            final HttpServletRequest req) {
+
         try {
             final String idToken = getIdToken(req);
             TokenCookie tokenCookie = null;
@@ -624,10 +625,14 @@ public abstract class OAuthModule implements ServerAuthModule {
                 updateSubjectPrincipal(subject, tokenCookie.getIdToken());
 
                 if (tokenCookie.getUserInfo() != null) {
-                    req.setAttribute(NET_TRAJANO_AUTH_USERINFO,
-                            tokenCookie.getUserInfo());
+                    req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());
                 }
 
+            } catch (final GeneralSecurityException e) {
+                LOG.log(Level.FINE, "invalidToken", e.getMessage());
+                LOG.throwing(this.getClass()
+                        .getName(), "validateRequest", e);
+                return null;
             }
             return tokenCookie;
         } catch (final GeneralSecurityException | IOException e) {
@@ -653,39 +658,35 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return authentication status
      * @throws AuthException
      */
-    private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req, final HttpServletResponse resp) throws AuthException {
+    private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req,
+            final HttpServletResponse resp) throws AuthException {
+
         URI authorizationEndpointUri = null;
         try {
-            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(
-                    restClient, moduleOptions);
+            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
             restClient.close();
 
-            final String state = Base64.encodeWithoutPadding(req
-                    .getRequestURI().getBytes("UTF-8"));
+            final String state = Base64.encodeWithoutPadding(req.getRequestURI()
+                    .getBytes("UTF-8"));
 
-            authorizationEndpointUri = UriBuilder
-                    .fromUri(oidProviderConfig.getAuthorizationEndpoint())
+            authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())
                     .queryParam(CLIENT_ID, clientId)
                     .queryParam(RESPONSE_TYPE, "code")
                     .queryParam(SCOPE, scope)
-                    .queryParam(
-                            REDIRECT_URI,
-                            URI.create(req.getRequestURL().toString()).resolve(
-                                    moduleOptions
-                                    .get(REDIRECTION_ENDPOINT_URI_KEY)))
-                                    .queryParam(STATE, state).build();
+                    .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
+                            .toString())
+                            .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
+                            .queryParam(STATE, state)
+                            .build();
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
             return AuthStatus.SEND_CONTINUE;
         } catch (final IOException e) {
             // Should not happen
-            LOG.log(Level.SEVERE, "sendRedirectException", new Object[] {
-                    authorizationEndpointUri, e.getMessage() });
-            LOG.throwing(this.getClass().getName(),
-                    "redirectToAuthorizationEndpoint", e);
-            throw new AuthException(MessageFormat.format(
-                    R.getString("sendRedirectException"),
-                    authorizationEndpointUri, e.getMessage()));
+            LOG.log(Level.SEVERE, "sendRedirectException", new Object[] { authorizationEndpointUri, e.getMessage() });
+            LOG.throwing(this.getClass()
+                    .getName(), "redirectToAuthorizationEndpoint", e);
+            throw new AuthException(MessageFormat.format(R.getString("sendRedirectException"), authorizationEndpointUri, e.getMessage()));
         }
     }
 
@@ -701,7 +702,9 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return {@link AuthStatus#SEND_SUCCESS}
      */
     @Override
-    public AuthStatus secureResponse(final MessageInfo messageInfo, final Subject subject) throws AuthException {
+    public AuthStatus secureResponse(final MessageInfo messageInfo,
+            final Subject subject) throws AuthException {
+
         return AuthStatus.SEND_SUCCESS;
     }
 
@@ -712,6 +715,7 @@ public abstract class OAuthModule implements ServerAuthModule {
      *            REST client. May be mocked.
      */
     public void setRestClient(final Client restClient) {
+
         this.restClient = restClient;
     }
 
@@ -726,20 +730,21 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @throws AuthException
      * @throws GeneralSecurityException
      */
-    private void updateSubjectPrincipal(final Subject subject, final JsonObject jwtPayload) throws GeneralSecurityException {
+    private void updateSubjectPrincipal(final Subject subject,
+            final JsonObject jwtPayload) throws GeneralSecurityException {
+
         try {
             final String iss = googleWorkaround(jwtPayload.getString("iss"));
-            handler.handle(new Callback[] {
-                    new CallerPrincipalCallback(subject, UriBuilder
-                            .fromUri(iss).userInfo(jwtPayload.getString("sub"))
-                            .build().toASCIIString()),
-                            new GroupPrincipalCallback(subject, new String[] { iss }) });
+            handler.handle(new Callback[] { new CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)
+                    .userInfo(jwtPayload.getString("sub"))
+                    .build()
+                    .toASCIIString()), new GroupPrincipalCallback(subject, new String[] { iss }) });
         } catch (final IOException | UnsupportedCallbackException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "updatePrincipalException", e.getMessage());
-            LOG.throwing(this.getClass().getName(), "updateSubjectPrincipal", e);
-            throw new AuthException(MessageFormat.format(
-                    R.getString("updatePrincipalException"), e.getMessage()));
+            LOG.throwing(this.getClass()
+                    .getName(), "updateSubjectPrincipal", e);
+            throw new AuthException(MessageFormat.format(R.getString("updatePrincipalException"), e.getMessage()));
         }
     }
 
@@ -759,25 +764,29 @@ public abstract class OAuthModule implements ServerAuthModule {
      * @return Auth status
      */
     @Override
-    public AuthStatus validateRequest(final MessageInfo messageInfo, final Subject clientSubject, final Subject serviceSubject) throws AuthException {
+    public AuthStatus validateRequest(final MessageInfo messageInfo,
+            final Subject clientSubject,
+            final Subject serviceSubject) throws AuthException {
+
         final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();
 
         try {
-            final TokenCookie tokenCookie = processTokenCookie(clientSubject,
-                    req);
+            final TokenCookie tokenCookie = processTokenCookie(clientSubject, req);
 
-            if (tokenCookie != null && req.isSecure() && isGetRequest(req)
-                    && req.getRequestURI().equals(tokenUri)) {
+            if (tokenCookie != null && req.isSecure() && isGetRequest(req) && req.getRequestURI()
+                    .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
-                resp.getWriter().print(tokenCookie.getIdToken());
+                resp.getWriter()
+                .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
-            if (tokenCookie != null && req.isSecure() && isGetRequest(req)
-                    && req.getRequestURI().equals(userInfoUri)) {
+            if (tokenCookie != null && req.isSecure() && isGetRequest(req) && req.getRequestURI()
+                    .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
-                resp.getWriter().print(tokenCookie.getUserInfo());
+                resp.getWriter()
+                .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -789,16 +798,14 @@ public abstract class OAuthModule implements ServerAuthModule {
 
             if (!req.isSecure() && mandatory) {
                 // Fail authorization 3.1.2.1
-                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                        R.getString("SSLReq"));
+                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString("SSLReq"));
                 return AuthStatus.SEND_FAILURE;
             }
 
             //
 
             if (!req.isSecure() && isCallback(req)) {
-                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                        R.getString("SSLReq"));
+                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString("SSLReq"));
                 return AuthStatus.SEND_FAILURE;
             }
 
@@ -809,31 +816,30 @@ public abstract class OAuthModule implements ServerAuthModule {
             if (!mandatory || tokenCookie != null && !tokenCookie.isExpired()) {
                 return AuthStatus.SUCCESS;
             }
-            if (req.isSecure() && isHeadRequest(req)
-                    && req.getRequestURI().equals(tokenUri)) {
+            if (req.isSecure() && isHeadRequest(req) && req.getRequestURI()
+                    .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 return AuthStatus.SEND_SUCCESS;
             }
 
-            if (req.getRequestURI().equals(userInfoUri) && isHeadRequest(req)) {
+            if (req.getRequestURI()
+                    .equals(userInfoUri) && isHeadRequest(req)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 return AuthStatus.SEND_SUCCESS;
 
             }
             if (!isRetrievalRequest(req)) {
-                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                        "Unable to POST when unauthorized.");
+                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, "Unable to POST when unauthorized.");
                 return AuthStatus.SEND_FAILURE;
             }
 
             return redirectToAuthorizationEndpoint(req, resp);
         } catch (final Exception e) {
-            e.printStackTrace();
             // Should not happen
             LOG.log(Level.SEVERE, "validationException", e.getMessage());
-            LOG.throwing(this.getClass().getName(), "validateRequest", e);
-            throw new AuthException(MessageFormat.format(
-                    R.getString("validationException"), e.getMessage()));
+            LOG.throwing(this.getClass()
+                    .getName(), "validateRequest", e);
+            throw new AuthException(MessageFormat.format(R.getString("validationException"), e.getMessage()));
         }
     }
 }

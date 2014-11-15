@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
  * requiring to install additional JAR files, this class was created.
  *
  * @author Archimedes Trajano
- *
  */
 public final class Utils {
     /**
@@ -54,15 +53,13 @@ public final class Utils {
      * @throws GeneralSecurityException
      *             problem with crypto APIs or signature was not valid
      */
-    public static byte[] getJwsPayload(final String serialization,
-            final JsonWebKeySet keyset) throws GeneralSecurityException {
+    public static byte[] getJwsPayload(final String serialization, final JsonWebKeySet keyset) throws GeneralSecurityException {
         if (LOG.isLoggable(Level.FINEST)) {
             LOG.finest("serialized payload = " + serialization);
         }
         final String[] jwtParts = serialization.split("\\.");
 
-        final JsonObject joseHeader = Json.createReader(
-                new ByteArrayInputStream(Base64.decode(jwtParts[0])))
+        final JsonObject joseHeader = Json.createReader(new ByteArrayInputStream(Base64.decode(jwtParts[0])))
                 .readObject();
 
         // Handle plaintext JWTs
@@ -77,20 +74,17 @@ public final class Utils {
             final PublicKey signingKey = keyset.getKey(kid, PublicKey.class);
 
             if (signingKey == null) {
-                throw new GeneralSecurityException("No key with id " + kid
-                        + " defined");
+                throw new GeneralSecurityException("No key with id " + kid + " defined");
             }
 
-            final Signature signature = Signature
-                    .getInstance(toJavaAlgorithm(joseHeader.getString("alg")));
+            final Signature signature = Signature.getInstance(toJavaAlgorithm(joseHeader.getString("alg")));
 
             final byte[] jwtSignatureBytes = Base64.decode(jwtParts[2]);
 
             signature.initVerify(signingKey);
             signature.update((jwtParts[0] + "." + jwtParts[1]).getBytes());
             if (!signature.verify(jwtSignatureBytes)) {
-                throw new GeneralSecurityException(
-                        "signature verification failed");
+                throw new GeneralSecurityException("signature verification failed");
             }
         }
         return Base64.decode(jwtParts[1]);
@@ -126,7 +120,8 @@ public final class Utils {
      * @return true if string is null or empty.
      */
     public static boolean isNullOrEmpty(final String s) {
-        return s == null || s.trim().length() == 0;
+        return s == null || s.trim()
+                .length() == 0;
     }
 
     /**
@@ -153,7 +148,8 @@ public final class Utils {
      * @return algorithm name
      */
     public static String toJavaAlgorithm(final String alg) {
-        return JsonWebAlgorithm.valueOf(alg).toJca();
+        return JsonWebAlgorithm.valueOf(alg)
+                .toJca();
     }
 
     /**
@@ -165,26 +161,18 @@ public final class Utils {
      *            ID Token JSON.
      * @throws GeneralSecurityException
      */
-    public static void validateIdToken(final String clientId,
-            final JsonObject idTokenJson) throws GeneralSecurityException {
+    public static void validateIdToken(final String clientId, final JsonObject idTokenJson) throws GeneralSecurityException {
         // TODO handle multiple audiences
         if (!clientId.equals(idTokenJson.getString("aud"))) {
-            throw new GeneralSecurityException(String.format(
-                    "invalid 'aud' got' %s' expected '%s'",
-                    idTokenJson.getString("aud"), clientId));
+            throw new GeneralSecurityException(String.format("invalid 'aud' got' %s' expected '%s'", idTokenJson.getString("aud"), clientId));
         }
-        if (idTokenJson.containsKey("azp")
-                && !clientId.equals(idTokenJson.getString("azp"))) {
-            throw new GeneralSecurityException(String.format(
-                    "invalid 'azp' got' %s' expected '%s'",
-                    idTokenJson.getString("azp"), clientId));
+        if (idTokenJson.containsKey("azp") && !clientId.equals(idTokenJson.getString("azp"))) {
+            throw new GeneralSecurityException(String.format("invalid 'azp' got' %s' expected '%s'", idTokenJson.getString("azp"), clientId));
         }
         if (idTokenJson.containsKey("exp")) {
-            final long delta = System.currentTimeMillis()
-                    - idTokenJson.getInt("exp") * 1000L;
+            final long delta = System.currentTimeMillis() - idTokenJson.getInt("exp") * 1000L;
             if (delta >= 0) {
-                throw new GeneralSecurityException("expired " + delta
-                        + "ms ago");
+                throw new GeneralSecurityException("expired " + delta + "ms ago");
             }
         }
     }

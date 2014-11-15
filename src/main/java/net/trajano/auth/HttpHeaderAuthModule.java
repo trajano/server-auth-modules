@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
  * HTTP header server auth module. This can be used with SiteMinder type data.
  *
  * @author Archimedes Trajano
- *
  */
 public class HttpHeaderAuthModule implements ServerAuthModule {
 
@@ -93,8 +92,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
      *            subject
      */
     @Override
-    public void cleanSubject(final MessageInfo messageInfo,
-            final Subject subject) throws AuthException {
+    public void cleanSubject(final MessageInfo messageInfo, final Subject subject) throws AuthException {
         // Does nothing.
     }
 
@@ -114,8 +112,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
     @SuppressWarnings("rawtypes")
     @Override
     public Class[] getSupportedMessageTypes() {
-        return new Class<?>[] { HttpServletRequest.class,
-                HttpServletResponse.class };
+        return new Class<?>[] { HttpServletRequest.class, HttpServletResponse.class };
     }
 
     /**
@@ -133,7 +130,8 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
         final List<String> groupList = new LinkedList<>();
         final Enumeration<String> groupHeaders = req.getHeaders(groupHeader);
         while (groupHeaders.hasMoreElements()) {
-            for (final String groupName : groupHeaders.nextElement().split(",")) {
+            for (final String groupName : groupHeaders.nextElement()
+                    .split(",")) {
                 groupList.add(groupName.trim());
             }
         }
@@ -153,17 +151,13 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
      *            options
      */
     @Override
-    public void initialize(final MessagePolicy requestPolicy,
-            final MessagePolicy responsePolicy, final CallbackHandler h,
-            @SuppressWarnings("rawtypes") final Map options)
-                    throws AuthException {
+    public void initialize(final MessagePolicy requestPolicy, final MessagePolicy responsePolicy, final CallbackHandler h, @SuppressWarnings("rawtypes") final Map options) throws AuthException {
         handler = h;
         mandatory = requestPolicy.isMandatory();
         userNameHeader = (String) options.get(USERNAME_HEADER_KEY);
         if (userNameHeader == null) {
             LOG.log(Level.SEVERE, "missingOption", USERNAME_HEADER_KEY);
-            throw new AuthException(MessageFormat.format(
-                    R.getString("missingOption"), USERNAME_HEADER_KEY));
+            throw new AuthException(MessageFormat.format(R.getString("missingOption"), USERNAME_HEADER_KEY));
         }
         groupHeader = (String) options.get(GROUP_HEADER_KEY);
     }
@@ -180,8 +174,7 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
      * @return {@link AuthStatus#SEND_SUCCESS}
      */
     @Override
-    public AuthStatus secureResponse(final MessageInfo messageInfo,
-            final Subject subject) throws AuthException {
+    public AuthStatus secureResponse(final MessageInfo messageInfo, final Subject subject) throws AuthException {
         return AuthStatus.SEND_SUCCESS;
     }
 
@@ -189,20 +182,15 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
      * {@inheritDoc}
      */
     @Override
-    public AuthStatus validateRequest(final MessageInfo messageInfo,
-            final Subject client, final Subject serviceSubject)
-                    throws AuthException {
-        final HttpServletRequest req = (HttpServletRequest) messageInfo
-                .getRequestMessage();
-        final HttpServletResponse resp = (HttpServletResponse) messageInfo
-                .getResponseMessage();
+    public AuthStatus validateRequest(final MessageInfo messageInfo, final Subject client, final Subject serviceSubject) throws AuthException {
+        final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();
+        final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();
         try {
             if (!mandatory && !req.isSecure()) {
                 return AuthStatus.SUCCESS;
             }
             if (!req.isSecure()) {
-                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                        R.getString("SSLReq"));
+                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString("SSLReq"));
                 return AuthStatus.SEND_FAILURE;
             }
             final String userName = req.getHeader(userNameHeader);
@@ -212,12 +200,11 @@ public class HttpHeaderAuthModule implements ServerAuthModule {
                 return AuthStatus.SUCCESS;
             }
 
-            handler.handle(new Callback[] {
-                    new CallerPrincipalCallback(client, userName),
-                    new GroupPrincipalCallback(client, groups(req)) });
+            handler.handle(new Callback[] { new CallerPrincipalCallback(client, userName), new GroupPrincipalCallback(client, groups(req)) });
             return AuthStatus.SUCCESS;
         } catch (final IOException | UnsupportedCallbackException e) {
-            LOG.throwing(this.getClass().getName(), "validateRequest", e);
+            LOG.throwing(this.getClass()
+                    .getName(), "validateRequest", e);
             throw new AuthException(e.getMessage());
         }
     }

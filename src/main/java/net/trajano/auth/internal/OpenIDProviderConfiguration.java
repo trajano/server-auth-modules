@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * OpenID Provider configuration.
  *
  * @author Archimedes Trajano
- *
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -92,12 +91,10 @@ public class OpenIDProviderConfiguration {
      *            JSON object
      */
     public OpenIDProviderConfiguration(final JsonObject jsonObject) {
-        setAuthorizationEndpoint(URI.create(jsonObject
-                .getString("authorization_endpoint")));
+        setAuthorizationEndpoint(URI.create(jsonObject.getString("authorization_endpoint")));
         setTokenEndpoint(URI.create(jsonObject.getString("token_endpoint")));
         setIssuer(jsonObject.getString("issuer"));
-        setRevocationEndpoint(URI.create(jsonObject
-                .getString("revocation_endpoint")));
+        setRevocationEndpoint(URI.create(jsonObject.getString("revocation_endpoint")));
         setJwksUri(URI.create(jsonObject.getString("jwks_uri")));
     }
 
@@ -145,8 +142,7 @@ public class OpenIDProviderConfiguration {
         this.authorizationEndpoint = authorizationEndpoint;
     }
 
-    public void setIdTokenAlgValuesSupported(
-            final List<String> idTokenAlgValuesSupported) {
+    public void setIdTokenAlgValuesSupported(final List<String> idTokenAlgValuesSupported) {
         this.idTokenAlgValuesSupported = idTokenAlgValuesSupported;
     }
 
@@ -158,8 +154,7 @@ public class OpenIDProviderConfiguration {
         this.jwksUri = jwksUri;
     }
 
-    public void setResponseTypesSupported(
-            final List<String> responseTypesSupported) {
+    public void setResponseTypesSupported(final List<String> responseTypesSupported) {
         this.responseTypesSupported = responseTypesSupported;
     }
 
@@ -167,8 +162,7 @@ public class OpenIDProviderConfiguration {
         this.revocationEndpoint = revocationEndpoint;
     }
 
-    public void setSubjectTypesSupported(
-            final List<String> subjectTypesSupported) {
+    public void setSubjectTypesSupported(final List<String> subjectTypesSupported) {
         this.subjectTypesSupported = subjectTypesSupported;
     }
 
@@ -176,8 +170,7 @@ public class OpenIDProviderConfiguration {
         this.tokenEndpoint = tokenEndpoint;
     }
 
-    public void setTokenEndpointAuthMethodsSupported(
-            final List<String> tokenEndpointAuthMethodsSupported) {
+    public void setTokenEndpointAuthMethodsSupported(final List<String> tokenEndpointAuthMethodsSupported) {
         this.tokenEndpointAuthMethodsSupported = tokenEndpointAuthMethodsSupported;
     }
 
@@ -187,14 +180,6 @@ public class OpenIDProviderConfiguration {
 
     @Override
     public String toString() {
-        return "OpenIDProviderConfigurationResponse [authorizationEndpoint="
-                + authorizationEndpoint + ", idTokenAlgValuesSupported="
-                + idTokenAlgValuesSupported + ", issuer=" + issuer
-                + ", jwksUri=" + jwksUri + ", responseTypesSupported="
-                + responseTypesSupported + ", revocationEndpoint="
-                + revocationEndpoint + ", subjectTypesSupported="
-                + subjectTypesSupported + ", tokenEndpoint=" + tokenEndpoint
-                + ", tokenEndpointAuthMethodsSupported="
-                + tokenEndpointAuthMethodsSupported + "]";
+        return "OpenIDProviderConfigurationResponse [authorizationEndpoint=" + authorizationEndpoint + ", idTokenAlgValuesSupported=" + idTokenAlgValuesSupported + ", issuer=" + issuer + ", jwksUri=" + jwksUri + ", responseTypesSupported=" + responseTypesSupported + ", revocationEndpoint=" + revocationEndpoint + ", subjectTypesSupported=" + subjectTypesSupported + ", tokenEndpoint=" + tokenEndpoint + ", tokenEndpointAuthMethodsSupported=" + tokenEndpointAuthMethodsSupported + "]";
     }
 }

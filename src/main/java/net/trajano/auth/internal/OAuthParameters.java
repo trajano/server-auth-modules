@@ -5,7 +5,6 @@ package net.trajano.auth.internal;
  * Registry Contents.
  *
  * @author Archimedes Trajano
- *
  */
 public final class OAuthParameters {
     /**

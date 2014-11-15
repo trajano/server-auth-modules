@@ -16,8 +16,12 @@ public class TokenCookieTest {
 
     @Before
     public void createJsons() {
-        idTokenJson = Json.createObjectBuilder().add("id", "token").build();
-        userInfoJson = Json.createObjectBuilder().add("user", "info").build();
+        idTokenJson = Json.createObjectBuilder()
+                .add("id", "token")
+                .build();
+        userInfoJson = Json.createObjectBuilder()
+                .add("user", "info")
+                .build();
     }
 
     @Test
@@ -27,26 +31,22 @@ public class TokenCookieTest {
 
     @Test
     public void testConstructor2() {
-        final JsonObject userInfo = new TokenCookie(idTokenJson, userInfoJson)
-        .getUserInfo();
+        final JsonObject userInfo = new TokenCookie(idTokenJson, userInfoJson).getUserInfo();
         Assert.assertNotNull(userInfo);
         Assert.assertEquals(userInfo, userInfoJson);
     }
 
     @Test
     public void testExpiration() {
-        System.out
-        .println(1404851697 - (int) (System.currentTimeMillis() / 1000));
+        System.out.println(1404851697 - (int) (System.currentTimeMillis() / 1000));
     }
 
     @Test
     public void testToCookieValueAndBack() throws Exception {
-        final String cookieValue = new TokenCookie(idTokenJson, userInfoJson)
-        .toCookieValue("clientId", "clientSecret");
+        final String cookieValue = new TokenCookie(idTokenJson, userInfoJson).toCookieValue("clientId", "clientSecret");
         Assert.assertNotNull(cookieValue);
 
-        final JsonObject userInfo = new TokenCookie(cookieValue, "clientId",
-                "clientSecret").getUserInfo();
+        final JsonObject userInfo = new TokenCookie(cookieValue, "clientId", "clientSecret").getUserInfo();
         Assert.assertEquals(userInfo, userInfoJson);
     }
 }

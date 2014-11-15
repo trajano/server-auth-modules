@@ -44,7 +44,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Tests using Heroku. 
+ * Tests using Heroku.
  */
 public class HerokuTest {
     @Test
@@ -70,15 +70,15 @@ public class HerokuTest {
         final WebDriver b = new FirefoxDriver();
         b.get("https://connect-op.herokuapp.com");
         b.findElement(By.name("commit"))
-        .click();
+                .click();
         b.findElement(By.linkText("Register New Client"))
-        .click();
+                .click();
         b.findElement(By.id("client_name"))
-        .sendKeys("Test");
+                .sendKeys("Test");
         b.findElement(By.id("client_redirect_uri"))
-        .sendKeys("https://www.trajano.net/app/oauth2");
+                .sendKeys("https://www.trajano.net/app/oauth2");
         b.findElement(By.name("commit"))
-        .click();
+                .click();
         final Map<String, String> options;
 
         {
@@ -120,7 +120,7 @@ public class HerokuTest {
             b.get(redirectUrl.getValue());
 
             b.findElement(By.name("commit"))
-            .click();
+                    .click();
             final WebDriverWait wait = new WebDriverWait(b, 30);
             wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name("commit")));
         }
@@ -200,15 +200,15 @@ public class HerokuTest {
         final WebDriver b = new FirefoxDriver();
         b.get("https://connect-op.herokuapp.com");
         b.findElement(By.name("commit"))
-        .click();
+                .click();
         b.findElement(By.linkText("Register New Client"))
-        .click();
+                .click();
         b.findElement(By.id("client_name"))
-        .sendKeys("Test");
+                .sendKeys("Test");
         b.findElement(By.id("client_redirect_uri"))
-        .sendKeys("https://www.trajano.net/app/oauth2");
+                .sendKeys("https://www.trajano.net/app/oauth2");
         b.findElement(By.name("commit"))
-        .click();
+                .click();
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final Map<String, String> options = new HashMap<>();
@@ -244,7 +244,7 @@ public class HerokuTest {
 
             b.get(redirectUrl.getValue());
             b.findElement(By.name("commit"))
-            .click();
+                    .click();
             System.out.println(b.getCurrentUrl());
         }
 

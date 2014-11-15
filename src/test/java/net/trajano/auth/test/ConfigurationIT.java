@@ -15,7 +15,7 @@ import org.junit.Test;
 /**
  * Tests the configuration processing.
  */
-public class ConfigurationIT{
+public class ConfigurationIT {
 
     /**
      * Tests getting the configuration from Google.
@@ -24,10 +24,10 @@ public class ConfigurationIT{
      */
     @Test
     public void testGoogleOpenIdConfiguration() throws Exception {
-        ClientBuilder
-                .newClient()
-                .target("https://accounts.google.com/.well-known/openid-configuration")
-                .request().get(OpenIDProviderConfiguration.class);
+        ClientBuilder.newClient()
+        .target("https://accounts.google.com/.well-known/openid-configuration")
+        .request()
+                .get(OpenIDProviderConfiguration.class);
     }
 
     /**
@@ -38,11 +38,11 @@ public class ConfigurationIT{
     @Test
     public void testJwkRetrieval() throws Exception {
         final Client restClient = ClientBuilder.newClient();
-        final OpenIDProviderConfiguration openIdProviderConfiguration = restClient
-                .target("https://accounts.google.com/.well-known/openid-configuration")
-                .request().get(OpenIDProviderConfiguration.class);
-        final JsonWebKeySet webKeys = new JsonWebKeySet(restClient
-                .target(openIdProviderConfiguration.getJwksUri()).request()
+        final OpenIDProviderConfiguration openIdProviderConfiguration = restClient.target("https://accounts.google.com/.well-known/openid-configuration")
+                .request()
+                .get(OpenIDProviderConfiguration.class);
+        final JsonWebKeySet webKeys = new JsonWebKeySet(restClient.target(openIdProviderConfiguration.getJwksUri())
+                .request()
                 .get(JsonObject.class));
         assertNotNull(webKeys);
     }
@@ -55,9 +55,9 @@ public class ConfigurationIT{
     @Test
     public void testSalesforceOpenIdConfiguration() throws Exception {
         final Client restClient = ClientBuilder.newClient();
-        final OpenIDProviderConfiguration config = restClient
-                .target("https://login.salesforce.com/.well-known/openid-configuration")
-                .request().get(OpenIDProviderConfiguration.class);
+        final OpenIDProviderConfiguration config = restClient.target("https://login.salesforce.com/.well-known/openid-configuration")
+                .request()
+                .get(OpenIDProviderConfiguration.class);
         assertEquals("https://login.salesforce.com", config.getIssuer());
     }
 }

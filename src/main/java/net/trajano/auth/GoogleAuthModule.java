@@ -26,7 +26,6 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
  * from Google.
  *
  * @author Archimedes Trajano
- *
  */
 public class GoogleAuthModule extends OAuthModule {
 
@@ -40,11 +39,9 @@ public class GoogleAuthModule extends OAuthModule {
      * @return OpenID provider configuration
      */
     @Override
-    protected OpenIDProviderConfiguration getOpenIDProviderConfig(
-            final Client restClient, final Map<String, String> options)
-                    throws AuthException {
-        return new OpenIDProviderConfiguration(Json.createReader(
-                Thread.currentThread().getContextClassLoader()
+    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final Client restClient, final Map<String, String> options) throws AuthException {
+        return new OpenIDProviderConfiguration(Json.createReader(Thread.currentThread()
+                .getContextClassLoader()
                 .getResourceAsStream("META-INF/google-config.json"))
                 .readObject());
     }
@@ -54,18 +51,14 @@ public class GoogleAuthModule extends OAuthModule {
      * and does not try to do it via the authorization headers. {@inheritDoc}
      */
     @Override
-    protected OAuthToken getToken(final HttpServletRequest req,
-            final OpenIDProviderConfiguration oidProviderConfig)
-                    throws IOException {
+    protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle(CODE, req.getParameter("code"));
         requestData.putSingle(GRANT_TYPE, "authorization_code");
-        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req)
-                .toASCIIString());
+        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req).toASCIIString());
         requestData.putSingle(CLIENT_ID, getClientId());
         requestData.putSingle(CLIENT_SECRET_KEY, getClientSecret());
-        final OAuthToken authorizationTokenResponse = getRestClient()
-                .target(oidProviderConfig.getTokenEndpoint())
+        final OAuthToken authorizationTokenResponse = getRestClient().target(oidProviderConfig.getTokenEndpoint())
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.form(requestData), OAuthToken.class);
         return authorizationTokenResponse;

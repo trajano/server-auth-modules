@@ -14,13 +14,10 @@ import javax.json.JsonValue;
 
 /**
  * JSON Web Key Set. Implements
- * http://tools.ietf.org/html/draft-ietf-jose-json-web-key-29
- *
- * TODO when supporting more methods, consider converting this to a composite
- * pattern.
+ * http://tools.ietf.org/html/draft-ietf-jose-json-web-key-29 TODO when
+ * supporting more methods, consider converting this to a composite pattern.
  *
  * @author Archimedes Trajano
- *
  */
 public class JsonWebKeySet {
     /**
@@ -47,8 +44,7 @@ public class JsonWebKeySet {
             } else {
                 kid = "";
             }
-            if (keyJson.containsKey("use")
-                    && "sig".equals(keyJson.getString("use"))) {
+            if (keyJson.containsKey("use") && "sig".equals(keyJson.getString("use"))) {
                 final PublicKey key = buildPublicKey(keyJson);
                 if (key != null) {
                     keyMap.put(kid, key);
@@ -67,8 +63,7 @@ public class JsonWebKeySet {
      * @throws GeneralSecurityException
      *             problem with the crypto APIs
      */
-    private PublicKey buildPublicKey(final JsonObject keyJson)
-            throws GeneralSecurityException {
+    private PublicKey buildPublicKey(final JsonObject keyJson) throws GeneralSecurityException {
         final String kty = keyJson.getString("kty");
         if ("RSA".equals(kty)) {
             return buildRSAPublicKey(keyJson);
@@ -86,14 +81,11 @@ public class JsonWebKeySet {
      * @throws GeneralSecurityException
      *             problem with the crypto APIs
      */
-    private PublicKey buildRSAPublicKey(final JsonObject keyJson)
-            throws GeneralSecurityException {
-        final BigInteger modulus = new BigInteger(1, Base64.decode(keyJson
-                .getString("n")));
-        final BigInteger publicExponent = new BigInteger(1,
-                Base64.decode(keyJson.getString("e")));
-        return KeyFactory.getInstance("RSA").generatePublic(
-                new RSAPublicKeySpec(modulus, publicExponent));
+    private PublicKey buildRSAPublicKey(final JsonObject keyJson) throws GeneralSecurityException {
+        final BigInteger modulus = new BigInteger(1, Base64.decode(keyJson.getString("n")));
+        final BigInteger publicExponent = new BigInteger(1, Base64.decode(keyJson.getString("e")));
+        return KeyFactory.getInstance("RSA")
+                .generatePublic(new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     /**

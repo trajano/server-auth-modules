@@ -18,7 +18,6 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
  * configure the OAuth 2.0 Login.
  *
  * @author Archimedes Trajano
- *
  */
 public class OpenIDConnectAuthModule extends OAuthModule {
     /**
@@ -50,20 +49,16 @@ public class OpenIDConnectAuthModule extends OAuthModule {
      * {@inheritDoc}
      */
     @Override
-    protected OpenIDProviderConfiguration getOpenIDProviderConfig(
-            final Client restClient, final Map<String, String> options)
-            throws AuthException {
+    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final Client restClient, final Map<String, String> options) throws AuthException {
         final String issuerUri = options.get(ISSUER_URI_KEY);
         if (issuerUri == null) {
             LOG.log(Level.SEVERE, "missingOption", ISSUER_URI_KEY);
-            throw new AuthException(MessageFormat.format(
-                    R.getString("missingOption"), ISSUER_URI_KEY));
+            throw new AuthException(MessageFormat.format(R.getString("missingOption"), ISSUER_URI_KEY));
         }
-        return restClient
-                .target(URI.create(issuerUri).resolve(
-                        "/.well-known/openid-configuration"))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(OpenIDProviderConfiguration.class);
+        return restClient.target(URI.create(issuerUri)
+                .resolve("/.well-known/openid-configuration"))
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get(OpenIDProviderConfiguration.class);
     }
 
 }

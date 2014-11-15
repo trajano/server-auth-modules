@@ -28,8 +28,7 @@ public class HttpHeaderAuthModuleTest {
     /**
      * Module options.
      */
-    private final Map<String, String> options = ImmutableMap
-            .<String, String> builder()
+    private final Map<String, String> options = ImmutableMap.<String, String> builder()
             .put(HttpHeaderAuthModule.USERNAME_HEADER_KEY, "X-Forwarded-User")
             .build();
 
@@ -56,8 +55,7 @@ public class HttpHeaderAuthModuleTest {
         when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SUCCESS,
-                module.validateRequest(messageInfo, client, null));
+        assertEquals(AuthStatus.SUCCESS, module.validateRequest(messageInfo, client, null));
         verifyZeroInteractions(h);
     }
 
@@ -84,8 +82,7 @@ public class HttpHeaderAuthModuleTest {
         when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SUCCESS,
-                module.validateRequest(messageInfo, client, null));
+        assertEquals(AuthStatus.SUCCESS, module.validateRequest(messageInfo, client, null));
         verifyZeroInteractions(h);
     }
 
@@ -108,9 +105,7 @@ public class HttpHeaderAuthModuleTest {
         when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
 
         final Subject client = new Subject();
-        assertEquals(AuthStatus.SEND_FAILURE,
-                module.validateRequest(messageInfo, client, null));
-        verify(servletResponse).sendError(HttpURLConnection.HTTP_FORBIDDEN,
-                "SSL Required");
+        assertEquals(AuthStatus.SEND_FAILURE, module.validateRequest(messageInfo, client, null));
+        verify(servletResponse).sendError(HttpURLConnection.HTTP_FORBIDDEN, "SSL Required");
     }
 }

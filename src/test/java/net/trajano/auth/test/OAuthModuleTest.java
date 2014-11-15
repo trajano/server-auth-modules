@@ -29,14 +29,15 @@ public class OAuthModuleTest {
         final String payload = "foo";
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final GZIPOutputStream os = new GZIPOutputStream(baos);
-        os.write(payload.toString().getBytes("UTF-8"));
+        os.write(payload.toString()
+                .getBytes("UTF-8"));
         os.close();
         final String encoded = Base64.encodeWithoutPadding(baos.toByteArray());
 
-        final GZIPInputStream is = new GZIPInputStream(
-                new ByteArrayInputStream(Base64.decode(encoded)));
+        final GZIPInputStream is = new GZIPInputStream(new ByteArrayInputStream(Base64.decode(encoded)));
         @SuppressWarnings("resource")
-        final String decoded = new Scanner(is).useDelimiter("\\A").next();
+        final String decoded = new Scanner(is).useDelimiter("\\A")
+                .next();
         is.close();
         assertEquals(payload, decoded);
     }
@@ -51,11 +52,11 @@ public class OAuthModuleTest {
         final Map<String, String> options = new HashMap<>();
         options.put(OAuthModule.CLIENT_ID_KEY, "clientID");
         options.put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret");
-        options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
-                "https://accounts.google.com/");
+        options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY, "https://accounts.google.com/");
 
         final MessagePolicy mockPolicy = Mockito.mock(MessagePolicy.class);
-        Mockito.when(mockPolicy.isMandatory()).thenReturn(true);
+        Mockito.when(mockPolicy.isMandatory())
+                .thenReturn(true);
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         module.initialize(mockPolicy, null, null, options);
@@ -71,11 +72,11 @@ public class OAuthModuleTest {
         final Map<String, String> options = new HashMap<>();
         options.put(OAuthModule.CLIENT_ID_KEY, "clientID");
         options.put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret");
-        options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY,
-                "https://login.salesforce.com");
+        options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY, "https://login.salesforce.com");
 
         final MessagePolicy mockPolicy = Mockito.mock(MessagePolicy.class);
-        Mockito.when(mockPolicy.isMandatory()).thenReturn(true);
+        Mockito.when(mockPolicy.isMandatory())
+                .thenReturn(true);
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         module.initialize(mockPolicy, null, null, options);
