@@ -10,24 +10,24 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.auth.HttpHeaderAuthModule
-	c318 [label=<<table title="net.trajano.auth.HttpHeaderAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./HttpHeaderAuthModule.html">
+	c162 [label=<<table title="net.trajano.auth.HttpHeaderAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./HttpHeaderAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> HttpHeaderAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="./HttpHeaderAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.auth.HttpHeaderAuthModule implements javax.security.auth.message.module.ServerAuthModule
-	c341:p -> c318:p [dir=back,arrowtail=empty,style=dashed];
+	c179:p -> c162:p [dir=back,arrowtail=empty,style=dashed];
 	//net.trajano.auth.HttpHeaderAuthModule implements javax.security.auth.message.config.ServerAuthContext
-	c342:p -> c318:p [dir=back,arrowtail=empty,style=dashed];
+	c180:p -> c162:p [dir=back,arrowtail=empty,style=dashed];
 	// javax.security.auth.message.module.ServerAuthModule
-	c341 [label=<<table title="javax.security.auth.message.module.ServerAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html">
+	c179 [label=<<table title="javax.security.auth.message.module.ServerAuthModule" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> ServerAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/module/ServerAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// javax.security.auth.message.config.ServerAuthContext
-	c342 [label=<<table title="javax.security.auth.message.config.ServerAuthContext" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/config/ServerAuthContext.html">
+	c180 [label=<<table title="javax.security.auth.message.config.ServerAuthContext" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/config/ServerAuthContext.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> ServerAuthContext </td></tr>

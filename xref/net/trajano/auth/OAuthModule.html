@@ -609,208 +609,206 @@
 <a class="jxr_linenumber" name="L601" href="#L601">601</a>                 <strong class="jxr_keyword">if</strong> (tokenCookie.getUserInfo() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L602" href="#L602">602</a>                     req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());
 <a class="jxr_linenumber" name="L603" href="#L603">603</a>                 }
-<a class="jxr_linenumber" name="L604" href="#L604">604</a> 
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>             }
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>             <strong class="jxr_keyword">return</strong> tokenCookie;
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> GeneralSecurityException | IOException e) {
-<a class="jxr_linenumber" name="L608" href="#L608">608</a>             LOG.log(Level.FINE, <span class="jxr_string">"invalidToken"</span>, e.getMessage());
-<a class="jxr_linenumber" name="L609" href="#L609">609</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
-<a class="jxr_linenumber" name="L610" href="#L610">610</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
-<a class="jxr_linenumber" name="L611" href="#L611">611</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L612" href="#L612">612</a>         }
-<a class="jxr_linenumber" name="L613" href="#L613">613</a>     }
-<a class="jxr_linenumber" name="L614" href="#L614">614</a> 
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L616" href="#L616">616</a> <em class="jxr_javadoccomment">     * Sends a redirect to the authorization endpoint. It sends the current</em>
-<a class="jxr_linenumber" name="L617" href="#L617">617</a> <em class="jxr_javadoccomment">     * request URI as the state so that the user can be redirected back to the</em>
-<a class="jxr_linenumber" name="L618" href="#L618">618</a> <em class="jxr_javadoccomment">     * last place. However, this does not work for non-idempotent requests such</em>
-<a class="jxr_linenumber" name="L619" href="#L619">619</a> <em class="jxr_javadoccomment">     * as POST in those cases it will result in a 401 error and</em>
-<a class="jxr_linenumber" name="L620" href="#L620">620</a> <em class="jxr_javadoccomment">     * {@link AuthStatus#SEND_FAILURE}. For idempotent requests, it will build</em>
-<a class="jxr_linenumber" name="L621" href="#L621">621</a> <em class="jxr_javadoccomment">     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}.</em>
-<a class="jxr_linenumber" name="L622" href="#L622">622</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L623" href="#L623">623</a> <em class="jxr_javadoccomment">     * @param req</em>
-<a class="jxr_linenumber" name="L624" href="#L624">624</a> <em class="jxr_javadoccomment">     *            HTTP servlet request</em>
-<a class="jxr_linenumber" name="L625" href="#L625">625</a> <em class="jxr_javadoccomment">     * @param resp</em>
-<a class="jxr_linenumber" name="L626" href="#L626">626</a> <em class="jxr_javadoccomment">     *            HTTP servlet response</em>
-<a class="jxr_linenumber" name="L627" href="#L627">627</a> <em class="jxr_javadoccomment">     * @return authentication status</em>
-<a class="jxr_linenumber" name="L628" href="#L628">628</a> <em class="jxr_javadoccomment">     * @throws AuthException</em>
-<a class="jxr_linenumber" name="L629" href="#L629">629</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>     <strong class="jxr_keyword">private</strong> AuthStatus redirectToAuthorizationEndpoint(<strong class="jxr_keyword">final</strong> HttpServletRequest req, <strong class="jxr_keyword">final</strong> HttpServletResponse resp) <strong class="jxr_keyword">throws</strong> AuthException {
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>         URI authorizationEndpointUri = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>             <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/OpenIDProviderConfiguration.html">OpenIDProviderConfiguration</a> oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>             restClient.close();
-<a class="jxr_linenumber" name="L635" href="#L635">635</a> 
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>             <strong class="jxr_keyword">final</strong> String state = Base64.encodeWithoutPadding(req.getRequestURI()
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>                     .getBytes(<span class="jxr_string">"UTF-8"</span>));
-<a class="jxr_linenumber" name="L638" href="#L638">638</a> 
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>             authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>                     .queryParam(CLIENT_ID, clientId)
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>                     .queryParam(RESPONSE_TYPE, <span class="jxr_string">"code"</span>)
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>                     .queryParam(SCOPE, scope)
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>                             .toString())
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>                     .queryParam(STATE, state)
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>                     .build();
-<a class="jxr_linenumber" name="L648" href="#L648">648</a> 
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_CONTINUE;
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>             <em class="jxr_comment">// Should not happen</em>
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"sendRedirectException"</span>, <strong class="jxr_keyword">new</strong> Object[] { authorizationEndpointUri, e.getMessage() });
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>                     .getName(), <span class="jxr_string">"redirectToAuthorizationEndpoint"</span>, e);
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"sendRedirectException"</span>), authorizationEndpointUri, e.getMessage()));
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>         }
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>     }
-<a class="jxr_linenumber" name="L659" href="#L659">659</a> 
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L661" href="#L661">661</a> <em class="jxr_javadoccomment">     * Return {@link AuthStatus#SEND_SUCCESS}.</em>
-<a class="jxr_linenumber" name="L662" href="#L662">662</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L663" href="#L663">663</a> <em class="jxr_javadoccomment">     * @param messageInfo</em>
-<a class="jxr_linenumber" name="L664" href="#L664">664</a> <em class="jxr_javadoccomment">     *            contains the request and response messages. At this point the</em>
-<a class="jxr_linenumber" name="L665" href="#L665">665</a> <em class="jxr_javadoccomment">     *            response message is already committed so nothing can be</em>
-<a class="jxr_linenumber" name="L666" href="#L666">666</a> <em class="jxr_javadoccomment">     *            changed.</em>
-<a class="jxr_linenumber" name="L667" href="#L667">667</a> <em class="jxr_javadoccomment">     * @param subject</em>
-<a class="jxr_linenumber" name="L668" href="#L668">668</a> <em class="jxr_javadoccomment">     *            subject.</em>
-<a class="jxr_linenumber" name="L669" href="#L669">669</a> <em class="jxr_javadoccomment">     * @return {@link AuthStatus#SEND_SUCCESS}</em>
-<a class="jxr_linenumber" name="L670" href="#L670">670</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L671" href="#L671">671</a>     @Override
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>     <strong class="jxr_keyword">public</strong> AuthStatus secureResponse(<strong class="jxr_keyword">final</strong> MessageInfo messageInfo, <strong class="jxr_keyword">final</strong> Subject subject) <strong class="jxr_keyword">throws</strong> AuthException {
-<a class="jxr_linenumber" name="L673" href="#L673">673</a>         <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
-<a class="jxr_linenumber" name="L674" href="#L674">674</a>     }
-<a class="jxr_linenumber" name="L675" href="#L675">675</a> 
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L677" href="#L677">677</a> <em class="jxr_javadoccomment">     * Override REST client for testing.</em>
-<a class="jxr_linenumber" name="L678" href="#L678">678</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L679" href="#L679">679</a> <em class="jxr_javadoccomment">     * @param restClient</em>
-<a class="jxr_linenumber" name="L680" href="#L680">680</a> <em class="jxr_javadoccomment">     *            REST client. May be mocked.</em>
-<a class="jxr_linenumber" name="L681" href="#L681">681</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRestClient(<strong class="jxr_keyword">final</strong> Client restClient) {
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>         <strong class="jxr_keyword">this</strong>.restClient = restClient;
-<a class="jxr_linenumber" name="L684" href="#L684">684</a>     }
-<a class="jxr_linenumber" name="L685" href="#L685">685</a> 
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L687" href="#L687">687</a> <em class="jxr_javadoccomment">     * Updates the principal for the subject. This is done through the</em>
-<a class="jxr_linenumber" name="L688" href="#L688">688</a> <em class="jxr_javadoccomment">     * callbacks.</em>
-<a class="jxr_linenumber" name="L689" href="#L689">689</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L690" href="#L690">690</a> <em class="jxr_javadoccomment">     * @param subject</em>
-<a class="jxr_linenumber" name="L691" href="#L691">691</a> <em class="jxr_javadoccomment">     *            subject</em>
-<a class="jxr_linenumber" name="L692" href="#L692">692</a> <em class="jxr_javadoccomment">     * @param jwtPayload</em>
-<a class="jxr_linenumber" name="L693" href="#L693">693</a> <em class="jxr_javadoccomment">     *            JWT payload</em>
-<a class="jxr_linenumber" name="L694" href="#L694">694</a> <em class="jxr_javadoccomment">     * @throws AuthException</em>
-<a class="jxr_linenumber" name="L695" href="#L695">695</a> <em class="jxr_javadoccomment">     * @throws GeneralSecurityException</em>
-<a class="jxr_linenumber" name="L696" href="#L696">696</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updateSubjectPrincipal(<strong class="jxr_keyword">final</strong> Subject subject, <strong class="jxr_keyword">final</strong> JsonObject jwtPayload) <strong class="jxr_keyword">throws</strong> GeneralSecurityException {
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>             <strong class="jxr_keyword">final</strong> String iss = googleWorkaround(jwtPayload.getString(<span class="jxr_string">"iss"</span>));
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>             handler.handle(<strong class="jxr_keyword">new</strong> Callback[] { <strong class="jxr_keyword">new</strong> CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>                     .userInfo(jwtPayload.getString(<span class="jxr_string">"sub"</span>))
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>                     .build()
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>                     .toASCIIString()), <strong class="jxr_keyword">new</strong> GroupPrincipalCallback(subject, <strong class="jxr_keyword">new</strong> String[] { iss }) });
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException | UnsupportedCallbackException e) {
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>             <em class="jxr_comment">// Should not happen</em>
-<a class="jxr_linenumber" name="L706" href="#L706">706</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"updatePrincipalException"</span>, e.getMessage());
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>                     .getName(), <span class="jxr_string">"updateSubjectPrincipal"</span>, e);
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"updatePrincipalException"</span>), e.getMessage()));
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>         }
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>     }
-<a class="jxr_linenumber" name="L712" href="#L712">712</a> 
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L714" href="#L714">714</a> <em class="jxr_javadoccomment">     * Validates the request. The request must be secure otherwise it will</em>
-<a class="jxr_linenumber" name="L715" href="#L715">715</a> <em class="jxr_javadoccomment">     * return {@link AuthStatus#FAILURE}. It then tries to build the token</em>
-<a class="jxr_linenumber" name="L716" href="#L716">716</a> <em class="jxr_javadoccomment">     * cookie data if available, if the token is valid, subject is set correctly</em>
-<a class="jxr_linenumber" name="L717" href="#L717">717</a> <em class="jxr_javadoccomment">     * and user info data if present is stored in the request, then call HTTP</em>
-<a class="jxr_linenumber" name="L718" href="#L718">718</a> <em class="jxr_javadoccomment">     * method specific operations.</em>
-<a class="jxr_linenumber" name="L719" href="#L719">719</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L720" href="#L720">720</a> <em class="jxr_javadoccomment">     * @param messageInfo</em>
-<a class="jxr_linenumber" name="L721" href="#L721">721</a> <em class="jxr_javadoccomment">     *            request and response</em>
-<a class="jxr_linenumber" name="L722" href="#L722">722</a> <em class="jxr_javadoccomment">     * @param clientSubject</em>
-<a class="jxr_linenumber" name="L723" href="#L723">723</a> <em class="jxr_javadoccomment">     *            client subject</em>
-<a class="jxr_linenumber" name="L724" href="#L724">724</a> <em class="jxr_javadoccomment">     * @param serviceSubject</em>
-<a class="jxr_linenumber" name="L725" href="#L725">725</a> <em class="jxr_javadoccomment">     *            service subject, ignored.</em>
-<a class="jxr_linenumber" name="L726" href="#L726">726</a> <em class="jxr_javadoccomment">     * @return Auth status</em>
-<a class="jxr_linenumber" name="L727" href="#L727">727</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L728" href="#L728">728</a>     @Override
-<a class="jxr_linenumber" name="L729" href="#L729">729</a>     <strong class="jxr_keyword">public</strong> AuthStatus validateRequest(<strong class="jxr_keyword">final</strong> MessageInfo messageInfo, <strong class="jxr_keyword">final</strong> Subject clientSubject, <strong class="jxr_keyword">final</strong> Subject serviceSubject) <strong class="jxr_keyword">throws</strong> AuthException {
-<a class="jxr_linenumber" name="L730" href="#L730">730</a>         <strong class="jxr_keyword">final</strong> HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>             }
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>             <strong class="jxr_keyword">return</strong> tokenCookie;
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> GeneralSecurityException | IOException e) {
+<a class="jxr_linenumber" name="L607" href="#L607">607</a>             LOG.log(Level.FINE, <span class="jxr_string">"invalidToken"</span>, e.getMessage());
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>         }
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>     }
+<a class="jxr_linenumber" name="L613" href="#L613">613</a> 
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L615" href="#L615">615</a> <em class="jxr_javadoccomment">     * Sends a redirect to the authorization endpoint. It sends the current</em>
+<a class="jxr_linenumber" name="L616" href="#L616">616</a> <em class="jxr_javadoccomment">     * request URI as the state so that the user can be redirected back to the</em>
+<a class="jxr_linenumber" name="L617" href="#L617">617</a> <em class="jxr_javadoccomment">     * last place. However, this does not work for non-idempotent requests such</em>
+<a class="jxr_linenumber" name="L618" href="#L618">618</a> <em class="jxr_javadoccomment">     * as POST in those cases it will result in a 401 error and</em>
+<a class="jxr_linenumber" name="L619" href="#L619">619</a> <em class="jxr_javadoccomment">     * {@link AuthStatus#SEND_FAILURE}. For idempotent requests, it will build</em>
+<a class="jxr_linenumber" name="L620" href="#L620">620</a> <em class="jxr_javadoccomment">     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}.</em>
+<a class="jxr_linenumber" name="L621" href="#L621">621</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L622" href="#L622">622</a> <em class="jxr_javadoccomment">     * @param req</em>
+<a class="jxr_linenumber" name="L623" href="#L623">623</a> <em class="jxr_javadoccomment">     *            HTTP servlet request</em>
+<a class="jxr_linenumber" name="L624" href="#L624">624</a> <em class="jxr_javadoccomment">     * @param resp</em>
+<a class="jxr_linenumber" name="L625" href="#L625">625</a> <em class="jxr_javadoccomment">     *            HTTP servlet response</em>
+<a class="jxr_linenumber" name="L626" href="#L626">626</a> <em class="jxr_javadoccomment">     * @return authentication status</em>
+<a class="jxr_linenumber" name="L627" href="#L627">627</a> <em class="jxr_javadoccomment">     * @throws AuthException</em>
+<a class="jxr_linenumber" name="L628" href="#L628">628</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>     <strong class="jxr_keyword">private</strong> AuthStatus redirectToAuthorizationEndpoint(<strong class="jxr_keyword">final</strong> HttpServletRequest req, <strong class="jxr_keyword">final</strong> HttpServletResponse resp) <strong class="jxr_keyword">throws</strong> AuthException {
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>         URI authorizationEndpointUri = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>             <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/OpenIDProviderConfiguration.html">OpenIDProviderConfiguration</a> oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>             restClient.close();
+<a class="jxr_linenumber" name="L634" href="#L634">634</a> 
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>             <strong class="jxr_keyword">final</strong> String state = Base64.encodeWithoutPadding(req.getRequestURI()
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>                     .getBytes(<span class="jxr_string">"UTF-8"</span>));
+<a class="jxr_linenumber" name="L637" href="#L637">637</a> 
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>             authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>                     .queryParam(CLIENT_ID, clientId)
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>                     .queryParam(RESPONSE_TYPE, <span class="jxr_string">"code"</span>)
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>                     .queryParam(SCOPE, scope)
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>                             .toString())
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>                     .queryParam(STATE, state)
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>                     .build();
+<a class="jxr_linenumber" name="L647" href="#L647">647</a> 
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_CONTINUE;
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>             <em class="jxr_comment">// Should not happen</em>
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"sendRedirectException"</span>, <strong class="jxr_keyword">new</strong> Object[] { authorizationEndpointUri, e.getMessage() });
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>                     .getName(), <span class="jxr_string">"redirectToAuthorizationEndpoint"</span>, e);
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"sendRedirectException"</span>), authorizationEndpointUri, e.getMessage()));
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>         }
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>     }
+<a class="jxr_linenumber" name="L658" href="#L658">658</a> 
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L660" href="#L660">660</a> <em class="jxr_javadoccomment">     * Return {@link AuthStatus#SEND_SUCCESS}.</em>
+<a class="jxr_linenumber" name="L661" href="#L661">661</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L662" href="#L662">662</a> <em class="jxr_javadoccomment">     * @param messageInfo</em>
+<a class="jxr_linenumber" name="L663" href="#L663">663</a> <em class="jxr_javadoccomment">     *            contains the request and response messages. At this point the</em>
+<a class="jxr_linenumber" name="L664" href="#L664">664</a> <em class="jxr_javadoccomment">     *            response message is already committed so nothing can be</em>
+<a class="jxr_linenumber" name="L665" href="#L665">665</a> <em class="jxr_javadoccomment">     *            changed.</em>
+<a class="jxr_linenumber" name="L666" href="#L666">666</a> <em class="jxr_javadoccomment">     * @param subject</em>
+<a class="jxr_linenumber" name="L667" href="#L667">667</a> <em class="jxr_javadoccomment">     *            subject.</em>
+<a class="jxr_linenumber" name="L668" href="#L668">668</a> <em class="jxr_javadoccomment">     * @return {@link AuthStatus#SEND_SUCCESS}</em>
+<a class="jxr_linenumber" name="L669" href="#L669">669</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>     @Override
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>     <strong class="jxr_keyword">public</strong> AuthStatus secureResponse(<strong class="jxr_keyword">final</strong> MessageInfo messageInfo, <strong class="jxr_keyword">final</strong> Subject subject) <strong class="jxr_keyword">throws</strong> AuthException {
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>         <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>     }
+<a class="jxr_linenumber" name="L674" href="#L674">674</a> 
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L676" href="#L676">676</a> <em class="jxr_javadoccomment">     * Override REST client for testing.</em>
+<a class="jxr_linenumber" name="L677" href="#L677">677</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L678" href="#L678">678</a> <em class="jxr_javadoccomment">     * @param restClient</em>
+<a class="jxr_linenumber" name="L679" href="#L679">679</a> <em class="jxr_javadoccomment">     *            REST client. May be mocked.</em>
+<a class="jxr_linenumber" name="L680" href="#L680">680</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setRestClient(<strong class="jxr_keyword">final</strong> Client restClient) {
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>         <strong class="jxr_keyword">this</strong>.restClient = restClient;
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>     }
+<a class="jxr_linenumber" name="L684" href="#L684">684</a> 
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L686" href="#L686">686</a> <em class="jxr_javadoccomment">     * Updates the principal for the subject. This is done through the</em>
+<a class="jxr_linenumber" name="L687" href="#L687">687</a> <em class="jxr_javadoccomment">     * callbacks.</em>
+<a class="jxr_linenumber" name="L688" href="#L688">688</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L689" href="#L689">689</a> <em class="jxr_javadoccomment">     * @param subject</em>
+<a class="jxr_linenumber" name="L690" href="#L690">690</a> <em class="jxr_javadoccomment">     *            subject</em>
+<a class="jxr_linenumber" name="L691" href="#L691">691</a> <em class="jxr_javadoccomment">     * @param jwtPayload</em>
+<a class="jxr_linenumber" name="L692" href="#L692">692</a> <em class="jxr_javadoccomment">     *            JWT payload</em>
+<a class="jxr_linenumber" name="L693" href="#L693">693</a> <em class="jxr_javadoccomment">     * @throws AuthException</em>
+<a class="jxr_linenumber" name="L694" href="#L694">694</a> <em class="jxr_javadoccomment">     * @throws GeneralSecurityException</em>
+<a class="jxr_linenumber" name="L695" href="#L695">695</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updateSubjectPrincipal(<strong class="jxr_keyword">final</strong> Subject subject, <strong class="jxr_keyword">final</strong> JsonObject jwtPayload) <strong class="jxr_keyword">throws</strong> GeneralSecurityException {
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>             <strong class="jxr_keyword">final</strong> String iss = googleWorkaround(jwtPayload.getString(<span class="jxr_string">"iss"</span>));
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>             handler.handle(<strong class="jxr_keyword">new</strong> Callback[] { <strong class="jxr_keyword">new</strong> CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>                     .userInfo(jwtPayload.getString(<span class="jxr_string">"sub"</span>))
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>                     .build()
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>                     .toASCIIString()), <strong class="jxr_keyword">new</strong> GroupPrincipalCallback(subject, <strong class="jxr_keyword">new</strong> String[] { iss }) });
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException | UnsupportedCallbackException e) {
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>             <em class="jxr_comment">// Should not happen</em>
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"updatePrincipalException"</span>, e.getMessage());
+<a class="jxr_linenumber" name="L706" href="#L706">706</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>                     .getName(), <span class="jxr_string">"updateSubjectPrincipal"</span>, e);
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"updatePrincipalException"</span>), e.getMessage()));
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>         }
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>     }
+<a class="jxr_linenumber" name="L711" href="#L711">711</a> 
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L713" href="#L713">713</a> <em class="jxr_javadoccomment">     * Validates the request. The request must be secure otherwise it will</em>
+<a class="jxr_linenumber" name="L714" href="#L714">714</a> <em class="jxr_javadoccomment">     * return {@link AuthStatus#FAILURE}. It then tries to build the token</em>
+<a class="jxr_linenumber" name="L715" href="#L715">715</a> <em class="jxr_javadoccomment">     * cookie data if available, if the token is valid, subject is set correctly</em>
+<a class="jxr_linenumber" name="L716" href="#L716">716</a> <em class="jxr_javadoccomment">     * and user info data if present is stored in the request, then call HTTP</em>
+<a class="jxr_linenumber" name="L717" href="#L717">717</a> <em class="jxr_javadoccomment">     * method specific operations.</em>
+<a class="jxr_linenumber" name="L718" href="#L718">718</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L719" href="#L719">719</a> <em class="jxr_javadoccomment">     * @param messageInfo</em>
+<a class="jxr_linenumber" name="L720" href="#L720">720</a> <em class="jxr_javadoccomment">     *            request and response</em>
+<a class="jxr_linenumber" name="L721" href="#L721">721</a> <em class="jxr_javadoccomment">     * @param clientSubject</em>
+<a class="jxr_linenumber" name="L722" href="#L722">722</a> <em class="jxr_javadoccomment">     *            client subject</em>
+<a class="jxr_linenumber" name="L723" href="#L723">723</a> <em class="jxr_javadoccomment">     * @param serviceSubject</em>
+<a class="jxr_linenumber" name="L724" href="#L724">724</a> <em class="jxr_javadoccomment">     *            service subject, ignored.</em>
+<a class="jxr_linenumber" name="L725" href="#L725">725</a> <em class="jxr_javadoccomment">     * @return Auth status</em>
+<a class="jxr_linenumber" name="L726" href="#L726">726</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>     @Override
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>     <strong class="jxr_keyword">public</strong> AuthStatus validateRequest(<strong class="jxr_keyword">final</strong> MessageInfo messageInfo, <strong class="jxr_keyword">final</strong> Subject clientSubject, <strong class="jxr_keyword">final</strong> Subject serviceSubject) <strong class="jxr_keyword">throws</strong> AuthException {
+<a class="jxr_linenumber" name="L729" href="#L729">729</a>         <strong class="jxr_keyword">final</strong> HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();
+<a class="jxr_linenumber" name="L730" href="#L730">730</a>         <strong class="jxr_keyword">final</strong> HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();
 <a class="jxr_linenumber" name="L731" href="#L731">731</a> 
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>         <strong class="jxr_keyword">final</strong> HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();
-<a class="jxr_linenumber" name="L733" href="#L733">733</a> 
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L735" href="#L735">735</a>             <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/TokenCookie.html">TokenCookie</a> tokenCookie = processTokenCookie(clientSubject, req);
-<a class="jxr_linenumber" name="L736" href="#L736">736</a> 
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>             <strong class="jxr_keyword">if</strong> (tokenCookie != <strong class="jxr_keyword">null</strong> &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()
-<a class="jxr_linenumber" name="L738" href="#L738">738</a>                     .equals(tokenUri)) {
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>                 resp.getWriter()
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>                         .print(tokenCookie.getIdToken());
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>             }
-<a class="jxr_linenumber" name="L744" href="#L744">744</a> 
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>             <strong class="jxr_keyword">if</strong> (tokenCookie != <strong class="jxr_keyword">null</strong> &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()
-<a class="jxr_linenumber" name="L746" href="#L746">746</a>                     .equals(userInfoUri)) {
-<a class="jxr_linenumber" name="L747" href="#L747">747</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>                 resp.getWriter()
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>                         .print(tokenCookie.getUserInfo());
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
-<a class="jxr_linenumber" name="L751" href="#L751">751</a>             }
-<a class="jxr_linenumber" name="L752" href="#L752">752</a> 
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>             <strong class="jxr_keyword">if</strong> (!mandatory &amp;&amp; !req.isSecure()) {
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>                 <em class="jxr_comment">// successful if the module is not mandatory and the channel is</em>
-<a class="jxr_linenumber" name="L755" href="#L755">755</a>                 <em class="jxr_comment">// not secure.</em>
-<a class="jxr_linenumber" name="L756" href="#L756">756</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SUCCESS;
-<a class="jxr_linenumber" name="L757" href="#L757">757</a>             }
-<a class="jxr_linenumber" name="L758" href="#L758">758</a> 
-<a class="jxr_linenumber" name="L759" href="#L759">759</a>             <strong class="jxr_keyword">if</strong> (!req.isSecure() &amp;&amp; mandatory) {
-<a class="jxr_linenumber" name="L760" href="#L760">760</a>                 <em class="jxr_comment">// Fail authorization 3.1.2.1</em>
-<a class="jxr_linenumber" name="L761" href="#L761">761</a>                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(<span class="jxr_string">"SSLReq"</span>));
-<a class="jxr_linenumber" name="L762" href="#L762">762</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_FAILURE;
-<a class="jxr_linenumber" name="L763" href="#L763">763</a>             }
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L733" href="#L733">733</a>             <strong class="jxr_keyword">final</strong> <a href="../../../net/trajano/auth/internal/TokenCookie.html">TokenCookie</a> tokenCookie = processTokenCookie(clientSubject, req);
+<a class="jxr_linenumber" name="L734" href="#L734">734</a> 
+<a class="jxr_linenumber" name="L735" href="#L735">735</a>             <strong class="jxr_keyword">if</strong> (tokenCookie != <strong class="jxr_keyword">null</strong> &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()
+<a class="jxr_linenumber" name="L736" href="#L736">736</a>                     .equals(tokenUri)) {
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
+<a class="jxr_linenumber" name="L738" href="#L738">738</a>                 resp.getWriter()
+<a class="jxr_linenumber" name="L739" href="#L739">739</a>                         .print(tokenCookie.getIdToken());
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>             }
+<a class="jxr_linenumber" name="L742" href="#L742">742</a> 
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>             <strong class="jxr_keyword">if</strong> (tokenCookie != <strong class="jxr_keyword">null</strong> &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>                     .equals(userInfoUri)) {
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>                 resp.getWriter()
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>                         .print(tokenCookie.getUserInfo());
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>             }
+<a class="jxr_linenumber" name="L750" href="#L750">750</a> 
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>             <strong class="jxr_keyword">if</strong> (!mandatory &amp;&amp; !req.isSecure()) {
+<a class="jxr_linenumber" name="L752" href="#L752">752</a>                 <em class="jxr_comment">// successful if the module is not mandatory and the channel is</em>
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>                 <em class="jxr_comment">// not secure.</em>
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SUCCESS;
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>             }
+<a class="jxr_linenumber" name="L756" href="#L756">756</a> 
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>             <strong class="jxr_keyword">if</strong> (!req.isSecure() &amp;&amp; mandatory) {
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>                 <em class="jxr_comment">// Fail authorization 3.1.2.1</em>
+<a class="jxr_linenumber" name="L759" href="#L759">759</a>                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(<span class="jxr_string">"SSLReq"</span>));
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_FAILURE;
+<a class="jxr_linenumber" name="L761" href="#L761">761</a>             }
+<a class="jxr_linenumber" name="L762" href="#L762">762</a> 
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>             <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L764" href="#L764">764</a> 
-<a class="jxr_linenumber" name="L765" href="#L765">765</a>             <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L766" href="#L766">766</a> 
-<a class="jxr_linenumber" name="L767" href="#L767">767</a>             <strong class="jxr_keyword">if</strong> (!req.isSecure() &amp;&amp; isCallback(req)) {
-<a class="jxr_linenumber" name="L768" href="#L768">768</a>                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(<span class="jxr_string">"SSLReq"</span>));
-<a class="jxr_linenumber" name="L769" href="#L769">769</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_FAILURE;
-<a class="jxr_linenumber" name="L770" href="#L770">770</a>             }
-<a class="jxr_linenumber" name="L771" href="#L771">771</a> 
-<a class="jxr_linenumber" name="L772" href="#L772">772</a>             <strong class="jxr_keyword">if</strong> (req.isSecure() &amp;&amp; isCallback(req)) {
-<a class="jxr_linenumber" name="L773" href="#L773">773</a>                 <strong class="jxr_keyword">return</strong> handleCallback(req, resp, clientSubject);
-<a class="jxr_linenumber" name="L774" href="#L774">774</a>             }
-<a class="jxr_linenumber" name="L775" href="#L775">775</a> 
-<a class="jxr_linenumber" name="L776" href="#L776">776</a>             <strong class="jxr_keyword">if</strong> (!mandatory || tokenCookie != <strong class="jxr_keyword">null</strong> &amp;&amp; !tokenCookie.isExpired()) {
-<a class="jxr_linenumber" name="L777" href="#L777">777</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SUCCESS;
-<a class="jxr_linenumber" name="L778" href="#L778">778</a>             }
-<a class="jxr_linenumber" name="L779" href="#L779">779</a>             <strong class="jxr_keyword">if</strong> (req.isSecure() &amp;&amp; isHeadRequest(req) &amp;&amp; req.getRequestURI()
-<a class="jxr_linenumber" name="L780" href="#L780">780</a>                     .equals(tokenUri)) {
-<a class="jxr_linenumber" name="L781" href="#L781">781</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
-<a class="jxr_linenumber" name="L782" href="#L782">782</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
-<a class="jxr_linenumber" name="L783" href="#L783">783</a>             }
-<a class="jxr_linenumber" name="L784" href="#L784">784</a> 
-<a class="jxr_linenumber" name="L785" href="#L785">785</a>             <strong class="jxr_keyword">if</strong> (req.getRequestURI()
-<a class="jxr_linenumber" name="L786" href="#L786">786</a>                     .equals(userInfoUri) &amp;&amp; isHeadRequest(req)) {
-<a class="jxr_linenumber" name="L787" href="#L787">787</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
-<a class="jxr_linenumber" name="L788" href="#L788">788</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
-<a class="jxr_linenumber" name="L789" href="#L789">789</a> 
-<a class="jxr_linenumber" name="L790" href="#L790">790</a>             }
-<a class="jxr_linenumber" name="L791" href="#L791">791</a>             <strong class="jxr_keyword">if</strong> (!isRetrievalRequest(req)) {
-<a class="jxr_linenumber" name="L792" href="#L792">792</a>                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, <span class="jxr_string">"Unable to POST when unauthorized."</span>);
-<a class="jxr_linenumber" name="L793" href="#L793">793</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_FAILURE;
-<a class="jxr_linenumber" name="L794" href="#L794">794</a>             }
-<a class="jxr_linenumber" name="L795" href="#L795">795</a> 
-<a class="jxr_linenumber" name="L796" href="#L796">796</a>             <strong class="jxr_keyword">return</strong> redirectToAuthorizationEndpoint(req, resp);
-<a class="jxr_linenumber" name="L797" href="#L797">797</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
-<a class="jxr_linenumber" name="L798" href="#L798">798</a>             <em class="jxr_comment">// Should not happen</em>
-<a class="jxr_linenumber" name="L799" href="#L799">799</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"validationException"</span>, e.getMessage());
-<a class="jxr_linenumber" name="L800" href="#L800">800</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
-<a class="jxr_linenumber" name="L801" href="#L801">801</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
-<a class="jxr_linenumber" name="L802" href="#L802">802</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"validationException"</span>), e.getMessage()));
-<a class="jxr_linenumber" name="L803" href="#L803">803</a>         }
-<a class="jxr_linenumber" name="L804" href="#L804">804</a>     }
-<a class="jxr_linenumber" name="L805" href="#L805">805</a> }
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>             <strong class="jxr_keyword">if</strong> (!req.isSecure() &amp;&amp; isCallback(req)) {
+<a class="jxr_linenumber" name="L766" href="#L766">766</a>                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(<span class="jxr_string">"SSLReq"</span>));
+<a class="jxr_linenumber" name="L767" href="#L767">767</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_FAILURE;
+<a class="jxr_linenumber" name="L768" href="#L768">768</a>             }
+<a class="jxr_linenumber" name="L769" href="#L769">769</a> 
+<a class="jxr_linenumber" name="L770" href="#L770">770</a>             <strong class="jxr_keyword">if</strong> (req.isSecure() &amp;&amp; isCallback(req)) {
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>                 <strong class="jxr_keyword">return</strong> handleCallback(req, resp, clientSubject);
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>             }
+<a class="jxr_linenumber" name="L773" href="#L773">773</a> 
+<a class="jxr_linenumber" name="L774" href="#L774">774</a>             <strong class="jxr_keyword">if</strong> (!mandatory || tokenCookie != <strong class="jxr_keyword">null</strong> &amp;&amp; !tokenCookie.isExpired()) {
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SUCCESS;
+<a class="jxr_linenumber" name="L776" href="#L776">776</a>             }
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>             <strong class="jxr_keyword">if</strong> (req.isSecure() &amp;&amp; isHeadRequest(req) &amp;&amp; req.getRequestURI()
+<a class="jxr_linenumber" name="L778" href="#L778">778</a>                     .equals(tokenUri)) {
+<a class="jxr_linenumber" name="L779" href="#L779">779</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
+<a class="jxr_linenumber" name="L780" href="#L780">780</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
+<a class="jxr_linenumber" name="L781" href="#L781">781</a>             }
+<a class="jxr_linenumber" name="L782" href="#L782">782</a> 
+<a class="jxr_linenumber" name="L783" href="#L783">783</a>             <strong class="jxr_keyword">if</strong> (req.getRequestURI()
+<a class="jxr_linenumber" name="L784" href="#L784">784</a>                     .equals(userInfoUri) &amp;&amp; isHeadRequest(req)) {
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
+<a class="jxr_linenumber" name="L786" href="#L786">786</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
+<a class="jxr_linenumber" name="L787" href="#L787">787</a> 
+<a class="jxr_linenumber" name="L788" href="#L788">788</a>             }
+<a class="jxr_linenumber" name="L789" href="#L789">789</a>             <strong class="jxr_keyword">if</strong> (!isRetrievalRequest(req)) {
+<a class="jxr_linenumber" name="L790" href="#L790">790</a>                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, <span class="jxr_string">"Unable to POST when unauthorized."</span>);
+<a class="jxr_linenumber" name="L791" href="#L791">791</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_FAILURE;
+<a class="jxr_linenumber" name="L792" href="#L792">792</a>             }
+<a class="jxr_linenumber" name="L793" href="#L793">793</a> 
+<a class="jxr_linenumber" name="L794" href="#L794">794</a>             <strong class="jxr_keyword">return</strong> redirectToAuthorizationEndpoint(req, resp);
+<a class="jxr_linenumber" name="L795" href="#L795">795</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
+<a class="jxr_linenumber" name="L796" href="#L796">796</a>             <em class="jxr_comment">// Should not happen</em>
+<a class="jxr_linenumber" name="L797" href="#L797">797</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"validationException"</span>, e.getMessage());
+<a class="jxr_linenumber" name="L798" href="#L798">798</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
+<a class="jxr_linenumber" name="L799" href="#L799">799</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
+<a class="jxr_linenumber" name="L800" href="#L800">800</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"validationException"</span>), e.getMessage()));
+<a class="jxr_linenumber" name="L801" href="#L801">801</a>         }
+<a class="jxr_linenumber" name="L802" href="#L802">802</a>     }
+<a class="jxr_linenumber" name="L803" href="#L803">803</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014 <a href="http://www.trajano.net/">Trajano</a>. All rights reserved.</div>

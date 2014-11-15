@@ -8,10 +8,7 @@ import javax.security.auth.message.AuthException;
 import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.MessagePolicy;
 import javax.security.auth.message.MessagePolicy.TargetPolicy;
-import javax.security.auth.message.config.ClientAuthContext;
 import javax.security.auth.message.config.ServerAuthContext;
-
-import net.trajano.auth.AuthModuleConfigProvider;
 
 public abstract class AbstractAuthModuleAuthConfig {
     /**
@@ -40,43 +37,36 @@ public abstract class AbstractAuthModuleAuthConfig {
     /**
      * Mandatory message policy.
      */
-<span class="fc" id="L43">    protected static final MessagePolicy MANDATORY = new MessagePolicy(new TargetPolicy[0], true);</span>
+<span class="fc" id="L40">    protected static final MessagePolicy MANDATORY = new MessagePolicy(new TargetPolicy[0], true);</span>
     /**
      * Non-mandatory message policy.
      */
-<span class="fc" id="L47">    protected static final MessagePolicy NON_MANDATORY = new MessagePolicy(new TargetPolicy[0], false);</span>
+<span class="fc" id="L44">    protected static final MessagePolicy NON_MANDATORY = new MessagePolicy(new TargetPolicy[0], false);</span>
     private final String appContext;
-    private final Class&lt;? extends ClientAuthContext&gt; contextClass;
     private final CallbackHandler handler;
     private final String layer;
     private final Map&lt;String, String&gt; options;
 
-    @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L55">    public AbstractAuthModuleAuthConfig(final Map&lt;String, String&gt; options, final String layer, final String appContext, final CallbackHandler handler) throws AuthException {</span>
-<span class="fc" id="L56">        this.appContext = appContext;</span>
-<span class="fc" id="L57">        this.layer = layer;</span>
-<span class="fc" id="L58">        this.options = options;</span>
-<span class="fc" id="L59">        this.handler = handler;</span>
-        try {
-<span class="fc" id="L61">            contextClass = (Class&lt;? extends ClientAuthContext&gt;) Class.forName(options.get(AuthModuleConfigProvider.SERVER_AUTH_MODULE_CLASS));</span>
-<span class="nc" id="L62">        } catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L63">            throw new AuthException(e.getMessage());</span>
-<span class="fc" id="L64">        }</span>
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L50">    public AbstractAuthModuleAuthConfig(final Map&lt;String, String&gt; options, final String layer, final String appContext, final CallbackHandler handler) throws AuthException {</span>
+<span class="fc" id="L51">        this.appContext = appContext;</span>
+<span class="fc" id="L52">        this.layer = layer;</span>
+<span class="fc" id="L53">        this.options = options;</span>
+<span class="fc" id="L54">        this.handler = handler;</span>
+<span class="fc" id="L55">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
     protected Map&lt;?, ?&gt; augmentProperties(@SuppressWarnings(&quot;rawtypes&quot;) final Map properties) {
-<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (properties == null) {</span>
-<span class="fc" id="L70">            return options;</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (properties == null) {</span>
+<span class="fc" id="L60">            return options;</span>
         }
-<span class="nc" id="L72">        final Map&lt;?, ?&gt; augmentedOptions = new HashMap&lt;&gt;(options);</span>
-<span class="nc" id="L73">        augmentedOptions.putAll(properties);</span>
-<span class="nc" id="L74">        return augmentedOptions;</span>
+<span class="nc" id="L62">        final Map&lt;?, ?&gt; augmentedOptions = new HashMap&lt;&gt;(options);</span>
+<span class="nc" id="L63">        augmentedOptions.putAll(properties);</span>
+<span class="nc" id="L64">        return augmentedOptions;</span>
 
     }
 
     public String getAppContext() {
-<span class="nc" id="L79">        return appContext;</span>
+<span class="nc" id="L69">        return appContext;</span>
     }
 
     /**
@@ -88,28 +78,28 @@ public abstract class AbstractAuthModuleAuthConfig {
      *         mandatory, &lt;code&gt;null&lt;/code&gt; otherwise.
      */
     public String getAuthContextID(final MessageInfo messageInfo) {
-<span class="nc" id="L91">        final Object isMandatory = messageInfo.getMap()</span>
+<span class="nc" id="L81">        final Object isMandatory = messageInfo.getMap()</span>
                 .get(JAVAX_SECURITY_AUTH_MESSAGE_MESSAGE_POLICY_IS_MANDATORY);
-<span class="nc bnc" id="L93" title="All 10 branches missed.">        if (isMandatory != null &amp;&amp; (isMandatory instanceof String &amp;&amp; Boolean.parseBoolean((String) isMandatory) || isMandatory instanceof Boolean &amp;&amp; (Boolean) isMandatory)) {</span>
-<span class="nc" id="L94">            return messageInfo.toString();</span>
+<span class="nc bnc" id="L83" title="All 6 branches missed.">        if (isMandatory != null &amp;&amp; isMandatory instanceof String &amp;&amp; Boolean.valueOf((String) isMandatory)) {</span>
+<span class="nc" id="L84">            return messageInfo.toString();</span>
         }
-<span class="nc" id="L96">        return null;</span>
+<span class="nc" id="L86">        return null;</span>
     }
 
     protected CallbackHandler getHandler() {
-<span class="fc" id="L100">        return handler;</span>
+<span class="fc" id="L90">        return handler;</span>
     }
 
     public String getMessageLayer() {
-<span class="nc" id="L104">        return layer;</span>
+<span class="nc" id="L94">        return layer;</span>
     }
 
     public boolean isProtected() {
-<span class="nc" id="L108">        return true;</span>
+<span class="nc" id="L98">        return true;</span>
     }
 
     public void refresh() {
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L102">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

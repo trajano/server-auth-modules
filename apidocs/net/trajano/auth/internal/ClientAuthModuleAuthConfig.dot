@@ -10,23 +10,23 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// net.trajano.auth.internal.AbstractAuthModuleAuthConfig
-	c257 [label=<<table title="net.trajano.auth.internal.AbstractAuthModuleAuthConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractAuthModuleAuthConfig.html">
+	c131 [label=<<table title="net.trajano.auth.internal.AbstractAuthModuleAuthConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractAuthModuleAuthConfig.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractAuthModuleAuthConfig </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./AbstractAuthModuleAuthConfig.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.internal.ClientAuthModuleAuthConfig
-	c265 [label=<<table title="net.trajano.auth.internal.ClientAuthModuleAuthConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ClientAuthModuleAuthConfig.html">
+	c139 [label=<<table title="net.trajano.auth.internal.ClientAuthModuleAuthConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ClientAuthModuleAuthConfig.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> ClientAuthModuleAuthConfig </td></tr>
 		</table></td></tr>
 		</table>>, URL="./ClientAuthModuleAuthConfig.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.auth.internal.ClientAuthModuleAuthConfig extends net.trajano.auth.internal.AbstractAuthModuleAuthConfig
-	c257:p -> c265:p [dir=back,arrowtail=empty];
+	c131:p -> c139:p [dir=back,arrowtail=empty];
 	//net.trajano.auth.internal.ClientAuthModuleAuthConfig implements javax.security.auth.message.config.ClientAuthConfig
-	c269:p -> c265:p [dir=back,arrowtail=empty,style=dashed];
+	c143:p -> c139:p [dir=back,arrowtail=empty,style=dashed];
 	// javax.security.auth.message.config.ClientAuthConfig
-	c269 [label=<<table title="javax.security.auth.message.config.ClientAuthConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/config/ClientAuthConfig.html">
+	c143 [label=<<table title="javax.security.auth.message.config.ClientAuthConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/message/config/ClientAuthConfig.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> ClientAuthConfig </td></tr>
