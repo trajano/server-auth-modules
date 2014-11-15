@@ -38,6 +38,7 @@ import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.MessagePolicy;
 import javax.security.auth.message.callback.CallerPrincipalCallback;
 import javax.security.auth.message.callback.GroupPrincipalCallback;
+import javax.security.auth.message.config.ServerAuthContext;
 import javax.security.auth.message.module.ServerAuthModule;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -283,9 +284,10 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             if (NET_TRAJANO_AUTH_ID.equals(cookie.getName()) && !isNullOrEmpty(cookie.getValue())) {
                 idToken = cookie.getValue();
             } else if (NET_TRAJANO_AUTH_AGE.equals(cookie.getName())) {
-                if (!req.getRemoteAddr()
-                        .equals(new String(CipherUtil.decrypt(Base64.decode(cookie.getValue()), secret), "US-ASCII"))) {
-                    throw new AuthException(R.getString("ipaddressMismatch"));
+                final String remoteAddr = req.getRemoteAddr();
+                final String cookieAddr = new String(CipherUtil.decrypt(Base64.decode(cookie.getValue()), secret), "US-ASCII");
+                if (!remoteAddr.equals(cookieAddr)) {
+                    throw new AuthException(MessageFormat.format(R.getString("ipaddressMismatch"), remoteAddr, cookieAddr));
                 }
                 foundAge = true;
             }
@@ -514,7 +516,6 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         idTokenCookie.setPath(requestCookieContext);
         resp.addCookie(idTokenCookie);
 
-        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
         final Cookie ageCookie = new Cookie(NET_TRAJANO_AUTH_AGE, Base64.encodeWithoutPadding(CipherUtil.encrypt(req.getRemoteAddr()
                 .getBytes("US-ASCII"), secret)));
         if (isNullOrEmpty(req.getParameter("expires_in"))) {
@@ -627,12 +628,6 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 if (tokenCookie.getUserInfo() != null) {
                     req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());
                 }
-
-            } catch (final GeneralSecurityException e) {
-                LOG.log(Level.FINE, "invalidToken", e.getMessage());
-                LOG.throwing(this.getClass()
-                        .getName(), "validateRequest", e);
-                return null;
             }
             return tokenCookie;
         } catch (final GeneralSecurityException | IOException e) {

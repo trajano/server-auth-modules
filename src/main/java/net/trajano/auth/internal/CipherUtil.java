@@ -26,12 +26,34 @@ public final class CipherUtil {
      */
     private static final String CIPHER_ALGORITHM = "AES";
 
+    /**
+     * Creates a decryption stream. It is a compressed then encrypted stream.
+     *
+     * @param inputStream
+     *            source stream
+     * @param secret
+     *            secret for the cipher
+     * @return the stream
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     public static InputStream buildDecryptStream(final InputStream inputStream, final SecretKey secret) throws GeneralSecurityException, IOException {
         final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, secret);
         return new GZIPInputStream(new CipherInputStream(inputStream, cipher));
     }
 
+    /**
+     * Creates a encryption stream. It is a compressed then encrypted stream.
+     *
+     * @param outputStream
+     *            source stream
+     * @param secret
+     *            secret for the cipher
+     * @return the stream
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     public static OutputStream buildEncryptStream(final OutputStream outputStream, final SecretKey secret) throws GeneralSecurityException, IOException {
         final Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, secret);
@@ -57,6 +79,17 @@ public final class CipherUtil {
                 .getEncoded(), CIPHER_ALGORITHM);
     }
 
+    /**
+     * Decrypts a byte array.
+     *
+     * @param cipherText
+     *            cipher text
+     * @param secret
+     *            secret for the cipher
+     * @return clear text
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     public static byte[] decrypt(final byte[] cipherText, final SecretKey secret) throws GeneralSecurityException, IOException {
         final ByteArrayInputStream is = new ByteArrayInputStream(cipherText);
         final InputStream zis = CipherUtil.buildDecryptStream(is, secret);
@@ -73,6 +106,17 @@ public final class CipherUtil {
         return baos.toByteArray();
     }
 
+    /**
+     * Encrypts a byte array.
+     *
+     * @param clearText
+     *            clear text
+     * @param secret
+     *            secret for the cipher
+     * @return cipher text
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     public static byte[] encrypt(final byte[] clearText, final SecretKey secret) throws GeneralSecurityException, IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream(2000);
         final OutputStream zos = CipherUtil.buildEncryptStream(baos, secret);
