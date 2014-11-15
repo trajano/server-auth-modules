@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AuthModuleConfigProvider.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth</a> &gt; <span class="el_source">AuthModuleConfigProvider.java</span></div><h1>AuthModuleConfigProvider.java</h1><pre class="source lang-java linenums">package net.trajano.auth;
+
+import java.util.Map;
+
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.message.AuthException;
+import javax.security.auth.message.config.AuthConfigFactory;
+import javax.security.auth.message.config.AuthConfigProvider;
+import javax.security.auth.message.config.ClientAuthConfig;
+import javax.security.auth.message.config.ServerAuthConfig;
+import javax.security.auth.message.module.ClientAuthModule;
+import javax.security.auth.message.module.ServerAuthModule;
+
+import net.trajano.auth.internal.ClientAuthModuleAuthConfig;
+import net.trajano.auth.internal.ServerAuthModuleAuthConfig;
+
+public class AuthModuleConfigProvider implements AuthConfigProvider {
+<span class="fc" id="L18">    public static final String CLIENT_AUTH_MODULE_CLASS = ClientAuthModule.class.getName();</span>
+<span class="fc" id="L19">    public static final String SERVER_AUTH_MODULE_CLASS = ServerAuthModule.class.getName();</span>
+    private final AuthConfigFactory authConfigFactory;
+    /**
+     * Options.
+     */
+    private Map&lt;String, String&gt; options;
+
+<span class="fc" id="L26">    public AuthModuleConfigProvider(final Map&lt;String, String&gt; options, final AuthConfigFactory authConfigFactory) {</span>
+<span class="fc" id="L27">        this.authConfigFactory = authConfigFactory;</span>
+<span class="fc" id="L28">        this.options = options;</span>
+<span class="fc" id="L29">    }</span>
+
+    @Override
+    public ClientAuthConfig getClientAuthConfig(final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (options.containsKey(CLIENT_AUTH_MODULE_CLASS)) {</span>
+<span class="nc" id="L34">            return new ClientAuthModuleAuthConfig(options, layer, appContext, handler);</span>
+        }
+<span class="nc" id="L36">        return null;</span>
+    }
+
+    @Override
+    public ServerAuthConfig getServerAuthConfig(final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (options.containsKey(SERVER_AUTH_MODULE_CLASS)) {</span>
+<span class="fc" id="L42">            return new ServerAuthModuleAuthConfig(options, layer, appContext, handler);</span>
+        }
+<span class="nc" id="L44">        return null;</span>
+    }
+
+    @Override
+    public void refresh() {
+<span class="nc" id="L49">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

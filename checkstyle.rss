@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 Trajano</copyright>
     <item>
-      <title>File: 24,
-             Errors: 0,
-             Warnings: 8,
+      <title>File: 28,
+             Errors: 1,
+             Warnings: 32,
              Infos: 0
       </title>
             <link>http://site.trajano.net/trajano/server-auth-modules//checkstyle.html</link>
@@ -44,6 +44,188 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.HttpHeaderAuthModule.java">net/trajano/auth/HttpHeaderAuthModule.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.ServerAuthModuleAuthConfig.java">net/trajano/auth/internal/ServerAuthModuleAuthConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#META-INF.Messages.properties">META-INF/Messages.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.package-info.java">net/trajano/auth/internal/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.JsonWebKeySet.java">net/trajano/auth/internal/JsonWebKeySet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.JsonWebAlgorithm.java">net/trajano/auth/internal/JsonWebAlgorithm.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.ClientAuthModuleAuthConfig.java">net/trajano/auth/internal/ClientAuthModuleAuthConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OAuthToken.java">net/trajano/auth/internal/OAuthToken.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.TokenCookie.java">net/trajano/auth/internal/TokenCookie.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.internal.JaspicFilterCallbackHandler.java">net/trajano/auth/filter/internal/JaspicFilterCallbackHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.Utils.java">net/trajano/auth/internal/Utils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.AuthModuleConfigProvider.java">net/trajano/auth/AuthModuleConfigProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.AbstractAuthModuleAuthConfig.java">net/trajano/auth/internal/AbstractAuthModuleAuthConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.package-info.java">net/trajano/auth/filter/package-info.java</a>
@@ -88,7 +270,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OAuthParameters.java">net/trajano/auth/internal/OAuthParameters.java</a>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.OpenIDConnectAuthModule.java">net/trajano/auth/OpenIDConnectAuthModule.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +284,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.OpenIDConnectAuthModule.java">net/trajano/auth/OpenIDConnectAuthModule.java</a>
+                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OAuthParameters.java">net/trajano/auth/internal/OAuthParameters.java</a>
                 </td>
                 <td>
                   0
@@ -130,20 +312,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.HttpHeaderAuthModule.java">net/trajano/auth/HttpHeaderAuthModule.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.Base64.java">net/trajano/auth/internal/Base64.java</a>
                 </td>
                 <td>
@@ -158,49 +326,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#META-INF.Messages.properties">META-INF/Messages.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.package-info.java">net/trajano/auth/internal/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.package-info.java">net/trajano/auth/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.JsonWebKeySet.java">net/trajano/auth/internal/JsonWebKeySet.java</a>
                 </td>
                 <td>
                   0
@@ -242,63 +368,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.JsonWebAlgorithm.java">net/trajano/auth/internal/JsonWebAlgorithm.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OAuthToken.java">net/trajano/auth/internal/OAuthToken.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.TokenCookie.java">net/trajano/auth/internal/TokenCookie.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.OpenIDProviderConfiguration.java">net/trajano/auth/internal/OpenIDProviderConfiguration.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.internal.JaspicFilterCallbackHandler.java">net/trajano/auth/filter/internal/JaspicFilterCallbackHandler.java</a>
                 </td>
                 <td>
                   0
@@ -327,20 +397,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.filter.internal.package-info.java">net/trajano/auth/filter/internal/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://site.trajano.net/trajano/server-auth-modules//checkstyle.html#net.trajano.auth.internal.Utils.java">net/trajano/auth/internal/Utils.java</a>
                 </td>
                 <td>
                   0

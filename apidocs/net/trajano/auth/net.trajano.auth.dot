@@ -33,6 +33,12 @@ digraph G {
 <tr><td align="center" balign="center"> GoogleAuthModule </td></tr>
 		</table></td></tr>
 		</table>>, URL="./GoogleAuthModule.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// net.trajano.auth.AuthModuleConfigProvider
+	c4 [label=<<table title="net.trajano.auth.AuthModuleConfigProvider" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AuthModuleConfigProvider.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> AuthModuleConfigProvider </td></tr>
+		</table></td></tr>
+		</table>>, URL="./AuthModuleConfigProvider.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//net.trajano.auth.OpenIDConnectAuthModule extends net.trajano.auth.OAuthModule
 	c1:p -> c2:p [dir=back,arrowtail=empty];
 	//net.trajano.auth.GoogleAuthModule extends net.trajano.auth.OAuthModule

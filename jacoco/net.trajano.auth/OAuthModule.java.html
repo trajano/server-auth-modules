@@ -38,6 +38,7 @@ import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.MessagePolicy;
 import javax.security.auth.message.callback.CallerPrincipalCallback;
 import javax.security.auth.message.callback.GroupPrincipalCallback;
+import javax.security.auth.message.config.ServerAuthContext;
 import javax.security.auth.message.module.ServerAuthModule;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +70,7 @@ import net.trajano.auth.internal.Utils;
  *
  * @author Archimedes Trajano
  */
-<span class="fc" id="L72">public abstract class OAuthModule implements ServerAuthModule {</span>
+<span class="fc" id="L73">public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext {</span>
     /**
      * Client ID option key and JSON key.
      */
@@ -150,10 +151,10 @@ import net.trajano.auth.internal.Utils;
     public static final String USERINFO_URI_KEY = &quot;userinfo_uri&quot;;
 
     static {
-<span class="fc" id="L153">        LOG = Logger.getLogger(&quot;net.trajano.auth.oauthsam&quot;, MESSAGES);</span>
-<span class="fc" id="L154">        LOGCONFIG = Logger.getLogger(&quot;net.trajano.auth.oauthsam.config&quot;, MESSAGES);</span>
-<span class="fc" id="L155">        R = ResourceBundle.getBundle(MESSAGES);</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L154">        LOG = Logger.getLogger(&quot;net.trajano.auth.oauthsam&quot;, MESSAGES);</span>
+<span class="fc" id="L155">        LOGCONFIG = Logger.getLogger(&quot;net.trajano.auth.oauthsam.config&quot;, MESSAGES);</span>
+<span class="fc" id="L156">        R = ResourceBundle.getBundle(MESSAGES);</span>
+<span class="fc" id="L157">    }</span>
 
     /**
      * Client ID. This is set through &quot;client.id&quot; option.
@@ -196,7 +197,7 @@ import net.trajano.auth.internal.Utils;
      * REST Client. This is not final so a different one can be put in for
      * testing.
      */
-<span class="fc" id="L199">    private Client restClient = ClientBuilder.newClient();</span>
+<span class="fc" id="L200">    private Client restClient = ClientBuilder.newClient();</span>
 
     /**
      * Scope.
@@ -235,7 +236,7 @@ import net.trajano.auth.internal.Utils;
     @Override
     public void cleanSubject(final MessageInfo messageInfo, final Subject subject) throws AuthException {
         // Does nothing.
-<span class="nc" id="L238">    }</span>
+<span class="nc" id="L239">    }</span>
 
     /**
      * Client ID.
@@ -243,7 +244,7 @@ import net.trajano.auth.internal.Utils;
      * @return the client ID.
      */
     protected String getClientId() {
-<span class="nc" id="L246">        return clientId;</span>
+<span class="nc" id="L247">        return clientId;</span>
     }
 
     /**
@@ -252,7 +253,7 @@ import net.trajano.auth.internal.Utils;
      * @return the client secret.
      */
     protected String getClientSecret() {
-<span class="nc" id="L255">        return clientSecret;</span>
+<span class="nc" id="L256">        return clientSecret;</span>
     }
 
     /**
@@ -266,27 +267,27 @@ import net.trajano.auth.internal.Utils;
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException, IOException {
-<span class="fc" id="L269">        final Cookie[] cookies = req.getCookies();</span>
-<span class="pc bpc" id="L270" title="1 of 2 branches missed.">        if (cookies == null) {</span>
-<span class="fc" id="L271">            return null;</span>
+<span class="fc" id="L270">        final Cookie[] cookies = req.getCookies();</span>
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">        if (cookies == null) {</span>
+<span class="fc" id="L272">            return null;</span>
         }
-<span class="nc" id="L273">        String idToken = null;</span>
-<span class="nc" id="L274">        boolean foundAge = false;</span>
-<span class="nc bnc" id="L275" title="All 2 branches missed.">        for (final Cookie cookie : cookies) {</span>
-<span class="nc bnc" id="L276" title="All 4 branches missed.">            if (NET_TRAJANO_AUTH_ID.equals(cookie.getName()) &amp;&amp; !isNullOrEmpty(cookie.getValue())) {</span>
-<span class="nc" id="L277">                idToken = cookie.getValue();</span>
-<span class="nc bnc" id="L278" title="All 2 branches missed.">            } else if (NET_TRAJANO_AUTH_AGE.equals(cookie.getName())) {</span>
-<span class="nc bnc" id="L279" title="All 2 branches missed.">                if (!req.getRemoteAddr()</span>
+<span class="nc" id="L274">        String idToken = null;</span>
+<span class="nc" id="L275">        boolean foundAge = false;</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">        for (final Cookie cookie : cookies) {</span>
+<span class="nc bnc" id="L277" title="All 4 branches missed.">            if (NET_TRAJANO_AUTH_ID.equals(cookie.getName()) &amp;&amp; !isNullOrEmpty(cookie.getValue())) {</span>
+<span class="nc" id="L278">                idToken = cookie.getValue();</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">            } else if (NET_TRAJANO_AUTH_AGE.equals(cookie.getName())) {</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">                if (!req.getRemoteAddr()</span>
                         .equals(new String(CipherUtil.decrypt(Base64.decode(cookie.getValue()), secret), &quot;US-ASCII&quot;))) {
-<span class="nc" id="L281">                    throw new AuthException(R.getString(&quot;ipaddressMismatch&quot;));</span>
+<span class="nc" id="L282">                    throw new AuthException(R.getString(&quot;ipaddressMismatch&quot;));</span>
                 }
-<span class="nc" id="L283">                foundAge = true;</span>
+<span class="nc" id="L284">                foundAge = true;</span>
             }
-<span class="nc bnc" id="L285" title="All 4 branches missed.">            if (idToken != null &amp;&amp; foundAge) {</span>
-<span class="nc" id="L286">                return idToken;</span>
+<span class="nc bnc" id="L286" title="All 4 branches missed.">            if (idToken != null &amp;&amp; foundAge) {</span>
+<span class="nc" id="L287">                return idToken;</span>
             }
         }
-<span class="nc" id="L289">        return idToken;</span>
+<span class="nc" id="L290">        return idToken;</span>
     }
 
     /**
@@ -317,14 +318,14 @@ import net.trajano.auth.internal.Utils;
      * @return redirection endpoint URI.
      */
     protected URI getRedirectionEndpointUri(final HttpServletRequest req) {
-<span class="pc bpc" id="L320" title="1 of 2 branches missed.">        if (isNullOrEmpty(redirectionEndpointUri)) {</span>
-<span class="nc" id="L321">            final StringBuffer redirectUri = req.getRequestURL();</span>
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">        if (isNullOrEmpty(redirectionEndpointUri)) {</span>
+<span class="nc" id="L322">            final StringBuffer redirectUri = req.getRequestURL();</span>
             // Get the third / character from the request URL should be the
             // start of the path.
-<span class="nc" id="L324">            redirectUri.replace(redirectUri.indexOf(&quot;/&quot;, redirectUri.indexOf(&quot;/&quot;, redirectUri.indexOf(&quot;/&quot;) + 1) + 1), redirectUri.length(), req.getContextPath());</span>
-<span class="nc" id="L325">            return URI.create(redirectUri.toString());</span>
+<span class="nc" id="L325">            redirectUri.replace(redirectUri.indexOf(&quot;/&quot;, redirectUri.indexOf(&quot;/&quot;, redirectUri.indexOf(&quot;/&quot;) + 1) + 1), redirectUri.length(), req.getContextPath());</span>
+<span class="nc" id="L326">            return URI.create(redirectUri.toString());</span>
         } else {
-<span class="fc" id="L327">            return URI.create(req.getRequestURL()</span>
+<span class="fc" id="L328">            return URI.create(req.getRequestURL()</span>
                     .toString())
                     .resolve(redirectionEndpointUri);
         }
@@ -336,7 +337,7 @@ import net.trajano.auth.internal.Utils;
      * @return REST client
      */
     protected Client getRestClient() {
-<span class="nc" id="L339">        return restClient;</span>
+<span class="nc" id="L340">        return restClient;</span>
     }
 
     /**
@@ -355,7 +356,7 @@ import net.trajano.auth.internal.Utils;
     @SuppressWarnings(&quot;rawtypes&quot;)
     @Override
     public Class[] getSupportedMessageTypes() {
-<span class="nc" id="L358">        return new Class&lt;?&gt;[] { HttpServletRequest.class, HttpServletResponse.class };</span>
+<span class="nc" id="L359">        return new Class&lt;?&gt;[] { HttpServletRequest.class, HttpServletResponse.class };</span>
     }
 
     /**
@@ -368,33 +369,33 @@ import net.trajano.auth.internal.Utils;
      * @return token response
      */
     protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
-<span class="fc" id="L371">        final MultivaluedMap&lt;String, String&gt; requestData = new MultivaluedHashMap&lt;&gt;();</span>
-<span class="fc" id="L372">        requestData.putSingle(CODE, req.getParameter(&quot;code&quot;));</span>
-<span class="fc" id="L373">        requestData.putSingle(GRANT_TYPE, &quot;authorization_code&quot;);</span>
-<span class="fc" id="L374">        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req).toASCIIString());</span>
+<span class="fc" id="L372">        final MultivaluedMap&lt;String, String&gt; requestData = new MultivaluedHashMap&lt;&gt;();</span>
+<span class="fc" id="L373">        requestData.putSingle(CODE, req.getParameter(&quot;code&quot;));</span>
+<span class="fc" id="L374">        requestData.putSingle(GRANT_TYPE, &quot;authorization_code&quot;);</span>
+<span class="fc" id="L375">        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req).toASCIIString());</span>
 
         try {
-<span class="fc" id="L377">            final String authorization = &quot;Basic &quot; + Base64.encode((clientId + &quot;:&quot; + clientSecret).getBytes(&quot;UTF8&quot;));</span>
-<span class="fc" id="L378">            final OAuthToken authorizationTokenResponse = restClient.target(oidProviderConfig.getTokenEndpoint())</span>
+<span class="fc" id="L378">            final String authorization = &quot;Basic &quot; + Base64.encode((clientId + &quot;:&quot; + clientSecret).getBytes(&quot;UTF8&quot;));</span>
+<span class="fc" id="L379">            final OAuthToken authorizationTokenResponse = restClient.target(oidProviderConfig.getTokenEndpoint())</span>
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .header(&quot;Authorization&quot;, authorization)
                     .post(Entity.form(requestData), OAuthToken.class);
-<span class="pc bpc" id="L382" title="1 of 2 branches missed.">            if (LOG.isLoggable(Level.FINEST)) {</span>
-<span class="nc" id="L383">                LOG.finest(&quot;authorization token response =  &quot; + authorizationTokenResponse);</span>
+<span class="pc bpc" id="L383" title="1 of 2 branches missed.">            if (LOG.isLoggable(Level.FINEST)) {</span>
+<span class="nc" id="L384">                LOG.finest(&quot;authorization token response =  &quot; + authorizationTokenResponse);</span>
             }
-<span class="fc" id="L385">            return authorizationTokenResponse;</span>
-<span class="nc" id="L386">        } catch (final BadRequestException e) {</span>
+<span class="fc" id="L386">            return authorizationTokenResponse;</span>
+<span class="nc" id="L387">        } catch (final BadRequestException e) {</span>
             // workaround for google that does not support BASIC authentication
             // on their endpoint.
-<span class="nc" id="L389">            requestData.putSingle(CLIENT_ID, clientId);</span>
-<span class="nc" id="L390">            requestData.putSingle(CLIENT_SECRET_KEY, clientSecret);</span>
-<span class="nc" id="L391">            final OAuthToken authorizationTokenResponse = restClient.target(oidProviderConfig.getTokenEndpoint())</span>
+<span class="nc" id="L390">            requestData.putSingle(CLIENT_ID, clientId);</span>
+<span class="nc" id="L391">            requestData.putSingle(CLIENT_SECRET_KEY, clientSecret);</span>
+<span class="nc" id="L392">            final OAuthToken authorizationTokenResponse = restClient.target(oidProviderConfig.getTokenEndpoint())</span>
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.form(requestData), OAuthToken.class);
-<span class="nc bnc" id="L394" title="All 2 branches missed.">            if (LOG.isLoggable(Level.FINEST)) {</span>
-<span class="nc" id="L395">                LOG.finest(&quot;authorization token response =  &quot; + authorizationTokenResponse);</span>
+<span class="nc bnc" id="L395" title="All 2 branches missed.">            if (LOG.isLoggable(Level.FINEST)) {</span>
+<span class="nc" id="L396">                LOG.finest(&quot;authorization token response =  &quot; + authorizationTokenResponse);</span>
             }
-<span class="nc" id="L397">            return authorizationTokenResponse;</span>
+<span class="nc" id="L398">            return authorizationTokenResponse;</span>
         }
     }
 
@@ -411,7 +412,7 @@ import net.trajano.auth.internal.Utils;
      *             wraps exceptions thrown during processing
      */
     protected JsonWebKeySet getWebKeys(final Map&lt;String, String&gt; options, final OpenIDProviderConfiguration config) throws GeneralSecurityException {
-<span class="fc" id="L414">        return new JsonWebKeySet(restClient.target(config.getJwksUri())</span>
+<span class="fc" id="L415">        return new JsonWebKeySet(restClient.target(config.getJwksUri())</span>
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(JsonObject.class));
     }
@@ -426,10 +427,10 @@ import net.trajano.auth.internal.Utils;
      * @return updated issuer
      */
     private String googleWorkaround(final String issuer) {
-<span class="fc bfc" id="L429" title="All 2 branches covered.">        if (issuer.startsWith(HTTPS_PREFIX)) {</span>
-<span class="fc" id="L430">            return issuer;</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">        if (issuer.startsWith(HTTPS_PREFIX)) {</span>
+<span class="fc" id="L431">            return issuer;</span>
         }
-<span class="fc" id="L432">        return HTTPS_PREFIX + issuer;</span>
+<span class="fc" id="L433">        return HTTPS_PREFIX + issuer;</span>
     }
 
     /**
@@ -445,73 +446,73 @@ import net.trajano.auth.internal.Utils;
      * @throws GeneralSecurityException
      */
     private AuthStatus handleCallback(final HttpServletRequest req, final HttpServletResponse resp, final Subject subject) throws GeneralSecurityException, IOException {
-<span class="fc" id="L448">        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);</span>
-<span class="fc" id="L449">        final OAuthToken token = getToken(req, oidProviderConfig);</span>
-<span class="fc" id="L450">        final JsonWebKeySet webKeys = getWebKeys(moduleOptions, oidProviderConfig);</span>
+<span class="fc" id="L449">        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);</span>
+<span class="fc" id="L450">        final OAuthToken token = getToken(req, oidProviderConfig);</span>
+<span class="fc" id="L451">        final JsonWebKeySet webKeys = getWebKeys(moduleOptions, oidProviderConfig);</span>
 
-<span class="fc" id="L452">        LOG.log(Level.FINEST, &quot;tokenValue&quot;, token);</span>
-<span class="fc" id="L453">        final JsonObject claimsSet = Json.createReader(new ByteArrayInputStream(Utils.getJwsPayload(token.getIdToken(), webKeys)))</span>
+<span class="fc" id="L453">        LOG.log(Level.FINEST, &quot;tokenValue&quot;, token);</span>
+<span class="fc" id="L454">        final JsonObject claimsSet = Json.createReader(new ByteArrayInputStream(Utils.getJwsPayload(token.getIdToken(), webKeys)))</span>
                 .readObject();
 
-<span class="fc" id="L456">        validateIdToken(clientId, claimsSet);</span>
+<span class="fc" id="L457">        validateIdToken(clientId, claimsSet);</span>
 
-<span class="fc" id="L458">        final String iss = googleWorkaround(claimsSet.getString(&quot;iss&quot;));</span>
-<span class="fc" id="L459">        final String issuer = googleWorkaround(oidProviderConfig.getIssuer());</span>
-<span class="pc bpc" id="L460" title="1 of 2 branches missed.">        if (!iss.equals(issuer)) {</span>
-<span class="nc" id="L461">            LOG.log(Level.SEVERE, &quot;issuerMismatch&quot;, new Object[] { iss, issuer });</span>
-<span class="nc" id="L462">            throw new GeneralSecurityException(MessageFormat.format(R.getString(&quot;issuerMismatch&quot;), iss, issuer));</span>
+<span class="fc" id="L459">        final String iss = googleWorkaround(claimsSet.getString(&quot;iss&quot;));</span>
+<span class="fc" id="L460">        final String issuer = googleWorkaround(oidProviderConfig.getIssuer());</span>
+<span class="pc bpc" id="L461" title="1 of 2 branches missed.">        if (!iss.equals(issuer)) {</span>
+<span class="nc" id="L462">            LOG.log(Level.SEVERE, &quot;issuerMismatch&quot;, new Object[] { iss, issuer });</span>
+<span class="nc" id="L463">            throw new GeneralSecurityException(MessageFormat.format(R.getString(&quot;issuerMismatch&quot;), iss, issuer));</span>
         }
-<span class="fc" id="L464">        updateSubjectPrincipal(subject, claimsSet);</span>
+<span class="fc" id="L465">        updateSubjectPrincipal(subject, claimsSet);</span>
 
         final TokenCookie tokenCookie;
-<span class="pc bpc" id="L467" title="1 of 4 branches missed.">        if (oidProviderConfig.getUserinfoEndpoint() != null &amp;&amp; Pattern.compile(&quot;\\bprofile\\b&quot;)</span>
+<span class="pc bpc" id="L468" title="1 of 4 branches missed.">        if (oidProviderConfig.getUserinfoEndpoint() != null &amp;&amp; Pattern.compile(&quot;\\bprofile\\b&quot;)</span>
                 .matcher(scope)
                 .find()) {
-<span class="nc" id="L470">            final Response userInfoResponse = restClient.target(oidProviderConfig.getUserinfoEndpoint())</span>
+<span class="nc" id="L471">            final Response userInfoResponse = restClient.target(oidProviderConfig.getUserinfoEndpoint())</span>
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .header(&quot;Authorization&quot;, token.getTokenType() + &quot; &quot; + token.getAccessToken())
                     .get();
-<span class="nc bnc" id="L474" title="All 2 branches missed.">            if (userInfoResponse.getStatus() == 200) {</span>
-<span class="nc" id="L475">                tokenCookie = new TokenCookie(claimsSet, userInfoResponse.readEntity(JsonObject.class));</span>
+<span class="nc bnc" id="L475" title="All 2 branches missed.">            if (userInfoResponse.getStatus() == 200) {</span>
+<span class="nc" id="L476">                tokenCookie = new TokenCookie(claimsSet, userInfoResponse.readEntity(JsonObject.class));</span>
             } else {
-<span class="nc" id="L477">                LOG.log(Level.WARNING, &quot;unableToGetProfile&quot;);</span>
-<span class="nc" id="L478">                tokenCookie = new TokenCookie(claimsSet);</span>
+<span class="nc" id="L478">                LOG.log(Level.WARNING, &quot;unableToGetProfile&quot;);</span>
+<span class="nc" id="L479">                tokenCookie = new TokenCookie(claimsSet);</span>
             }
-<span class="nc" id="L480">        } else {</span>
-<span class="fc" id="L481">            tokenCookie = new TokenCookie(claimsSet);</span>
+<span class="nc" id="L481">        } else {</span>
+<span class="fc" id="L482">            tokenCookie = new TokenCookie(claimsSet);</span>
         }
 
         final String requestCookieContext;
-<span class="fc bfc" id="L485" title="All 2 branches covered.">        if (isNullOrEmpty(cookieContext)) {</span>
-<span class="fc" id="L486">            requestCookieContext = req.getContextPath();</span>
+<span class="fc bfc" id="L486" title="All 2 branches covered.">        if (isNullOrEmpty(cookieContext)) {</span>
+<span class="fc" id="L487">            requestCookieContext = req.getContextPath();</span>
         } else {
-<span class="fc" id="L488">            requestCookieContext = cookieContext;</span>
+<span class="fc" id="L489">            requestCookieContext = cookieContext;</span>
         }
 
-<span class="fc" id="L491">        final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, tokenCookie.toCookieValue(clientId, clientSecret));</span>
-<span class="fc" id="L492">        idTokenCookie.setMaxAge(-1);</span>
-<span class="fc" id="L493">        idTokenCookie.setSecure(true);</span>
-<span class="fc" id="L494">        idTokenCookie.setPath(requestCookieContext);</span>
-<span class="fc" id="L495">        resp.addCookie(idTokenCookie);</span>
+<span class="fc" id="L492">        final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, tokenCookie.toCookieValue(clientId, clientSecret));</span>
+<span class="fc" id="L493">        idTokenCookie.setMaxAge(-1);</span>
+<span class="fc" id="L494">        idTokenCookie.setSecure(true);</span>
+<span class="fc" id="L495">        idTokenCookie.setPath(requestCookieContext);</span>
+<span class="fc" id="L496">        resp.addCookie(idTokenCookie);</span>
 
-<span class="fc" id="L497">        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);</span>
-<span class="fc" id="L498">        final Cookie ageCookie = new Cookie(NET_TRAJANO_AUTH_AGE, Base64.encodeWithoutPadding(CipherUtil.encrypt(req.getRemoteAddr()</span>
+<span class="fc" id="L498">        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);</span>
+<span class="fc" id="L499">        final Cookie ageCookie = new Cookie(NET_TRAJANO_AUTH_AGE, Base64.encodeWithoutPadding(CipherUtil.encrypt(req.getRemoteAddr()</span>
                 .getBytes(&quot;US-ASCII&quot;), secret)));
-<span class="pc bpc" id="L500" title="1 of 2 branches missed.">        if (isNullOrEmpty(req.getParameter(&quot;expires_in&quot;))) {</span>
-<span class="fc" id="L501">            ageCookie.setMaxAge(3600);</span>
+<span class="pc bpc" id="L501" title="1 of 2 branches missed.">        if (isNullOrEmpty(req.getParameter(&quot;expires_in&quot;))) {</span>
+<span class="fc" id="L502">            ageCookie.setMaxAge(3600);</span>
 
         } else {
-<span class="nc" id="L504">            ageCookie.setMaxAge(Integer.parseInt(req.getParameter(&quot;expires_in&quot;)));</span>
+<span class="nc" id="L505">            ageCookie.setMaxAge(Integer.parseInt(req.getParameter(&quot;expires_in&quot;)));</span>
         }
-<span class="fc" id="L506">        ageCookie.setPath(requestCookieContext);</span>
-<span class="fc" id="L507">        idTokenCookie.setSecure(true);</span>
-<span class="fc" id="L508">        resp.addCookie(ageCookie);</span>
+<span class="fc" id="L507">        ageCookie.setPath(requestCookieContext);</span>
+<span class="fc" id="L508">        idTokenCookie.setSecure(true);</span>
+<span class="fc" id="L509">        resp.addCookie(ageCookie);</span>
 
-<span class="fc" id="L510">        final String stateEncoded = req.getParameter(&quot;state&quot;);</span>
-<span class="fc" id="L511">        final String redirectUri = new String(Base64.decode(stateEncoded));</span>
-<span class="fc" id="L512">        resp.sendRedirect(resp.encodeRedirectURL(redirectUri));</span>
+<span class="fc" id="L511">        final String stateEncoded = req.getParameter(&quot;state&quot;);</span>
+<span class="fc" id="L512">        final String redirectUri = new String(Base64.decode(stateEncoded));</span>
+<span class="fc" id="L513">        resp.sendRedirect(resp.encodeRedirectURL(redirectUri));</span>
 
-<span class="fc" id="L514">        return AuthStatus.SEND_SUCCESS;</span>
+<span class="fc" id="L515">        return AuthStatus.SEND_SUCCESS;</span>
     }
 
     /**
@@ -529,36 +530,36 @@ import net.trajano.auth.internal.Utils;
     @SuppressWarnings(&quot;unchecked&quot;)
     @Override
     public void initialize(final MessagePolicy requestPolicy, final MessagePolicy responsePolicy, final CallbackHandler h, @SuppressWarnings(&quot;rawtypes&quot;) final Map options) throws AuthException {
-<span class="fc" id="L532">        handler = h;</span>
+<span class="fc" id="L533">        handler = h;</span>
         try {
-<span class="fc" id="L534">            mandatory = requestPolicy.isMandatory();</span>
-<span class="fc" id="L535">            moduleOptions = options;</span>
-<span class="fc" id="L536">            clientId = moduleOptions.get(CLIENT_ID_KEY);</span>
-<span class="pc bpc" id="L537" title="1 of 2 branches missed.">            if (clientId == null) {</span>
-<span class="nc" id="L538">                LOG.log(Level.SEVERE, &quot;missingOption&quot;, CLIENT_ID_KEY);</span>
-<span class="nc" id="L539">                throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), CLIENT_ID_KEY));</span>
+<span class="fc" id="L535">            mandatory = requestPolicy.isMandatory();</span>
+<span class="fc" id="L536">            moduleOptions = options;</span>
+<span class="fc" id="L537">            clientId = moduleOptions.get(CLIENT_ID_KEY);</span>
+<span class="pc bpc" id="L538" title="1 of 2 branches missed.">            if (clientId == null) {</span>
+<span class="nc" id="L539">                LOG.log(Level.SEVERE, &quot;missingOption&quot;, CLIENT_ID_KEY);</span>
+<span class="nc" id="L540">                throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), CLIENT_ID_KEY));</span>
             }
-<span class="fc" id="L541">            cookieContext = moduleOptions.get(COOKIE_CONTEXT_KEY);</span>
-<span class="fc" id="L542">            redirectionEndpointUri = moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY);</span>
-<span class="fc" id="L543">            tokenUri = moduleOptions.get(TOKEN_URI_KEY);</span>
-<span class="fc" id="L544">            userInfoUri = moduleOptions.get(USERINFO_URI_KEY);</span>
-<span class="fc" id="L545">            scope = moduleOptions.get(SCOPE_KEY);</span>
-<span class="pc bpc" id="L546" title="1 of 2 branches missed.">            if (isNullOrEmpty(scope)) {</span>
-<span class="fc" id="L547">                scope = &quot;openid&quot;;</span>
+<span class="fc" id="L542">            cookieContext = moduleOptions.get(COOKIE_CONTEXT_KEY);</span>
+<span class="fc" id="L543">            redirectionEndpointUri = moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY);</span>
+<span class="fc" id="L544">            tokenUri = moduleOptions.get(TOKEN_URI_KEY);</span>
+<span class="fc" id="L545">            userInfoUri = moduleOptions.get(USERINFO_URI_KEY);</span>
+<span class="fc" id="L546">            scope = moduleOptions.get(SCOPE_KEY);</span>
+<span class="fc bfc" id="L547" title="All 2 branches covered.">            if (isNullOrEmpty(scope)) {</span>
+<span class="fc" id="L548">                scope = &quot;openid&quot;;</span>
             }
-<span class="fc" id="L549">            clientSecret = moduleOptions.get(CLIENT_SECRET_KEY);</span>
-<span class="pc bpc" id="L550" title="1 of 2 branches missed.">            if (clientSecret == null) {</span>
-<span class="nc" id="L551">                LOG.log(Level.SEVERE, &quot;missingOption&quot;, CLIENT_SECRET_KEY);</span>
-<span class="nc" id="L552">                throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), CLIENT_SECRET_KEY));</span>
+<span class="fc" id="L550">            clientSecret = moduleOptions.get(CLIENT_SECRET_KEY);</span>
+<span class="pc bpc" id="L551" title="1 of 2 branches missed.">            if (clientSecret == null) {</span>
+<span class="nc" id="L552">                LOG.log(Level.SEVERE, &quot;missingOption&quot;, CLIENT_SECRET_KEY);</span>
+<span class="nc" id="L553">                throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), CLIENT_SECRET_KEY));</span>
             }
-<span class="fc" id="L554">            LOGCONFIG.log(Level.CONFIG, &quot;options&quot;, moduleOptions);</span>
-<span class="fc" id="L555">            secret = CipherUtil.buildSecretKey(clientId, clientSecret);</span>
-<span class="nc" id="L556">        } catch (final Exception e) {</span>
+<span class="fc" id="L555">            LOGCONFIG.log(Level.CONFIG, &quot;options&quot;, moduleOptions);</span>
+<span class="fc" id="L556">            secret = CipherUtil.buildSecretKey(clientId, clientSecret);</span>
+<span class="nc" id="L557">        } catch (final Exception e) {</span>
             // Should not happen
-<span class="nc" id="L558">            LOG.log(Level.SEVERE, &quot;initializeException&quot;, e);</span>
-<span class="nc" id="L559">            throw new AuthException(MessageFormat.format(R.getString(&quot;initializeException&quot;), e.getMessage()));</span>
-<span class="fc" id="L560">        }</span>
-<span class="fc" id="L561">    }</span>
+<span class="nc" id="L559">            LOG.log(Level.SEVERE, &quot;initializeException&quot;, e);</span>
+<span class="nc" id="L560">            throw new AuthException(MessageFormat.format(R.getString(&quot;initializeException&quot;), e.getMessage()));</span>
+<span class="fc" id="L561">        }</span>
+<span class="fc" id="L562">    }</span>
 
     /**
      * Checks to see whether the {@link ServerAuthModule} is called by the
@@ -572,7 +573,7 @@ import net.trajano.auth.internal.Utils;
      * @return the module is called by the resource owner.
      */
     public boolean isCallback(final HttpServletRequest req) {
-<span class="pc bpc" id="L575" title="3 of 8 branches missed.">        return moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)</span>
+<span class="pc bpc" id="L576" title="3 of 8 branches missed.">        return moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)</span>
                 .equals(req.getRequestURI()) &amp;&amp; isRetrievalRequest(req) &amp;&amp; !isNullOrEmpty(req.getParameter(CODE)) &amp;&amp; !isNullOrEmpty(req.getParameter(STATE));
     }
 
@@ -590,24 +591,24 @@ import net.trajano.auth.internal.Utils;
      */
     private TokenCookie processTokenCookie(final Subject subject, final HttpServletRequest req) {
         try {
-<span class="fc" id="L593">            final String idToken = getIdToken(req);</span>
-<span class="fc" id="L594">            TokenCookie tokenCookie = null;</span>
-<span class="pc bpc" id="L595" title="1 of 2 branches missed.">            if (idToken != null) {</span>
-<span class="nc" id="L596">                tokenCookie = new TokenCookie(idToken, clientId, clientSecret);</span>
-<span class="nc" id="L597">                validateIdToken(clientId, tokenCookie.getIdToken());</span>
-<span class="nc" id="L598">                updateSubjectPrincipal(subject, tokenCookie.getIdToken());</span>
+<span class="fc" id="L594">            final String idToken = getIdToken(req);</span>
+<span class="fc" id="L595">            TokenCookie tokenCookie = null;</span>
+<span class="pc bpc" id="L596" title="1 of 2 branches missed.">            if (idToken != null) {</span>
+<span class="nc" id="L597">                tokenCookie = new TokenCookie(idToken, clientId, clientSecret);</span>
+<span class="nc" id="L598">                validateIdToken(clientId, tokenCookie.getIdToken());</span>
+<span class="nc" id="L599">                updateSubjectPrincipal(subject, tokenCookie.getIdToken());</span>
 
-<span class="nc bnc" id="L600" title="All 2 branches missed.">                if (tokenCookie.getUserInfo() != null) {</span>
-<span class="nc" id="L601">                    req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());</span>
+<span class="nc bnc" id="L601" title="All 2 branches missed.">                if (tokenCookie.getUserInfo() != null) {</span>
+<span class="nc" id="L602">                    req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());</span>
                 }
 
             }
-<span class="fc" id="L605">            return tokenCookie;</span>
-<span class="nc" id="L606">        } catch (final GeneralSecurityException | IOException e) {</span>
-<span class="nc" id="L607">            LOG.log(Level.FINE, &quot;invalidToken&quot;, e.getMessage());</span>
-<span class="nc" id="L608">            LOG.throwing(this.getClass()</span>
+<span class="fc" id="L606">            return tokenCookie;</span>
+<span class="nc" id="L607">        } catch (final GeneralSecurityException | IOException e) {</span>
+<span class="nc" id="L608">            LOG.log(Level.FINE, &quot;invalidToken&quot;, e.getMessage());</span>
+<span class="nc" id="L609">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;validateRequest&quot;, e);
-<span class="nc" id="L610">            return null;</span>
+<span class="nc" id="L611">            return null;</span>
         }
     }
 
@@ -627,32 +628,32 @@ import net.trajano.auth.internal.Utils;
      * @throws AuthException
      */
     private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req, final HttpServletResponse resp) throws AuthException {
-<span class="fc" id="L630">        URI authorizationEndpointUri = null;</span>
+<span class="fc" id="L631">        URI authorizationEndpointUri = null;</span>
         try {
-<span class="fc" id="L632">            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);</span>
-<span class="fc" id="L633">            restClient.close();</span>
+<span class="fc" id="L633">            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);</span>
+<span class="fc" id="L634">            restClient.close();</span>
 
-<span class="fc" id="L635">            final String state = Base64.encodeWithoutPadding(req.getRequestURI()</span>
+<span class="fc" id="L636">            final String state = Base64.encodeWithoutPadding(req.getRequestURI()</span>
                     .getBytes(&quot;UTF-8&quot;));
 
-<span class="fc" id="L638">            authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())</span>
+<span class="fc" id="L639">            authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())</span>
                     .queryParam(CLIENT_ID, clientId)
                     .queryParam(RESPONSE_TYPE, &quot;code&quot;)
                     .queryParam(SCOPE, scope)
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                            .queryParam(STATE, state)
-                            .build();
+                    .queryParam(STATE, state)
+                    .build();
 
-<span class="fc" id="L648">            resp.sendRedirect(authorizationEndpointUri.toASCIIString());</span>
-<span class="fc" id="L649">            return AuthStatus.SEND_CONTINUE;</span>
-<span class="nc" id="L650">        } catch (final IOException e) {</span>
+<span class="fc" id="L649">            resp.sendRedirect(authorizationEndpointUri.toASCIIString());</span>
+<span class="fc" id="L650">            return AuthStatus.SEND_CONTINUE;</span>
+<span class="nc" id="L651">        } catch (final IOException e) {</span>
             // Should not happen
-<span class="nc" id="L652">            LOG.log(Level.SEVERE, &quot;sendRedirectException&quot;, new Object[] { authorizationEndpointUri, e.getMessage() });</span>
-<span class="nc" id="L653">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L653">            LOG.log(Level.SEVERE, &quot;sendRedirectException&quot;, new Object[] { authorizationEndpointUri, e.getMessage() });</span>
+<span class="nc" id="L654">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;redirectToAuthorizationEndpoint&quot;, e);
-<span class="nc" id="L655">            throw new AuthException(MessageFormat.format(R.getString(&quot;sendRedirectException&quot;), authorizationEndpointUri, e.getMessage()));</span>
+<span class="nc" id="L656">            throw new AuthException(MessageFormat.format(R.getString(&quot;sendRedirectException&quot;), authorizationEndpointUri, e.getMessage()));</span>
         }
     }
 
@@ -669,7 +670,7 @@ import net.trajano.auth.internal.Utils;
      */
     @Override
     public AuthStatus secureResponse(final MessageInfo messageInfo, final Subject subject) throws AuthException {
-<span class="nc" id="L672">        return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L673">        return AuthStatus.SEND_SUCCESS;</span>
     }
 
     /**
@@ -679,8 +680,8 @@ import net.trajano.auth.internal.Utils;
      *            REST client. May be mocked.
      */
     public void setRestClient(final Client restClient) {
-<span class="fc" id="L682">        this.restClient = restClient;</span>
-<span class="fc" id="L683">    }</span>
+<span class="fc" id="L683">        this.restClient = restClient;</span>
+<span class="fc" id="L684">    }</span>
 
     /**
      * Updates the principal for the subject. This is done through the
@@ -695,19 +696,19 @@ import net.trajano.auth.internal.Utils;
      */
     private void updateSubjectPrincipal(final Subject subject, final JsonObject jwtPayload) throws GeneralSecurityException {
         try {
-<span class="fc" id="L698">            final String iss = googleWorkaround(jwtPayload.getString(&quot;iss&quot;));</span>
-<span class="fc" id="L699">            handler.handle(new Callback[] { new CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)</span>
+<span class="fc" id="L699">            final String iss = googleWorkaround(jwtPayload.getString(&quot;iss&quot;));</span>
+<span class="fc" id="L700">            handler.handle(new Callback[] { new CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)</span>
                     .userInfo(jwtPayload.getString(&quot;sub&quot;))
                     .build()
                     .toASCIIString()), new GroupPrincipalCallback(subject, new String[] { iss }) });
-<span class="nc" id="L703">        } catch (final IOException | UnsupportedCallbackException e) {</span>
+<span class="nc" id="L704">        } catch (final IOException | UnsupportedCallbackException e) {</span>
             // Should not happen
-<span class="nc" id="L705">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
-<span class="nc" id="L706">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L706">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
+<span class="nc" id="L707">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;updateSubjectPrincipal&quot;, e);
-<span class="nc" id="L708">            throw new AuthException(MessageFormat.format(R.getString(&quot;updatePrincipalException&quot;), e.getMessage()));</span>
-<span class="fc" id="L709">        }</span>
-<span class="fc" id="L710">    }</span>
+<span class="nc" id="L709">            throw new AuthException(MessageFormat.format(R.getString(&quot;updatePrincipalException&quot;), e.getMessage()));</span>
+<span class="fc" id="L710">        }</span>
+<span class="fc" id="L711">    }</span>
 
     /**
      * Validates the request. The request must be secure otherwise it will
@@ -726,79 +727,79 @@ import net.trajano.auth.internal.Utils;
      */
     @Override
     public AuthStatus validateRequest(final MessageInfo messageInfo, final Subject clientSubject, final Subject serviceSubject) throws AuthException {
-<span class="fc" id="L729">        final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();</span>
+<span class="fc" id="L730">        final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();</span>
 
-<span class="fc" id="L731">        final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();</span>
+<span class="fc" id="L732">        final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();</span>
 
         try {
-<span class="fc" id="L734">            final TokenCookie tokenCookie = processTokenCookie(clientSubject, req);</span>
+<span class="fc" id="L735">            final TokenCookie tokenCookie = processTokenCookie(clientSubject, req);</span>
 
-<span class="pc bpc" id="L736" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
+<span class="pc bpc" id="L737" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
                     .equals(tokenUri)) {
-<span class="nc" id="L738">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L739">                resp.getWriter()</span>
-                .print(tokenCookie.getIdToken());
-<span class="nc" id="L741">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L739">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L740">                resp.getWriter()</span>
+                        .print(tokenCookie.getIdToken());
+<span class="nc" id="L742">                return AuthStatus.SEND_SUCCESS;</span>
             }
 
-<span class="pc bpc" id="L744" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
+<span class="pc bpc" id="L745" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
                     .equals(userInfoUri)) {
-<span class="nc" id="L746">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L747">                resp.getWriter()</span>
-                .print(tokenCookie.getUserInfo());
-<span class="nc" id="L749">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L747">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L748">                resp.getWriter()</span>
+                        .print(tokenCookie.getUserInfo());
+<span class="nc" id="L750">                return AuthStatus.SEND_SUCCESS;</span>
             }
 
-<span class="fc bfc" id="L752" title="All 4 branches covered.">            if (!mandatory &amp;&amp; !req.isSecure()) {</span>
+<span class="fc bfc" id="L753" title="All 4 branches covered.">            if (!mandatory &amp;&amp; !req.isSecure()) {</span>
                 // successful if the module is not mandatory and the channel is
                 // not secure.
-<span class="fc" id="L755">                return AuthStatus.SUCCESS;</span>
+<span class="fc" id="L756">                return AuthStatus.SUCCESS;</span>
             }
 
-<span class="pc bpc" id="L758" title="1 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; mandatory) {</span>
+<span class="pc bpc" id="L759" title="1 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; mandatory) {</span>
                 // Fail authorization 3.1.2.1
-<span class="fc" id="L760">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
-<span class="fc" id="L761">                return AuthStatus.SEND_FAILURE;</span>
+<span class="fc" id="L761">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
+<span class="fc" id="L762">                return AuthStatus.SEND_FAILURE;</span>
             }
 
             //
 
-<span class="pc bpc" id="L766" title="3 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; isCallback(req)) {</span>
-<span class="nc" id="L767">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
-<span class="nc" id="L768">                return AuthStatus.SEND_FAILURE;</span>
+<span class="pc bpc" id="L767" title="3 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; isCallback(req)) {</span>
+<span class="nc" id="L768">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
+<span class="nc" id="L769">                return AuthStatus.SEND_FAILURE;</span>
             }
 
-<span class="pc bpc" id="L771" title="1 of 4 branches missed.">            if (req.isSecure() &amp;&amp; isCallback(req)) {</span>
-<span class="fc" id="L772">                return handleCallback(req, resp, clientSubject);</span>
+<span class="pc bpc" id="L772" title="1 of 4 branches missed.">            if (req.isSecure() &amp;&amp; isCallback(req)) {</span>
+<span class="fc" id="L773">                return handleCallback(req, resp, clientSubject);</span>
             }
 
-<span class="pc bpc" id="L775" title="3 of 6 branches missed.">            if (!mandatory || tokenCookie != null &amp;&amp; !tokenCookie.isExpired()) {</span>
-<span class="fc" id="L776">                return AuthStatus.SUCCESS;</span>
+<span class="pc bpc" id="L776" title="3 of 6 branches missed.">            if (!mandatory || tokenCookie != null &amp;&amp; !tokenCookie.isExpired()) {</span>
+<span class="fc" id="L777">                return AuthStatus.SUCCESS;</span>
             }
-<span class="pc bpc" id="L778" title="4 of 6 branches missed.">            if (req.isSecure() &amp;&amp; isHeadRequest(req) &amp;&amp; req.getRequestURI()</span>
+<span class="pc bpc" id="L779" title="4 of 6 branches missed.">            if (req.isSecure() &amp;&amp; isHeadRequest(req) &amp;&amp; req.getRequestURI()</span>
                     .equals(tokenUri)) {
-<span class="nc" id="L780">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L781">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L781">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L782">                return AuthStatus.SEND_SUCCESS;</span>
             }
 
-<span class="pc bpc" id="L784" title="3 of 4 branches missed.">            if (req.getRequestURI()</span>
+<span class="pc bpc" id="L785" title="3 of 4 branches missed.">            if (req.getRequestURI()</span>
                     .equals(userInfoUri) &amp;&amp; isHeadRequest(req)) {
-<span class="nc" id="L786">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L787">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L787">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L788">                return AuthStatus.SEND_SUCCESS;</span>
 
             }
-<span class="fc bfc" id="L790" title="All 2 branches covered.">            if (!isRetrievalRequest(req)) {</span>
-<span class="fc" id="L791">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, &quot;Unable to POST when unauthorized.&quot;);</span>
-<span class="fc" id="L792">                return AuthStatus.SEND_FAILURE;</span>
+<span class="fc bfc" id="L791" title="All 2 branches covered.">            if (!isRetrievalRequest(req)) {</span>
+<span class="fc" id="L792">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, &quot;Unable to POST when unauthorized.&quot;);</span>
+<span class="fc" id="L793">                return AuthStatus.SEND_FAILURE;</span>
             }
 
-<span class="fc" id="L795">            return redirectToAuthorizationEndpoint(req, resp);</span>
-<span class="nc" id="L796">        } catch (final Exception e) {</span>
+<span class="fc" id="L796">            return redirectToAuthorizationEndpoint(req, resp);</span>
+<span class="nc" id="L797">        } catch (final Exception e) {</span>
             // Should not happen
-<span class="nc" id="L798">            LOG.log(Level.SEVERE, &quot;validationException&quot;, e.getMessage());</span>
-<span class="nc" id="L799">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L799">            LOG.log(Level.SEVERE, &quot;validationException&quot;, e.getMessage());</span>
+<span class="nc" id="L800">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;validateRequest&quot;, e);
-<span class="nc" id="L801">            throw new AuthException(MessageFormat.format(R.getString(&quot;validationException&quot;), e.getMessage()));</span>
+<span class="nc" id="L802">            throw new AuthException(MessageFormat.format(R.getString(&quot;validationException&quot;), e.getMessage()));</span>
         }
     }
 }
