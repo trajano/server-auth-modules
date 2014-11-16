@@ -33,38 +33,47 @@ import net.trajano.auth.internal.ServerAuthModuleAuthConfig;
  * &lt;/pre&gt;
  */
 public class AuthModuleConfigProvider implements AuthConfigProvider {
-<span class="fc" id="L36">    public static final String CLIENT_AUTH_MODULE_CLASS = ClientAuthModule.class.getName();</span>
-<span class="fc" id="L37">    public static final String SERVER_AUTH_MODULE_CLASS = ServerAuthModule.class.getName();</span>
+    /**
+     * Client auth module class option key.
+     */
+<span class="fc" id="L39">    public static final String CLIENT_AUTH_MODULE_CLASS = ClientAuthModule.class.getName();</span>
+    /**
+     * Server auth module class option key.
+     */
+<span class="fc" id="L43">    public static final String SERVER_AUTH_MODULE_CLASS = ServerAuthModule.class.getName();</span>
     private final AuthConfigFactory authConfigFactory;
     /**
      * Options.
      */
-    private Map&lt;String, String&gt; options;
+    private final Map&lt;String, String&gt; options;
 
-<span class="fc" id="L44">    public AuthModuleConfigProvider(final Map&lt;String, String&gt; options, final AuthConfigFactory authConfigFactory) {</span>
-<span class="fc" id="L45">        this.authConfigFactory = authConfigFactory;</span>
-<span class="fc" id="L46">        this.options = options;</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L50">    public AuthModuleConfigProvider(final Map&lt;String, String&gt; options, final AuthConfigFactory authConfigFactory) {</span>
+<span class="fc" id="L51">        this.authConfigFactory = authConfigFactory;</span>
+<span class="fc" id="L52">        this.options = options;</span>
+<span class="fc" id="L53">    }</span>
 
     @Override
     public ClientAuthConfig getClientAuthConfig(final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (options.containsKey(CLIENT_AUTH_MODULE_CLASS)) {</span>
-<span class="nc" id="L52">            return new ClientAuthModuleAuthConfig(options, layer, appContext, handler);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (options.containsKey(CLIENT_AUTH_MODULE_CLASS)) {</span>
+<span class="nc" id="L58">            return new ClientAuthModuleAuthConfig(options, layer, appContext, handler);</span>
         }
-<span class="nc" id="L54">        return null;</span>
+<span class="nc" id="L60">        return null;</span>
     }
 
     @Override
     public ServerAuthConfig getServerAuthConfig(final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
-<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (options.containsKey(SERVER_AUTH_MODULE_CLASS)) {</span>
-<span class="fc" id="L60">            return new ServerAuthModuleAuthConfig(options, layer, appContext, handler);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (options.containsKey(SERVER_AUTH_MODULE_CLASS)) {</span>
+<span class="fc" id="L66">            return new ServerAuthModuleAuthConfig(options, layer, appContext, handler);</span>
         }
-<span class="nc" id="L62">        return null;</span>
+<span class="nc" id="L68">        return null;</span>
     }
 
+    /**
+     * Does nothing.
+     */
     @Override
     public void refresh() {
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L76">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

@@ -40,7 +40,7 @@ public class ClientAuthModuleAuthConfig extends AbstractAuthModuleAuthConfig imp
                 }
             }
 <span class="nc" id="L42">            return context;</span>
-<span class="nc" id="L43">        } catch (InstantiationException | IllegalAccessException e) {</span>
+<span class="nc" id="L43">        } catch (final InstantiationException | IllegalAccessException e) {</span>
 <span class="nc" id="L44">            throw new AuthException(e.getMessage());</span>
         }
     }

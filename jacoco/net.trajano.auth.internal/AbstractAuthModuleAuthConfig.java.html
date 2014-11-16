@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AbstractAuthModuleAuthConfig.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.internal</a> &gt; <span class="el_source">AbstractAuthModuleAuthConfig.java</span></div><h1>AbstractAuthModuleAuthConfig.java</h1><pre class="source lang-java linenums">package net.trajano.auth.internal;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.message.AuthException;
 import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.MessagePolicy;
 import javax.security.auth.message.MessagePolicy.TargetPolicy;
 
+/**
+ * Common methods for ServerAuthConfig and ClientAuthConfig.
+ */
 public abstract class AbstractAuthModuleAuthConfig {
     /**
      * &lt;p&gt;
@@ -39,36 +42,65 @@ public abstract class AbstractAuthModuleAuthConfig {
     /**
      * Mandatory message policy.
      */
-<span class="fc" id="L42">    protected static final MessagePolicy MANDATORY = new MessagePolicy(new TargetPolicy[0], true);</span>
+<span class="fc" id="L45">    protected static final MessagePolicy MANDATORY = new MessagePolicy(new TargetPolicy[0], true);</span>
     /**
      * Non-mandatory message policy.
      */
-<span class="fc" id="L46">    protected static final MessagePolicy NON_MANDATORY = new MessagePolicy(new TargetPolicy[0], false);</span>
+<span class="fc" id="L49">    protected static final MessagePolicy NON_MANDATORY = new MessagePolicy(new TargetPolicy[0], false);</span>
+    /**
+     * Application context.
+     */
     private final String appContext;
+    /**
+     * Callback handler.
+     */
     private final CallbackHandler handler;
+    /**
+     * Layer. Usually HttpServlet or SOAPMessage.
+     */
     private final String layer;
+    /**
+     * Setup options.
+     */
     private final Map&lt;String, String&gt; options;
 
-<span class="fc" id="L52">    public AbstractAuthModuleAuthConfig(final Map&lt;String, String&gt; options, final String layer, final String appContext, final CallbackHandler handler) throws AuthException {</span>
-<span class="fc" id="L53">        this.appContext = appContext;</span>
-<span class="fc" id="L54">        this.layer = layer;</span>
-<span class="fc" id="L55">        this.options = options;</span>
-<span class="fc" id="L56">        this.handler = handler;</span>
-<span class="fc" id="L57">    }</span>
+    /**
+     * @param options
+     *            options
+     * @param layer
+     *            layer
+     * @param appContext
+     *            application context
+     * @param handler
+     *            handler
+     */
+<span class="fc" id="L77">    public AbstractAuthModuleAuthConfig(final Map&lt;String, String&gt; options, final String layer, final String appContext, final CallbackHandler handler) {</span>
+<span class="fc" id="L78">        this.appContext = appContext;</span>
+<span class="fc" id="L79">        this.layer = layer;</span>
+<span class="fc" id="L80">        this.options = options;</span>
+<span class="fc" id="L81">        this.handler = handler;</span>
+<span class="fc" id="L82">    }</span>
 
+    /**
+     * Augments the properties with additional properties.
+     *
+     * @param properties
+     *            properties to augment with.
+     * @return augmented properties
+     */
     @SuppressWarnings(&quot;unchecked&quot;)
     protected Map&lt;?, ?&gt; augmentProperties(@SuppressWarnings(&quot;rawtypes&quot;) final Map properties) {
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (properties == null) {</span>
-<span class="fc" id="L62">            return options;</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if (properties == null) {</span>
+<span class="fc" id="L94">            return options;</span>
         }
-<span class="nc" id="L64">        final Map&lt;?, ?&gt; augmentedOptions = new HashMap&lt;&gt;(options);</span>
-<span class="nc" id="L65">        augmentedOptions.putAll(properties);</span>
-<span class="nc" id="L66">        return augmentedOptions;</span>
+<span class="nc" id="L96">        final ConcurrentMap&lt;?, ?&gt; augmentedOptions = new ConcurrentHashMap&lt;&gt;(options);</span>
+<span class="nc" id="L97">        augmentedOptions.putAll(properties);</span>
+<span class="nc" id="L98">        return augmentedOptions;</span>
 
     }
 
     public String getAppContext() {
-<span class="nc" id="L71">        return appContext;</span>
+<span class="nc" id="L103">        return appContext;</span>
     }
 
     /**
@@ -76,32 +108,38 @@ public abstract class AbstractAuthModuleAuthConfig {
      * {@value #JAVAX_SECURITY_AUTH_MESSAGE_MESSAGE_POLICY_IS_MANDATORY} in the
      * map.
      *
+     * @param messageInfo
+     *            contains the message request, response and some system
+     *            populated map.
      * @return the string representation of the {@link MessageInfo} if it is
      *         mandatory, &lt;code&gt;null&lt;/code&gt; otherwise.
      */
     public String getAuthContextID(final MessageInfo messageInfo) {
-<span class="nc" id="L83">        final Object isMandatory = messageInfo.getMap()</span>
+<span class="nc" id="L118">        final Object isMandatory = messageInfo.getMap()</span>
                 .get(JAVAX_SECURITY_AUTH_MESSAGE_MESSAGE_POLICY_IS_MANDATORY);
-<span class="nc bnc" id="L85" title="All 6 branches missed.">        if (isMandatory != null &amp;&amp; isMandatory instanceof String &amp;&amp; Boolean.valueOf((String) isMandatory)) {</span>
-<span class="nc" id="L86">            return messageInfo.toString();</span>
+<span class="nc bnc" id="L120" title="All 6 branches missed.">        if (isMandatory != null &amp;&amp; isMandatory instanceof String &amp;&amp; Boolean.valueOf((String) isMandatory)) {</span>
+<span class="nc" id="L121">            return messageInfo.toString();</span>
         }
-<span class="nc" id="L88">        return null;</span>
+<span class="nc" id="L123">        return null;</span>
     }
 
     protected CallbackHandler getHandler() {
-<span class="fc" id="L92">        return handler;</span>
+<span class="fc" id="L127">        return handler;</span>
     }
 
     public String getMessageLayer() {
-<span class="nc" id="L96">        return layer;</span>
+<span class="nc" id="L131">        return layer;</span>
     }
 
     public boolean isProtected() {
-<span class="nc" id="L100">        return true;</span>
+<span class="nc" id="L135">        return true;</span>
     }
 
+    /**
+     * Does nothing as the module does not accept changes at runtime.
+     */
     public void refresh() {
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L142">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
