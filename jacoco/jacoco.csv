@@ -2,7 +2,7 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 Server Auth Modules,net.trajano.auth,GoogleAuthModule,61,3,0,0,9,1,2,1,2,1
 Server Auth Modules,net.trajano.auth,HttpHeaderAuthModule,128,78,11,11,19,21,12,7,4,4
 Server Auth Modules,net.trajano.auth,OpenIDConnectAuthModule,19,35,1,1,2,7,1,3,0,3
-Server Auth Modules,net.trajano.auth,OAuthModule,544,635,61,43,78,110,47,26,6,15
+Server Auth Modules,net.trajano.auth,OAuthModule,559,635,61,43,80,110,47,26,6,15
 Server Auth Modules,net.trajano.auth,AuthModuleConfigProvider,19,30,3,1,5,8,4,3,2,3
 Server Auth Modules,net.trajano.auth.internal,Base64,0,494,1,41,0,75,1,29,0,9
 Server Auth Modules,net.trajano.auth.internal,JsonWebAlgorithm,0,211,0,0,0,22,0,5,0,5
