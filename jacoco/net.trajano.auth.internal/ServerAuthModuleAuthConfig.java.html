@@ -11,36 +11,53 @@ import javax.security.auth.message.module.ServerAuthModule;
 
 import net.trajano.auth.AuthModuleConfigProvider;
 
+/**
+ * Provides initialized server modules/contexts.
+ */
 public class ServerAuthModuleAuthConfig extends AbstractAuthModuleAuthConfig implements ServerAuthConfig {
+    /**
+     * Context class.
+     */
     private final Class&lt;? extends ServerAuthContext&gt; contextClass;
 
+    /**
+     * @param options
+     *            options to pass into the module for initialization
+     * @param layer
+     *            layer
+     * @param appContext
+     *            application context
+     * @param handler
+     *            callback handlers
+     * @throws AuthException
+     */
     @SuppressWarnings(&quot;unchecked&quot;)
     public ServerAuthModuleAuthConfig(final Map&lt;String, String&gt; options, final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
-<span class="fc" id="L19">        super(options, layer, appContext, handler);</span>
+<span class="fc" id="L36">        super(options, layer, appContext, handler);</span>
         try {
-<span class="fc" id="L21">            contextClass = (Class&lt;? extends ServerAuthContext&gt;) Class.forName(options.get(AuthModuleConfigProvider.SERVER_AUTH_MODULE_CLASS));</span>
-<span class="nc" id="L22">        } catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L23">            throw new AuthException(e.getMessage());</span>
-<span class="fc" id="L24">        }</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L38">            contextClass = (Class&lt;? extends ServerAuthContext&gt;) Class.forName(options.get(AuthModuleConfigProvider.SERVER_AUTH_MODULE_CLASS));</span>
+<span class="nc" id="L39">        } catch (final ClassNotFoundException e) {</span>
+<span class="nc" id="L40">            throw new AuthException(e.getMessage());</span>
+<span class="fc" id="L41">        }</span>
+<span class="fc" id="L42">    }</span>
 
     @Override
     public ServerAuthContext getAuthContext(final String authContextID, final Subject serviceSubject, @SuppressWarnings(&quot;rawtypes&quot;) final Map properties) throws AuthException {
-<span class="fc" id="L29">        final Map&lt;?, ?&gt; augmentedOptions = augmentProperties(properties);</span>
+<span class="fc" id="L46">        final Map&lt;?, ?&gt; augmentedOptions = augmentProperties(properties);</span>
         try {
-<span class="fc" id="L31">            final ServerAuthContext context = contextClass.newInstance();</span>
-<span class="pc bpc" id="L32" title="1 of 2 branches missed.">            if (context instanceof ServerAuthModule) {</span>
+<span class="fc" id="L48">            final ServerAuthContext context = contextClass.newInstance();</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">            if (context instanceof ServerAuthModule) {</span>
 
-<span class="fc" id="L34">                final ServerAuthModule module = (ServerAuthModule) context;</span>
-<span class="pc bpc" id="L35" title="1 of 2 branches missed.">                if (authContextID == null) {</span>
-<span class="nc" id="L36">                    module.initialize(NON_MANDATORY, NON_MANDATORY, getHandler(), augmentedOptions);</span>
+<span class="fc" id="L51">                final ServerAuthModule module = (ServerAuthModule) context;</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">                if (authContextID == null) {</span>
+<span class="nc" id="L53">                    module.initialize(NON_MANDATORY, NON_MANDATORY, getHandler(), augmentedOptions);</span>
                 } else {
-<span class="fc" id="L38">                    module.initialize(MANDATORY, MANDATORY, getHandler(), augmentedOptions);</span>
+<span class="fc" id="L55">                    module.initialize(MANDATORY, MANDATORY, getHandler(), augmentedOptions);</span>
                 }
             }
-<span class="fc" id="L41">            return context;</span>
-<span class="nc" id="L42">        } catch (InstantiationException | IllegalAccessException e) {</span>
-<span class="nc" id="L43">            throw new AuthException(e.getMessage());</span>
+<span class="fc" id="L58">            return context;</span>
+<span class="nc" id="L59">        } catch (final InstantiationException | IllegalAccessException e) {</span>
+<span class="nc" id="L60">            throw new AuthException(e.getMessage());</span>
         }
     }
 }
