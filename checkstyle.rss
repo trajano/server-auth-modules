@@ -26,8 +26,8 @@ under the License.
     <copyright>&#169;2014 Trajano</copyright>
     <item>
       <title>File: 20,
-             Errors: 1,
-             Warnings: 27,
+             Errors: 0,
+             Warnings: 26,
              Infos: 0
       </title>
             <link>http://site.trajano.net/trajano/server-auth-modules//checkstyle.html</link>
@@ -318,10 +318,10 @@ under the License.
                   0
                 </td>
                 <td>
-                  10
+                  9
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                       </tbody>
