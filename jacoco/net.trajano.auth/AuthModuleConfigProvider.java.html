@@ -20,10 +20,13 @@ import net.trajano.auth.internal.ServerAuthModuleAuthConfig;
  * registering the provider in a {@link javax.servlet.ServletContextListener}.
  *
  * &lt;pre&gt;
+ * 
  * &amp;#064;WebListener
  * public class Initializer implements ServletContextListener {
+ * 
  *     &amp;#064;Override
  *     public void contextInitialized(final ServletContextEvent sce) {
+ * 
  *         Map&amp;lt;String, String&amp;gt; options = new HashMap&amp;lt;&amp;gt;();
  *         options.put(AuthModuleConfigProvider.SERVER_AUTH_MODULE_CLASS, OpenIDConnectAuthModule.class.getName());
  *         AuthConfigFactory.getFactory()
@@ -33,15 +36,16 @@ import net.trajano.auth.internal.ServerAuthModuleAuthConfig;
  * &lt;/pre&gt;
  */
 public class AuthModuleConfigProvider implements AuthConfigProvider {
+
     /**
      * Client auth module class option key.
      */
-<span class="fc" id="L39">    public static final String CLIENT_AUTH_MODULE_CLASS = ClientAuthModule.class.getName();</span>
+<span class="fc" id="L43">    public static final String CLIENT_AUTH_MODULE_CLASS = ClientAuthModule.class.getName();</span>
 
     /**
      * Server auth module class option key.
      */
-<span class="fc" id="L44">    public static final String SERVER_AUTH_MODULE_CLASS = ServerAuthModule.class.getName();</span>
+<span class="fc" id="L48">    public static final String SERVER_AUTH_MODULE_CLASS = ServerAuthModule.class.getName();</span>
 
     /**
      * {@link AuthConfigFactory} passed in through the constructor. This is not
@@ -49,6 +53,7 @@ public class AuthModuleConfigProvider implements AuthConfigProvider {
      */
     @SuppressWarnings(&quot;unused&quot;)
     private final AuthConfigFactory authConfigFactory;
+
     /**
      * Options.
      */
@@ -65,25 +70,32 @@ public class AuthModuleConfigProvider implements AuthConfigProvider {
      * @param authConfigFactory
      *            configuration factory
      */
-<span class="fc" id="L68">    public AuthModuleConfigProvider(final Map&lt;String, String&gt; options, final AuthConfigFactory authConfigFactory) {</span>
-<span class="fc" id="L69">        this.authConfigFactory = authConfigFactory;</span>
-<span class="fc" id="L70">        this.options = options;</span>
-<span class="fc" id="L71">    }</span>
+<span class="fc" id="L73">    public AuthModuleConfigProvider(final Map&lt;String, String&gt; options, final AuthConfigFactory authConfigFactory) {</span>
+
+<span class="fc" id="L75">        this.authConfigFactory = authConfigFactory;</span>
+<span class="fc" id="L76">        this.options = options;</span>
+<span class="fc" id="L77">    }</span>
 
     @Override
-    public ClientAuthConfig getClientAuthConfig(final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (options.containsKey(CLIENT_AUTH_MODULE_CLASS)) {</span>
-<span class="nc" id="L76">            return new ClientAuthModuleAuthConfig(options, layer, appContext, handler);</span>
+    public ClientAuthConfig getClientAuthConfig(final String layer,
+            final String appContext,
+            final CallbackHandler handler) throws AuthException {
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (options.containsKey(CLIENT_AUTH_MODULE_CLASS)) {</span>
+<span class="nc" id="L85">            return new ClientAuthModuleAuthConfig(options, layer, appContext, handler);</span>
         }
-<span class="nc" id="L78">        return null;</span>
+<span class="nc" id="L87">        return null;</span>
     }
 
     @Override
-    public ServerAuthConfig getServerAuthConfig(final String layer, final String appContext, final CallbackHandler handler) throws AuthException {
-<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (options.containsKey(SERVER_AUTH_MODULE_CLASS)) {</span>
-<span class="fc" id="L84">            return new ServerAuthModuleAuthConfig(options, layer, appContext, handler);</span>
+    public ServerAuthConfig getServerAuthConfig(final String layer,
+            final String appContext,
+            final CallbackHandler handler) throws AuthException {
+
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (options.containsKey(SERVER_AUTH_MODULE_CLASS)) {</span>
+<span class="fc" id="L96">            return new ServerAuthModuleAuthConfig(options, layer, appContext, handler);</span>
         }
-<span class="nc" id="L86">        return null;</span>
+<span class="nc" id="L98">        return null;</span>
     }
 
     /**
@@ -91,7 +103,8 @@ public class AuthModuleConfigProvider implements AuthConfigProvider {
      */
     @Override
     public void refresh() {
-<span class="nc" id="L94">    }</span>
+
+<span class="nc" id="L107">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

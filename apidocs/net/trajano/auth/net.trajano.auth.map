@@ -5,8 +5,10 @@
 <area shape="rect" id="node2" href="./OAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="209,5,330,53"/>
 <area shape="rect" id="node3_2" href="./OpenIDConnectAuthModule.html" title="net.trajano.auth.OpenIDConnectAuthModule" alt="" coords="76,112,260,139"/>
 <area shape="rect" id="node3" href="./OpenIDConnectAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="65,101,271,149"/>
-<area shape="rect" id="node4_3" href="./GoogleAuthModule.html" title="net.trajano.auth.GoogleAuthModule" alt="" coords="305,112,436,139"/>
-<area shape="rect" id="node4" href="./GoogleAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="295,101,447,149"/>
-<area shape="rect" id="node5_4" href="./AuthModuleConfigProvider.html" title="net.trajano.auth.AuthModuleConfigProvider" alt="" coords="365,16,541,43"/>
-<area shape="rect" id="node5" href="./AuthModuleConfigProvider.html" title="&lt;TABLE&gt;" alt="" coords="355,5,552,53"/>
+<area shape="rect" id="node5_3" href="./GoogleAuthModule.html" title="net.trajano.auth.GoogleAuthModule" alt="" coords="305,112,436,139"/>
+<area shape="rect" id="node5" href="./GoogleAuthModule.html" title="&lt;TABLE&gt;" alt="" coords="295,101,447,149"/>
+<area shape="rect" id="node4_4" href="./OpenIDConnectAuthModuleConfigProvider.html" title="net.trajano.auth.OpenIDConnectAuthModuleConfigProvider" alt="" coords="365,16,635,43"/>
+<area shape="rect" id="node4" href="./OpenIDConnectAuthModuleConfigProvider.html" title="&lt;TABLE&gt;" alt="" coords="355,5,645,53"/>
+<area shape="rect" id="node6_5" href="./AuthModuleConfigProvider.html" title="net.trajano.auth.AuthModuleConfigProvider" alt="" coords="680,16,856,43"/>
+<area shape="rect" id="node6" href="./AuthModuleConfigProvider.html" title="&lt;TABLE&gt;" alt="" coords="669,5,867,53"/>
 </map>

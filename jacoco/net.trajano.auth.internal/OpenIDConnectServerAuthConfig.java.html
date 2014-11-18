@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OpenIDConnectServerAuthConfig.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Server Auth Modules</a> &gt; <a href="index.source.html" class="el_package">net.trajano.auth.internal</a> &gt; <span class="el_source">OpenIDConnectServerAuthConfig.java</span></div><h1>OpenIDConnectServerAuthConfig.java</h1><pre class="source lang-java linenums">package net.trajano.auth.internal;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.message.AuthException;
+import javax.security.auth.message.MessageInfo;
+import javax.security.auth.message.MessagePolicy;
+import javax.security.auth.message.MessagePolicy.TargetPolicy;
+import javax.security.auth.message.config.ServerAuthConfig;
+import javax.security.auth.message.config.ServerAuthContext;
+
+import net.trajano.auth.OpenIDConnectAuthModule;
+
+/**
+ * A {@link ServerAuthConfig} specifically for {@link OpenIDConnectAuthModule}.
+ */
+public class OpenIDConnectServerAuthConfig implements ServerAuthConfig {
+
+    /**
+     * Application context.
+     */
+    private final String appContext;
+
+    /**
+     * Callback handler.
+     */
+    private final CallbackHandler handler;
+
+    /**
+     * Layer. Usually HttpServlet or SOAPMessage.
+     */
+    private final String layer;
+
+    /**
+     * Setup options.
+     */
+    private final Map&lt;String, String&gt; options;
+
+    /**
+     * @param options
+     *            options
+     * @param layer
+     *            layer
+     * @param appContext
+     *            application context
+     * @param handler
+     *            handler
+     */
+<span class="nc" id="L52">    public OpenIDConnectServerAuthConfig(final Map&lt;String, String&gt; options, final String layer, final String appContext, final CallbackHandler handler) {</span>
+
+<span class="nc" id="L54">        this.appContext = appContext;</span>
+<span class="nc" id="L55">        this.layer = layer;</span>
+<span class="nc" id="L56">        this.options = options;</span>
+<span class="nc" id="L57">        this.handler = handler;</span>
+<span class="nc" id="L58">    }</span>
+
+    @Override
+    public String getAppContext() {
+
+<span class="nc" id="L63">        return appContext;</span>
+    }
+
+    @SuppressWarnings({ &quot;rawtypes&quot;, &quot;unchecked&quot; })
+    @Override
+    public ServerAuthContext getAuthContext(final String authContextID,
+            final Subject serviceSubject,
+            final Map properties) throws AuthException {
+
+        final Map augmentedOptions;
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (properties == null) {</span>
+<span class="nc" id="L74">            augmentedOptions = options;</span>
+        } else {
+<span class="nc" id="L76">            augmentedOptions = new ConcurrentHashMap(options);</span>
+<span class="nc" id="L77">            augmentedOptions.putAll(properties);</span>
+        }
+
+<span class="nc" id="L80">        final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (authContextID == null) {</span>
+<span class="nc" id="L82">            module.initialize(new MessagePolicy(new TargetPolicy[0], false), new MessagePolicy(new TargetPolicy[0], false), handler, augmentedOptions);</span>
+        } else {
+<span class="nc" id="L84">            module.initialize(new MessagePolicy(new TargetPolicy[0], true), new MessagePolicy(new TargetPolicy[0], true), handler, augmentedOptions);</span>
+        }
+
+<span class="nc" id="L87">        return module;</span>
+    }
+
+    @Override
+    public String getAuthContextID(final MessageInfo messageInfo) {
+
+<span class="nc" id="L93">        final Object isMandatory = messageInfo.getMap()</span>
+                .get(&quot;javax.security.auth.message.MessagePolicy.isMandatory&quot;);
+<span class="nc bnc" id="L95" title="All 6 branches missed.">        if (isMandatory != null &amp;&amp; isMandatory instanceof String &amp;&amp; Boolean.valueOf((String) isMandatory)) {</span>
+<span class="nc" id="L96">            return messageInfo.toString();</span>
+        }
+<span class="nc" id="L98">        return null;</span>
+
+    }
+
+    @Override
+    public String getMessageLayer() {
+
+<span class="nc" id="L105">        return layer;</span>
+    }
+
+    @Override
+    public boolean isProtected() {
+
+<span class="nc" id="L111">        return true;</span>
+    }
+
+    @Override
+    public void refresh() {
+
+<span class="nc" id="L117">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

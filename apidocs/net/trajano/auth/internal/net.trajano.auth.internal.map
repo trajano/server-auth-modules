@@ -19,8 +19,10 @@
 <area shape="rect" id="node8" href="./Base64.html" title="&lt;TABLE&gt;" alt="" coords="1114,9,1201,57"/>
 <area shape="rect" id="node10_9" href="./OpenIDProviderConfiguration.html" title="net.trajano.auth.internal.OpenIDProviderConfiguration" alt="" coords="1235,20,1426,47"/>
 <area shape="rect" id="node10" href="./OpenIDProviderConfiguration.html" title="&lt;TABLE&gt;" alt="" coords="1225,9,1437,57"/>
-<area shape="rect" id="node11_10" href="./TokenCookie.html" title="net.trajano.auth.internal.TokenCookie" alt="" coords="1471,20,1569,47"/>
-<area shape="rect" id="node11" href="./TokenCookie.html" title="&lt;TABLE&gt;" alt="" coords="1461,9,1579,57"/>
-<area shape="rect" id="node12_11" href="./CipherUtil.html" title="net.trajano.auth.internal.CipherUtil" alt="" coords="1614,20,1693,47"/>
-<area shape="rect" id="node12" href="./CipherUtil.html" title="&lt;TABLE&gt;" alt="" coords="1603,9,1703,57"/>
+<area shape="rect" id="node11_10" href="./OpenIDConnectServerAuthConfig.html" title="net.trajano.auth.internal.OpenIDConnectServerAuthConfig" alt="" coords="1471,20,1689,47"/>
+<area shape="rect" id="node11" href="./OpenIDConnectServerAuthConfig.html" title="&lt;TABLE&gt;" alt="" coords="1461,9,1699,57"/>
+<area shape="rect" id="node12_11" href="./TokenCookie.html" title="net.trajano.auth.internal.TokenCookie" alt="" coords="1734,20,1831,47"/>
+<area shape="rect" id="node12" href="./TokenCookie.html" title="&lt;TABLE&gt;" alt="" coords="1723,9,1842,57"/>
+<area shape="rect" id="node13_12" href="./CipherUtil.html" title="net.trajano.auth.internal.CipherUtil" alt="" coords="1877,20,1955,47"/>
+<area shape="rect" id="node13" href="./CipherUtil.html" title="&lt;TABLE&gt;" alt="" coords="1866,9,1966,57"/>
 </map>
