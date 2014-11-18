@@ -313,14 +313,9 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             Map<String, String> options) throws AuthException;
 
     /**
-     * This gets the redirection endpoint URI.
-     * <p>
-     * If the redirection endpoint URI option is not set then this gets the base
-     * URI for the application based on the request. This is used as the
-     * redirect URI for OAuth.
-     * <p>
-     * If the redirection endpoint is set, then it is resolved against the
-     * request URL.
+     * This gets the redirection endpoint URI. It uses the
+     * {@link #REDIRECTION_ENDPOINT_URI_KEY} option resolved against the request
+     * URL to get the host name.
      *
      * @param req
      *            request
@@ -328,17 +323,28 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      */
     protected URI getRedirectionEndpointUri(final HttpServletRequest req) {
 
-        if (isNullOrEmpty(redirectionEndpointUri)) {
-            final StringBuffer redirectUri = req.getRequestURL();
-            // Get the third / character from the request URL should be the
-            // start of the path.
-            redirectUri.replace(redirectUri.indexOf("/", redirectUri.indexOf("/", redirectUri.indexOf("/") + 1) + 1), redirectUri.length(), req.getContextPath());
-            return URI.create(redirectUri.toString());
-        } else {
-            return URI.create(req.getRequestURL()
-                    .toString())
-                    .resolve(redirectionEndpointUri);
+        return URI.create(req.getRequestURL()
+                .toString())
+                .resolve(redirectionEndpointUri);
+    }
+
+    /**
+     * Gets an option and ensures it is present.
+     *
+     * @param optionKey
+     *            option key
+     * @return the option value
+     * @throws AuthException
+     *             missing option exception
+     */
+    private String getRequiredOption(final String optionKey) throws AuthException {
+
+        final String optionValue = moduleOptions.get(optionKey);
+        if (optionValue == null) {
+            LOG.log(Level.SEVERE, "missingOption", optionKey);
+            throw new AuthException(MessageFormat.format(R.getString("missingOption"), optionKey));
         }
+        return optionValue;
     }
 
     /**
@@ -554,29 +560,22 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             final CallbackHandler h,
             @SuppressWarnings("rawtypes") final Map options) throws AuthException {
 
-        handler = h;
         try {
-            mandatory = requestPolicy.isMandatory();
             moduleOptions = options;
-            clientId = moduleOptions.get(CLIENT_ID_KEY);
-            if (clientId == null) {
-                LOG.log(Level.SEVERE, "missingOption", CLIENT_ID_KEY);
-                throw new AuthException(MessageFormat.format(R.getString("missingOption"), CLIENT_ID_KEY));
-            }
+            clientId = getRequiredOption(CLIENT_ID_KEY);
             cookieContext = moduleOptions.get(COOKIE_CONTEXT_KEY);
-            redirectionEndpointUri = moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY);
+            redirectionEndpointUri = getRequiredOption(REDIRECTION_ENDPOINT_URI_KEY);
             tokenUri = moduleOptions.get(TOKEN_URI_KEY);
             userInfoUri = moduleOptions.get(USERINFO_URI_KEY);
             scope = moduleOptions.get(SCOPE_KEY);
             if (isNullOrEmpty(scope)) {
                 scope = "openid";
             }
-            clientSecret = moduleOptions.get(CLIENT_SECRET_KEY);
-            if (clientSecret == null) {
-                LOG.log(Level.SEVERE, "missingOption", CLIENT_SECRET_KEY);
-                throw new AuthException(MessageFormat.format(R.getString("missingOption"), CLIENT_SECRET_KEY));
-            }
+            clientSecret = getRequiredOption(CLIENT_SECRET_KEY);
             LOGCONFIG.log(Level.CONFIG, "options", moduleOptions);
+
+            handler = h;
+            mandatory = requestPolicy.isMandatory();
             secret = CipherUtil.buildSecretKey(clientId, clientSecret);
         } catch (final Exception e) {
             // Should not happen
