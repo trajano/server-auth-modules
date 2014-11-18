@@ -68,6 +68,7 @@ public class OpenIDConnectAuthModuleConfigProvider implements AuthConfigProvider
     @Override
     public void refresh() {
 
+        // Does nothing
     }
 
 }

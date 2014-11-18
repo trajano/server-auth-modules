@@ -114,6 +114,7 @@ public class OpenIDConnectServerAuthConfig implements ServerAuthConfig {
     @Override
     public void refresh() {
 
+        // does nothing
     }
 
 }

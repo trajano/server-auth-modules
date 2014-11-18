@@ -20,6 +20,7 @@ import net.trajano.auth.internal.ServerAuthModuleAuthConfig;
  * registering the provider in a {@link javax.servlet.ServletContextListener}.
  *
  * <pre>
+ *
  * 
  * &#064;WebListener
  * public class Initializer implements ServletContextListener {
@@ -104,6 +105,7 @@ public class AuthModuleConfigProvider implements AuthConfigProvider {
     @Override
     public void refresh() {
 
+        // does nothing
     }
 
 }
