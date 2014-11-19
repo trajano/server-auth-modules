@@ -1,6 +1,8 @@
 package net.trajano.auth.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +19,6 @@ import net.trajano.auth.OpenIDConnectAuthModule;
 import net.trajano.auth.internal.Base64;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Tests the OAuthModule.
@@ -26,6 +27,7 @@ public class OAuthModuleTest {
 
     @Test
     public void testCompressDecompress() throws Exception {
+
         final String payload = "foo";
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final GZIPOutputStream os = new GZIPOutputStream(baos);
@@ -49,14 +51,15 @@ public class OAuthModuleTest {
      */
     @Test
     public void testGoogleOpenIdConfiguration() throws Exception {
+
         final Map<String, String> options = new HashMap<>();
         options.put(OAuthModule.CLIENT_ID_KEY, "clientID");
         options.put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret");
+        options.put(OAuthModule.REDIRECTION_ENDPOINT_URI_KEY, "/someendpoint");
         options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY, "https://accounts.google.com/");
 
-        final MessagePolicy mockPolicy = Mockito.mock(MessagePolicy.class);
-        Mockito.when(mockPolicy.isMandatory())
-                .thenReturn(true);
+        final MessagePolicy mockPolicy = mock(MessagePolicy.class);
+        when(mockPolicy.isMandatory()).thenReturn(true);
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         module.initialize(mockPolicy, null, null, options);
@@ -69,14 +72,15 @@ public class OAuthModuleTest {
      */
     @Test
     public void testSalesforceOpenIdConfiguration() throws Exception {
+
         final Map<String, String> options = new HashMap<>();
         options.put(OAuthModule.CLIENT_ID_KEY, "clientID");
         options.put(OAuthModule.CLIENT_SECRET_KEY, "clientSecret");
         options.put(OpenIDConnectAuthModule.ISSUER_URI_KEY, "https://login.salesforce.com");
+        options.put(OAuthModule.REDIRECTION_ENDPOINT_URI_KEY, "/someendpoint");
 
-        final MessagePolicy mockPolicy = Mockito.mock(MessagePolicy.class);
-        Mockito.when(mockPolicy.isMandatory())
-                .thenReturn(true);
+        final MessagePolicy mockPolicy = mock(MessagePolicy.class);
+        when(mockPolicy.isMandatory()).thenReturn(true);
 
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         module.initialize(mockPolicy, null, null, options);
