@@ -340,9 +340,9 @@ import net.trajano.auth.internal.Utils;
     private String getRequiredOption(final String optionKey) throws AuthException {
 
 <span class="fc" id="L342">        final String optionValue = moduleOptions.get(optionKey);</span>
-<span class="fc bfc" id="L343" title="All 2 branches covered.">        if (optionValue == null) {</span>
-<span class="fc" id="L344">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, optionKey);</span>
-<span class="fc" id="L345">            throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), optionKey));</span>
+<span class="pc bpc" id="L343" title="1 of 2 branches missed.">        if (optionValue == null) {</span>
+<span class="nc" id="L344">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, optionKey);</span>
+<span class="nc" id="L345">            throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), optionKey));</span>
         }
 <span class="fc" id="L347">        return optionValue;</span>
     }
@@ -577,10 +577,10 @@ import net.trajano.auth.internal.Utils;
 <span class="fc" id="L577">            handler = h;</span>
 <span class="fc" id="L578">            mandatory = requestPolicy.isMandatory();</span>
 <span class="fc" id="L579">            secret = CipherUtil.buildSecretKey(clientId, clientSecret);</span>
-<span class="fc" id="L580">        } catch (final Exception e) {</span>
+<span class="nc" id="L580">        } catch (final Exception e) {</span>
             // Should not happen
-<span class="fc" id="L582">            LOG.log(Level.SEVERE, &quot;initializeException&quot;, e);</span>
-<span class="fc" id="L583">            throw new AuthException(MessageFormat.format(R.getString(&quot;initializeException&quot;), e.getMessage()));</span>
+<span class="nc" id="L582">            LOG.log(Level.SEVERE, &quot;initializeException&quot;, e);</span>
+<span class="nc" id="L583">            throw new AuthException(MessageFormat.format(R.getString(&quot;initializeException&quot;), e.getMessage()));</span>
 <span class="fc" id="L584">        }</span>
 <span class="fc" id="L585">    }</span>
 
