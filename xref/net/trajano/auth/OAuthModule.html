@@ -295,7 +295,7 @@
 <a class="jxr_linenumber" name="L287" href="#L287">287</a> <em class="jxr_javadoccomment">     * @throws IOException</em>
 <a class="jxr_linenumber" name="L288" href="#L288">288</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>     <strong class="jxr_keyword">private</strong> String getIdToken(<strong class="jxr_keyword">final</strong> HttpServletRequest req) <strong class="jxr_keyword">throws</strong> GeneralSecurityException,
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>             IOException {
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>     IOException {
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> 
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>         <strong class="jxr_keyword">final</strong> Cookie[] cookies = req.getCookies();
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">if</strong> (cookies == <strong class="jxr_keyword">null</strong>) {
@@ -696,8 +696,8 @@
 <a class="jxr_linenumber" name="L688" href="#L688">688</a>                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
 <a class="jxr_linenumber" name="L689" href="#L689">689</a>                             .toString())
 <a class="jxr_linenumber" name="L690" href="#L690">690</a>                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>                     .queryParam(STATE, state)
-<a class="jxr_linenumber" name="L692" href="#L692">692</a>                     .build();
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>                             .queryParam(STATE, state)
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>                             .build();
 <a class="jxr_linenumber" name="L693" href="#L693">693</a> 
 <a class="jxr_linenumber" name="L694" href="#L694">694</a>             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
 <a class="jxr_linenumber" name="L695" href="#L695">695</a>             <strong class="jxr_keyword">return</strong> AuthStatus.SEND_CONTINUE;
@@ -798,7 +798,7 @@
 <a class="jxr_linenumber" name="L790" href="#L790">790</a>                     .equals(tokenUri)) {
 <a class="jxr_linenumber" name="L791" href="#L791">791</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L792" href="#L792">792</a>                 resp.getWriter()
-<a class="jxr_linenumber" name="L793" href="#L793">793</a>                         .print(tokenCookie.getIdToken());
+<a class="jxr_linenumber" name="L793" href="#L793">793</a>                 .print(tokenCookie.getIdToken());
 <a class="jxr_linenumber" name="L794" href="#L794">794</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L795" href="#L795">795</a>             }
 <a class="jxr_linenumber" name="L796" href="#L796">796</a> 
@@ -806,7 +806,7 @@
 <a class="jxr_linenumber" name="L798" href="#L798">798</a>                     .equals(userInfoUri)) {
 <a class="jxr_linenumber" name="L799" href="#L799">799</a>                 resp.setContentType(MediaType.APPLICATION_JSON);
 <a class="jxr_linenumber" name="L800" href="#L800">800</a>                 resp.getWriter()
-<a class="jxr_linenumber" name="L801" href="#L801">801</a>                         .print(tokenCookie.getUserInfo());
+<a class="jxr_linenumber" name="L801" href="#L801">801</a>                 .print(tokenCookie.getUserInfo());
 <a class="jxr_linenumber" name="L802" href="#L802">802</a>                 <strong class="jxr_keyword">return</strong> AuthStatus.SEND_SUCCESS;
 <a class="jxr_linenumber" name="L803" href="#L803">803</a>             }
 <a class="jxr_linenumber" name="L804" href="#L804">804</a> 
@@ -855,14 +855,15 @@
 <a class="jxr_linenumber" name="L847" href="#L847">847</a> 
 <a class="jxr_linenumber" name="L848" href="#L848">848</a>             <strong class="jxr_keyword">return</strong> redirectToAuthorizationEndpoint(req, resp);
 <a class="jxr_linenumber" name="L849" href="#L849">849</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
-<a class="jxr_linenumber" name="L850" href="#L850">850</a>             <em class="jxr_comment">// Should not happen</em>
-<a class="jxr_linenumber" name="L851" href="#L851">851</a>             LOG.log(Level.SEVERE, <span class="jxr_string">"validationException"</span>, e.getMessage());
-<a class="jxr_linenumber" name="L852" href="#L852">852</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
-<a class="jxr_linenumber" name="L853" href="#L853">853</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
-<a class="jxr_linenumber" name="L854" href="#L854">854</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> AuthException(MessageFormat.format(R.getString(<span class="jxr_string">"validationException"</span>), e.getMessage()));
-<a class="jxr_linenumber" name="L855" href="#L855">855</a>         }
-<a class="jxr_linenumber" name="L856" href="#L856">856</a>     }
-<a class="jxr_linenumber" name="L857" href="#L857">857</a> }
+<a class="jxr_linenumber" name="L850" href="#L850">850</a>             <em class="jxr_comment">// Any problems with the data should be caught and force redirect to</em>
+<a class="jxr_linenumber" name="L851" href="#L851">851</a>             <em class="jxr_comment">// authorization endpoint.</em>
+<a class="jxr_linenumber" name="L852" href="#L852">852</a>             LOG.log(Level.FINE, <span class="jxr_string">"validationException"</span>, e.getMessage());
+<a class="jxr_linenumber" name="L853" href="#L853">853</a>             LOG.throwing(<strong class="jxr_keyword">this</strong>.getClass()
+<a class="jxr_linenumber" name="L854" href="#L854">854</a>                     .getName(), <span class="jxr_string">"validateRequest"</span>, e);
+<a class="jxr_linenumber" name="L855" href="#L855">855</a>             <strong class="jxr_keyword">return</strong> redirectToAuthorizationEndpoint(req, resp);
+<a class="jxr_linenumber" name="L856" href="#L856">856</a>         }
+<a class="jxr_linenumber" name="L857" href="#L857">857</a>     }
+<a class="jxr_linenumber" name="L858" href="#L858">858</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014 <a href="http://www.trajano.net/">Trajano</a>. All rights reserved.</div>
