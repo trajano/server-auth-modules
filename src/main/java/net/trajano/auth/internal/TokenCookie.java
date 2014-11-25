@@ -7,6 +7,7 @@ import java.security.GeneralSecurityException;
 import javax.crypto.SecretKey;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 
 /**
  * Manages the token cookie.
@@ -14,10 +15,31 @@ import javax.json.JsonObject;
  * @author Archimedes
  */
 public class TokenCookie {
+
+    /**
+     * Access token key in the tokens structure.
+     */
+    private static final String ACCESS_TOKEN_KEY = "a";
+
+    /**
+     * Refresh token key in the tokens structure.
+     */
+    private static final String REFRESH_TOKEN_KEY = "r";
+
+    /**
+     * Access Token.
+     */
+    private final String accessToken;
+
     /**
      * ID Token.
      */
     private final JsonObject idToken;
+
+    /**
+     * Refresh Token.
+     */
+    private final String refreshToken;
 
     /**
      * User info.
@@ -31,7 +53,8 @@ public class TokenCookie {
      *            ID token
      */
     public TokenCookie(final JsonObject idToken) {
-        this(idToken, null);
+
+        this("", "", idToken, null);
     }
 
     /**
@@ -42,7 +65,10 @@ public class TokenCookie {
      * @param userInfo
      *            user info
      */
-    public TokenCookie(final JsonObject idToken, final JsonObject userInfo) {
+    public TokenCookie(final String accessToken, final String refreshToken, final JsonObject idToken, final JsonObject userInfo) {
+
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken != null ? refreshToken : "";
         this.idToken = idToken;
         this.userInfo = userInfo;
     }
@@ -59,16 +85,21 @@ public class TokenCookie {
      * @throws GeneralSecurityException
      */
     public TokenCookie(final String cookieValue, final String clientId, final String clientSecret) throws GeneralSecurityException {
+
         final String[] cookieValues = cookieValue.split("\\.");
         final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
 
         try {
-            idToken = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[0])), secret))
+            final JsonObject tokens = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[0])), secret))
                     .readObject();
-            if (cookieValues.length == 1) {
+            accessToken = ((JsonString) tokens.get(ACCESS_TOKEN_KEY)).getString();
+            refreshToken = ((JsonString) tokens.get(REFRESH_TOKEN_KEY)).getString();
+            idToken = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[1])), secret))
+                    .readObject();
+            if (cookieValues.length == 2) {
                 userInfo = null;
             } else {
-                userInfo = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[1])), secret))
+                userInfo = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[2])), secret))
                         .readObject();
             }
         } catch (final IOException e) {
@@ -86,7 +117,9 @@ public class TokenCookie {
      * @return encoded JSON object.
      * @throws GeneralSecurityException
      */
-    private String encode(final JsonObject jsonObject, final SecretKey secret) throws GeneralSecurityException {
+    private String encode(final JsonObject jsonObject,
+            final SecretKey secret) throws GeneralSecurityException {
+
         try {
             return Base64.encodeWithoutPadding(CipherUtil.encrypt(jsonObject.toString()
                     .getBytes("UTF-8"), secret));
@@ -95,7 +128,13 @@ public class TokenCookie {
         }
     }
 
+    public String getAccessToken() {
+
+        return accessToken;
+    }
+
     public JsonObject getIdToken() {
+
         return idToken;
     }
 
@@ -105,14 +144,22 @@ public class TokenCookie {
      * @return maximum age of the token
      */
     public int getMaxAge() {
+
         return idToken.getInt("exp") - (int) (System.currentTimeMillis() / 1000);
     }
 
+    public String getRefreshToken() {
+
+        return refreshToken;
+    }
+
     public JsonObject getUserInfo() {
+
         return userInfo;
     }
 
     public boolean isExpired() {
+
         return idToken.getInt("exp") < System.currentTimeMillis() / 1000;
     }
 
@@ -126,9 +173,18 @@ public class TokenCookie {
      * @return cookie value
      * @throws GeneralSecurityException
      */
-    public String toCookieValue(final String clientId, final String clientSecret) throws GeneralSecurityException {
+    public String toCookieValue(final String clientId,
+            final String clientSecret) throws GeneralSecurityException {
+
         final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
-        final StringBuilder b = new StringBuilder(encode(idToken, secret));
+        final JsonObject tokens = Json.createObjectBuilder()
+                .add(ACCESS_TOKEN_KEY, accessToken)
+                .add(REFRESH_TOKEN_KEY, refreshToken)
+                .build();
+
+        final StringBuilder b = new StringBuilder(encode(tokens, secret));
+        b.append('.');
+        b.append(encode(idToken, secret));
         if (userInfo != null) {
             b.append('.');
             b.append(encode(userInfo, secret));

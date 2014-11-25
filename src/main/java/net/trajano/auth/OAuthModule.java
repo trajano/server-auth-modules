@@ -73,6 +73,11 @@ import net.trajano.auth.internal.Utils;
 public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext {
 
     /**
+     * Access token attribute name.
+     */
+    public static final String ACCESS_TOKEN_KEY = "auth_access";
+
+    /**
      * Client ID option key and JSON key.
      */
     public static final String CLIENT_ID_KEY = "client_id";
@@ -91,6 +96,11 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * https prefix.
      */
     private static final String HTTPS_PREFIX = "https://";
+
+    /**
+     * Open ID token attribute name.
+     */
+    public static final String ID_TOKEN_KEY = "auth_idtoken";
 
     /**
      * Logger.
@@ -128,6 +138,11 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * context root of the application.
      */
     public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection_endpoint"; //$NON-NLS-1$
+
+    /**
+     * Refresh token attribute name.
+     */
+    public static final String REFRESH_TOKEN_KEY = "auth_refresh";
 
     /**
      * Scope option key. The value is optional and defaults to "openid"
@@ -272,7 +287,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-    IOException {
+            IOException {
 
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
@@ -500,7 +515,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .header("Authorization", token.getTokenType() + " " + token.getAccessToken())
                     .get();
             if (userInfoResponse.getStatus() == 200) {
-                tokenCookie = new TokenCookie(claimsSet, userInfoResponse.readEntity(JsonObject.class));
+                tokenCookie = new TokenCookie(token.getAccessToken(), token.getRefreshToken(), claimsSet, userInfoResponse.readEntity(JsonObject.class));
             } else {
                 LOG.log(Level.WARNING, "unableToGetProfile");
                 tokenCookie = new TokenCookie(claimsSet);
@@ -603,9 +618,9 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
     /**
      * Builds the token cookie and updates the subject principal and sets the
-     * user info attribute in the request. Any exceptions or validation problems
-     * during validation will make this return <code>null</code> to indicate
-     * that there was no valid token.
+     * token and user info attribute in the request. Any exceptions or
+     * validation problems during validation will make this return
+     * <code>null</code> to indicat that there was no valid token.
      *
      * @param subject
      *            subject
@@ -624,6 +639,9 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 validateIdToken(clientId, tokenCookie.getIdToken());
                 updateSubjectPrincipal(subject, tokenCookie.getIdToken());
 
+                req.setAttribute(ACCESS_TOKEN_KEY, tokenCookie.getAccessToken());
+                req.setAttribute(REFRESH_TOKEN_KEY, tokenCookie.getRefreshToken());
+                req.setAttribute(ID_TOKEN_KEY, tokenCookie.getIdToken());
                 if (tokenCookie.getUserInfo() != null) {
                     req.setAttribute(USERINFO_KEY, tokenCookie.getUserInfo());
                 }
@@ -670,8 +688,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                            .queryParam(STATE, state)
-                            .build();
+                    .queryParam(STATE, state)
+                    .build();
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
             return AuthStatus.SEND_CONTINUE;
@@ -772,7 +790,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getIdToken());
+                        .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -780,7 +798,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getUserInfo());
+                        .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
