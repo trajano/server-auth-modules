@@ -287,7 +287,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-            IOException {
+    IOException {
 
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
@@ -688,8 +688,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                    .queryParam(STATE, state)
-                    .build();
+                            .queryParam(STATE, state)
+                            .build();
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
             return AuthStatus.SEND_CONTINUE;
@@ -790,7 +790,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getIdToken());
+                .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -798,7 +798,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getUserInfo());
+                .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -847,11 +847,12 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
             return redirectToAuthorizationEndpoint(req, resp);
         } catch (final Exception e) {
-            // Should not happen
-            LOG.log(Level.SEVERE, "validationException", e.getMessage());
+            // Any problems with the data should be caught and force redirect to
+            // authorization endpoint.
+            LOG.log(Level.FINE, "validationException", e.getMessage());
             LOG.throwing(this.getClass()
                     .getName(), "validateRequest", e);
-            throw new AuthException(MessageFormat.format(R.getString("validationException"), e.getMessage()));
+            return redirectToAuthorizationEndpoint(req, resp);
         }
     }
 }
