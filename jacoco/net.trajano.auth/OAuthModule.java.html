@@ -287,7 +287,7 @@ import net.trajano.auth.internal.Utils;
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-    IOException {
+            IOException {
 
 <span class="fc" id="L292">        final Cookie[] cookies = req.getCookies();</span>
 <span class="pc bpc" id="L293" title="1 of 2 branches missed.">        if (cookies == null) {</span>
@@ -661,7 +661,8 @@ import net.trajano.auth.internal.Utils;
      * last place. However, this does not work for non-idempotent requests such
      * as POST in those cases it will result in a 401 error and
      * {@link AuthStatus#SEND_FAILURE}. For idempotent requests, it will build
-     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}.
+     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}. It will
+     * also destroy the cookies used for authorization as part of the response.
      *
      * @param req
      *            HTTP servlet request
@@ -673,32 +674,41 @@ import net.trajano.auth.internal.Utils;
     private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req,
             final HttpServletResponse resp) throws AuthException {
 
-<span class="fc" id="L676">        URI authorizationEndpointUri = null;</span>
+<span class="fc" id="L677">        URI authorizationEndpointUri = null;</span>
         try {
-<span class="fc" id="L678">            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);</span>
-<span class="fc" id="L679">            restClient.close();</span>
+<span class="fc" id="L679">            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);</span>
+<span class="fc" id="L680">            restClient.close();</span>
 
-<span class="fc" id="L681">            final String state = Base64.encodeWithoutPadding(req.getRequestURI()</span>
+<span class="fc" id="L682">            final String state = Base64.encodeWithoutPadding(req.getRequestURI()</span>
                     .getBytes(&quot;UTF-8&quot;));
 
-<span class="fc" id="L684">            authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())</span>
+<span class="fc" id="L685">            authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())</span>
                     .queryParam(CLIENT_ID, clientId)
                     .queryParam(RESPONSE_TYPE, &quot;code&quot;)
                     .queryParam(SCOPE, scope)
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                            .queryParam(STATE, state)
-                            .build();
+                    .queryParam(STATE, state)
+                    .build();
+<span class="fc" id="L694">            final Cookie deleteAgeCookie = new Cookie(NET_TRAJANO_AUTH_AGE, &quot;&quot;);</span>
+<span class="fc" id="L695">            deleteAgeCookie.setMaxAge(0);</span>
+<span class="fc" id="L696">            deleteAgeCookie.setPath(cookieContext);</span>
+<span class="fc" id="L697">            resp.addCookie(deleteAgeCookie);</span>
 
-<span class="fc" id="L694">            resp.sendRedirect(authorizationEndpointUri.toASCIIString());</span>
-<span class="fc" id="L695">            return AuthStatus.SEND_CONTINUE;</span>
-<span class="nc" id="L696">        } catch (final IOException e) {</span>
+<span class="fc" id="L699">            final Cookie deleteIdCookie = new Cookie(NET_TRAJANO_AUTH_ID, &quot;&quot;);</span>
+<span class="fc" id="L700">            deleteIdCookie.setMaxAge(0);</span>
+<span class="fc" id="L701">            deleteIdCookie.setPath(cookieContext);</span>
+<span class="fc" id="L702">            resp.addCookie(deleteIdCookie);</span>
+
+<span class="fc" id="L704">            resp.sendRedirect(authorizationEndpointUri.toASCIIString());</span>
+<span class="fc" id="L705">            return AuthStatus.SEND_CONTINUE;</span>
+<span class="nc" id="L706">        } catch (final IOException e) {</span>
             // Should not happen
-<span class="nc" id="L698">            LOG.log(Level.SEVERE, &quot;sendRedirectException&quot;, new Object[] { authorizationEndpointUri, e.getMessage() });</span>
-<span class="nc" id="L699">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L708">            LOG.log(Level.SEVERE, &quot;sendRedirectException&quot;, new Object[] { authorizationEndpointUri, e.getMessage() });</span>
+<span class="nc" id="L709">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;redirectToAuthorizationEndpoint&quot;, e);
-<span class="nc" id="L701">            throw new AuthException(MessageFormat.format(R.getString(&quot;sendRedirectException&quot;), authorizationEndpointUri, e.getMessage()));</span>
+<span class="nc" id="L711">            throw new AuthException(MessageFormat.format(R.getString(&quot;sendRedirectException&quot;), authorizationEndpointUri, e.getMessage()));</span>
         }
     }
 
@@ -717,7 +727,7 @@ import net.trajano.auth.internal.Utils;
     public AuthStatus secureResponse(final MessageInfo messageInfo,
             final Subject subject) throws AuthException {
 
-<span class="nc" id="L720">        return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L730">        return AuthStatus.SEND_SUCCESS;</span>
     }
 
     /**
@@ -728,8 +738,8 @@ import net.trajano.auth.internal.Utils;
      */
     public void setRestClient(final Client restClient) {
 
-<span class="fc" id="L731">        this.restClient = restClient;</span>
-<span class="fc" id="L732">    }</span>
+<span class="fc" id="L741">        this.restClient = restClient;</span>
+<span class="fc" id="L742">    }</span>
 
     /**
      * Updates the principal for the subject. This is done through the
@@ -746,19 +756,19 @@ import net.trajano.auth.internal.Utils;
             final JsonObject jwtPayload) throws GeneralSecurityException {
 
         try {
-<span class="fc" id="L749">            final String iss = googleWorkaround(jwtPayload.getString(&quot;iss&quot;));</span>
-<span class="fc" id="L750">            handler.handle(new Callback[] { new CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)</span>
+<span class="fc" id="L759">            final String iss = googleWorkaround(jwtPayload.getString(&quot;iss&quot;));</span>
+<span class="fc" id="L760">            handler.handle(new Callback[] { new CallerPrincipalCallback(subject, UriBuilder.fromUri(iss)</span>
                     .userInfo(jwtPayload.getString(&quot;sub&quot;))
                     .build()
                     .toASCIIString()), new GroupPrincipalCallback(subject, new String[] { iss }) });
-<span class="nc" id="L754">        } catch (final IOException | UnsupportedCallbackException e) {</span>
+<span class="nc" id="L764">        } catch (final IOException | UnsupportedCallbackException e) {</span>
             // Should not happen
-<span class="nc" id="L756">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
-<span class="nc" id="L757">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L766">            LOG.log(Level.SEVERE, &quot;updatePrincipalException&quot;, e.getMessage());</span>
+<span class="nc" id="L767">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;updateSubjectPrincipal&quot;, e);
-<span class="nc" id="L759">            throw new AuthException(MessageFormat.format(R.getString(&quot;updatePrincipalException&quot;), e.getMessage()));</span>
-<span class="fc" id="L760">        }</span>
-<span class="fc" id="L761">    }</span>
+<span class="nc" id="L769">            throw new AuthException(MessageFormat.format(R.getString(&quot;updatePrincipalException&quot;), e.getMessage()));</span>
+<span class="fc" id="L770">        }</span>
+<span class="fc" id="L771">    }</span>
 
     /**
      * Validates the request. The request must be secure otherwise it will
@@ -780,79 +790,79 @@ import net.trajano.auth.internal.Utils;
             final Subject clientSubject,
             final Subject serviceSubject) throws AuthException {
 
-<span class="fc" id="L783">        final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();</span>
-<span class="fc" id="L784">        final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();</span>
+<span class="fc" id="L793">        final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();</span>
+<span class="fc" id="L794">        final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();</span>
 
         try {
-<span class="fc" id="L787">            final TokenCookie tokenCookie = processTokenCookie(clientSubject, req);</span>
+<span class="fc" id="L797">            final TokenCookie tokenCookie = processTokenCookie(clientSubject, req);</span>
 
-<span class="pc bpc" id="L789" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
+<span class="pc bpc" id="L799" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
                     .equals(tokenUri)) {
-<span class="nc" id="L791">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L792">                resp.getWriter()</span>
-                .print(tokenCookie.getIdToken());
-<span class="nc" id="L794">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L801">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L802">                resp.getWriter()</span>
+                        .print(tokenCookie.getIdToken());
+<span class="nc" id="L804">                return AuthStatus.SEND_SUCCESS;</span>
             }
 
-<span class="pc bpc" id="L797" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
+<span class="pc bpc" id="L807" title="7 of 8 branches missed.">            if (tokenCookie != null &amp;&amp; req.isSecure() &amp;&amp; isGetRequest(req) &amp;&amp; req.getRequestURI()</span>
                     .equals(userInfoUri)) {
-<span class="nc" id="L799">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L800">                resp.getWriter()</span>
-                .print(tokenCookie.getUserInfo());
-<span class="nc" id="L802">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L809">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L810">                resp.getWriter()</span>
+                        .print(tokenCookie.getUserInfo());
+<span class="nc" id="L812">                return AuthStatus.SEND_SUCCESS;</span>
             }
 
-<span class="fc bfc" id="L805" title="All 4 branches covered.">            if (!mandatory &amp;&amp; !req.isSecure()) {</span>
+<span class="fc bfc" id="L815" title="All 4 branches covered.">            if (!mandatory &amp;&amp; !req.isSecure()) {</span>
                 // successful if the module is not mandatory and the channel is
                 // not secure.
-<span class="fc" id="L808">                return AuthStatus.SUCCESS;</span>
+<span class="fc" id="L818">                return AuthStatus.SUCCESS;</span>
             }
 
-<span class="pc bpc" id="L811" title="1 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; mandatory) {</span>
+<span class="pc bpc" id="L821" title="1 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; mandatory) {</span>
                 // Fail authorization 3.1.2.1
-<span class="fc" id="L813">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
-<span class="fc" id="L814">                return AuthStatus.SEND_FAILURE;</span>
+<span class="fc" id="L823">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
+<span class="fc" id="L824">                return AuthStatus.SEND_FAILURE;</span>
             }
 
             //
 
-<span class="pc bpc" id="L819" title="3 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; isCallback(req)) {</span>
-<span class="nc" id="L820">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
-<span class="nc" id="L821">                return AuthStatus.SEND_FAILURE;</span>
+<span class="pc bpc" id="L829" title="3 of 4 branches missed.">            if (!req.isSecure() &amp;&amp; isCallback(req)) {</span>
+<span class="nc" id="L830">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString(&quot;SSLReq&quot;));</span>
+<span class="nc" id="L831">                return AuthStatus.SEND_FAILURE;</span>
             }
 
-<span class="pc bpc" id="L824" title="1 of 4 branches missed.">            if (req.isSecure() &amp;&amp; isCallback(req)) {</span>
-<span class="fc" id="L825">                return handleCallback(req, resp, clientSubject);</span>
+<span class="pc bpc" id="L834" title="1 of 4 branches missed.">            if (req.isSecure() &amp;&amp; isCallback(req)) {</span>
+<span class="fc" id="L835">                return handleCallback(req, resp, clientSubject);</span>
             }
 
-<span class="pc bpc" id="L828" title="3 of 6 branches missed.">            if (!mandatory || tokenCookie != null &amp;&amp; !tokenCookie.isExpired()) {</span>
-<span class="fc" id="L829">                return AuthStatus.SUCCESS;</span>
+<span class="pc bpc" id="L838" title="3 of 6 branches missed.">            if (!mandatory || tokenCookie != null &amp;&amp; !tokenCookie.isExpired()) {</span>
+<span class="fc" id="L839">                return AuthStatus.SUCCESS;</span>
             }
-<span class="pc bpc" id="L831" title="4 of 6 branches missed.">            if (req.isSecure() &amp;&amp; isHeadRequest(req) &amp;&amp; req.getRequestURI()</span>
+<span class="pc bpc" id="L841" title="4 of 6 branches missed.">            if (req.isSecure() &amp;&amp; isHeadRequest(req) &amp;&amp; req.getRequestURI()</span>
                     .equals(tokenUri)) {
-<span class="nc" id="L833">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L834">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L843">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L844">                return AuthStatus.SEND_SUCCESS;</span>
             }
 
-<span class="pc bpc" id="L837" title="3 of 4 branches missed.">            if (req.getRequestURI()</span>
+<span class="pc bpc" id="L847" title="3 of 4 branches missed.">            if (req.getRequestURI()</span>
                     .equals(userInfoUri) &amp;&amp; isHeadRequest(req)) {
-<span class="nc" id="L839">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="nc" id="L840">                return AuthStatus.SEND_SUCCESS;</span>
+<span class="nc" id="L849">                resp.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L850">                return AuthStatus.SEND_SUCCESS;</span>
 
             }
-<span class="fc bfc" id="L843" title="All 2 branches covered.">            if (!isRetrievalRequest(req)) {</span>
-<span class="fc" id="L844">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, &quot;Unable to POST when unauthorized.&quot;);</span>
-<span class="fc" id="L845">                return AuthStatus.SEND_FAILURE;</span>
+<span class="fc bfc" id="L853" title="All 2 branches covered.">            if (!isRetrievalRequest(req)) {</span>
+<span class="fc" id="L854">                resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, &quot;Unable to POST when unauthorized.&quot;);</span>
+<span class="fc" id="L855">                return AuthStatus.SEND_FAILURE;</span>
             }
 
-<span class="fc" id="L848">            return redirectToAuthorizationEndpoint(req, resp);</span>
-<span class="nc" id="L849">        } catch (final Exception e) {</span>
+<span class="fc" id="L858">            return redirectToAuthorizationEndpoint(req, resp);</span>
+<span class="nc" id="L859">        } catch (final Exception e) {</span>
             // Any problems with the data should be caught and force redirect to
             // authorization endpoint.
-<span class="nc" id="L852">            LOG.log(Level.FINE, &quot;validationException&quot;, e.getMessage());</span>
-<span class="nc" id="L853">            LOG.throwing(this.getClass()</span>
+<span class="nc" id="L862">            LOG.log(Level.FINE, &quot;validationException&quot;, e.getMessage());</span>
+<span class="nc" id="L863">            LOG.throwing(this.getClass()</span>
                     .getName(), &quot;validateRequest&quot;, e);
-<span class="nc" id="L855">            return redirectToAuthorizationEndpoint(req, resp);</span>
+<span class="nc" id="L865">            return redirectToAuthorizationEndpoint(req, resp);</span>
         }
     }
 }
