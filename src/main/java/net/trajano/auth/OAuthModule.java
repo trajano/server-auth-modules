@@ -287,7 +287,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-    IOException {
+            IOException {
 
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
@@ -661,7 +661,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * last place. However, this does not work for non-idempotent requests such
      * as POST in those cases it will result in a 401 error and
      * {@link AuthStatus#SEND_FAILURE}. For idempotent requests, it will build
-     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}.
+     * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}. It will
+     * also destroy the cookies used for authorization as part of the response.
      *
      * @param req
      *            HTTP servlet request
@@ -688,8 +689,17 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                            .queryParam(STATE, state)
-                            .build();
+                    .queryParam(STATE, state)
+                    .build();
+            final Cookie deleteAgeCookie = new Cookie(NET_TRAJANO_AUTH_AGE, "");
+            deleteAgeCookie.setMaxAge(0);
+            deleteAgeCookie.setPath(cookieContext);
+            resp.addCookie(deleteAgeCookie);
+
+            final Cookie deleteIdCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
+            deleteIdCookie.setMaxAge(0);
+            deleteIdCookie.setPath(cookieContext);
+            resp.addCookie(deleteIdCookie);
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
             return AuthStatus.SEND_CONTINUE;
@@ -790,7 +800,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getIdToken());
+                        .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -798,7 +808,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getUserInfo());
+                        .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
