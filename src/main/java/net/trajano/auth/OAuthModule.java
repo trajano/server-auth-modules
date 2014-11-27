@@ -112,6 +112,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      */
     private static final Logger LOGCONFIG;
 
+    public static final String LOGOUT_URI_KEY = "logout_uri";
+
     /**
      * Messages resource path.
      */
@@ -193,6 +195,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      */
     private CallbackHandler handler;
 
+    private String logoutUri;
+
     /**
      * Flag to indicate that authentication is mandatory.
      */
@@ -256,6 +260,19 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         // Does nothing.
     }
 
+    private void deleteAuthCookies(final HttpServletResponse resp) {
+
+        final Cookie deleteAgeCookie = new Cookie(NET_TRAJANO_AUTH_AGE, "");
+        deleteAgeCookie.setMaxAge(0);
+        deleteAgeCookie.setPath(cookieContext);
+        resp.addCookie(deleteAgeCookie);
+
+        final Cookie deleteIdCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
+        deleteIdCookie.setMaxAge(0);
+        deleteIdCookie.setPath(cookieContext);
+        resp.addCookie(deleteIdCookie);
+    }
+
     /**
      * Client ID.
      *
@@ -287,7 +304,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-            IOException {
+    IOException {
 
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
@@ -585,6 +602,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             redirectionEndpointUri = getRequiredOption(REDIRECTION_ENDPOINT_URI_KEY);
             tokenUri = moduleOptions.get(TOKEN_URI_KEY);
             userInfoUri = moduleOptions.get(USERINFO_URI_KEY);
+            logoutUri = moduleOptions.get(LOGOUT_URI_KEY);
             scope = moduleOptions.get(SCOPE_KEY);
             if (isNullOrEmpty(scope)) {
                 scope = "openid";
@@ -696,17 +714,9 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                    .queryParam(STATE, state)
-                    .build();
-            final Cookie deleteAgeCookie = new Cookie(NET_TRAJANO_AUTH_AGE, "");
-            deleteAgeCookie.setMaxAge(0);
-            deleteAgeCookie.setPath(cookieContext);
-            resp.addCookie(deleteAgeCookie);
-
-            final Cookie deleteIdCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
-            deleteIdCookie.setMaxAge(0);
-            deleteIdCookie.setPath(cookieContext);
-            resp.addCookie(deleteIdCookie);
+                            .queryParam(STATE, state)
+                            .build();
+            deleteAuthCookies(resp);
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
             return AuthStatus.SEND_CONTINUE;
@@ -807,7 +817,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getIdToken());
+                .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -815,7 +825,14 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getUserInfo());
+                .print(tokenCookie.getUserInfo());
+                return AuthStatus.SEND_SUCCESS;
+            }
+
+            if (tokenCookie != null && req.isSecure() && isGetRequest(req) && req.getRequestURI()
+                    .equals(logoutUri)) {
+                deleteAuthCookies(resp);
+                resp.sendRedirect(req.getContextPath() + "/");
                 return AuthStatus.SEND_SUCCESS;
             }
 
