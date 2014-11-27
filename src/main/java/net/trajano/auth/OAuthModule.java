@@ -112,6 +112,11 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      */
     private static final Logger LOGCONFIG;
 
+    /**
+     * URI to go to when the user has logged out relative to the context path.
+     */
+    public static final String LOGOUT_GOTO_URI_KEY = "logout_goto_uri";
+
     public static final String LOGOUT_URI_KEY = "logout_uri";
 
     /**
@@ -194,6 +199,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * Callback handler.
      */
     private CallbackHandler handler;
+
+    private String logoutGotoUri;
 
     private String logoutUri;
 
@@ -304,7 +311,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws IOException
      */
     private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-    IOException {
+            IOException {
 
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
@@ -571,7 +578,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
         final String stateEncoded = req.getParameter("state");
         final String redirectUri = new String(Base64.decode(stateEncoded));
-        resp.sendRedirect(resp.encodeRedirectURL(redirectUri));
+        resp.sendRedirect(resp.encodeRedirectURL(req.getContextPath() + redirectUri));
 
         return AuthStatus.SEND_SUCCESS;
     }
@@ -603,6 +610,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             tokenUri = moduleOptions.get(TOKEN_URI_KEY);
             userInfoUri = moduleOptions.get(USERINFO_URI_KEY);
             logoutUri = moduleOptions.get(LOGOUT_URI_KEY);
+            logoutGotoUri = moduleOptions.get(LOGOUT_GOTO_URI_KEY);
             scope = moduleOptions.get(SCOPE_KEY);
             if (isNullOrEmpty(scope)) {
                 scope = "openid";
@@ -656,7 +664,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             final String idToken = getIdToken(req);
             TokenCookie tokenCookie = null;
             if (idToken != null) {
-                tokenCookie = new TokenCookie(idToken, clientId, clientSecret);
+                tokenCookie = new TokenCookie(idToken, secret);
                 validateIdToken(clientId, tokenCookie.getIdToken());
                 updateSubjectPrincipal(subject, tokenCookie.getIdToken());
 
@@ -702,9 +710,15 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         URI authorizationEndpointUri = null;
         try {
             final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(req, restClient, moduleOptions);
-            restClient.close();
 
-            final String state = Base64.encodeWithoutPadding(req.getRequestURI()
+            final StringBuilder stateBuilder = new StringBuilder(req.getRequestURI()
+                    .substring(req.getContextPath()
+                            .length()));
+            if (req.getQueryString() != null) {
+                stateBuilder.append('?');
+                stateBuilder.append(req.getQueryString());
+            }
+            final String state = Base64.encodeWithoutPadding(stateBuilder.toString()
                     .getBytes("UTF-8"));
 
             authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())
@@ -714,8 +728,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                            .queryParam(STATE, state)
-                            .build();
+                    .queryParam(STATE, state)
+                    .build();
             deleteAuthCookies(resp);
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
@@ -817,7 +831,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getIdToken());
+                        .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -825,14 +839,18 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getUserInfo());
+                        .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
             if (tokenCookie != null && req.isSecure() && isGetRequest(req) && req.getRequestURI()
                     .equals(logoutUri)) {
                 deleteAuthCookies(resp);
-                resp.sendRedirect(req.getContextPath() + "/");
+                if (logoutGotoUri == null) {
+                    resp.sendRedirect(req.getServletContext() + "/");
+                } else {
+                    resp.sendRedirect(logoutGotoUri);
+                }
                 return AuthStatus.SEND_SUCCESS;
             }
 

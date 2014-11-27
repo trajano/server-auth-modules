@@ -51,6 +51,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 
 public class AuthSequenceTest {
+
     /**
      * Google's OpenID Connect configuration.
      */
@@ -76,6 +77,7 @@ public class AuthSequenceTest {
      */
     @Test
     public void testFailUnauthenticatedPost() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);
@@ -107,6 +109,7 @@ public class AuthSequenceTest {
      */
     @Test
     public void testHandleCallBack() throws Exception {
+
         final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(1024);
         final KeyPair kp = kpg.genKeyPair();
@@ -197,6 +200,7 @@ public class AuthSequenceTest {
      */
     @Test
     public void testIsCallback1() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);
@@ -218,6 +222,7 @@ public class AuthSequenceTest {
      */
     @Test
     public void testIsCallback2() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);
@@ -241,6 +246,7 @@ public class AuthSequenceTest {
      */
     @Test
     public void testNoAuthNeededWithoutSSL() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final CallbackHandler h = mock(CallbackHandler.class);
 
@@ -268,6 +274,7 @@ public class AuthSequenceTest {
      */
     @Test
     public void testNoAuthNeededWithSSL() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final Client mockRestClient = mock(Client.class);
         module.setRestClient(mockRestClient);
@@ -292,6 +299,7 @@ public class AuthSequenceTest {
 
     @Test
     public void testRedirectToEndpoint() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
 
         final Client mockRestClient = mock(Client.class);
@@ -317,6 +325,7 @@ public class AuthSequenceTest {
         final HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         when(servletRequest.getMethod()).thenReturn("GET");
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("https://i.trajano.net:8443/util/ejb2"));
+        when(servletRequest.getContextPath()).thenReturn("/util");
         when(servletRequest.getRequestURI()).thenReturn("/util/ejb2");
         when(servletRequest.isSecure()).thenReturn(true);
 
@@ -327,11 +336,12 @@ public class AuthSequenceTest {
 
         final Subject client = new Subject();
         assertEquals(AuthStatus.SEND_CONTINUE, module.validateRequest(messageInfo, client, null));
-        verify(servletResponse).sendRedirect("https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L3V0aWwvZWpiMg");
+        verify(servletResponse).sendRedirect("https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L2VqYjI");
     }
 
     @Test
     public void testSSLRequired() throws Exception {
+
         final OpenIDConnectAuthModule module = new OpenIDConnectAuthModule();
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);
@@ -355,6 +365,7 @@ public class AuthSequenceTest {
 
     @Test
     public void testUseGoogle() throws Exception {
+
         final GoogleAuthModule module = new GoogleAuthModule();
         final MessagePolicy mockRequestPolicy = mock(MessagePolicy.class);
         when(mockRequestPolicy.isMandatory()).thenReturn(true);

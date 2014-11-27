@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+import net.trajano.auth.internal.CipherUtil;
 import net.trajano.auth.internal.TokenCookie;
 
 import org.junit.Assert;
@@ -54,7 +55,7 @@ public class TokenCookieTest {
         final String cookieValue = new TokenCookie("access", "refresh", idTokenJson, userInfoJson).toCookieValue("clientId", "clientSecret");
         Assert.assertNotNull(cookieValue);
 
-        final TokenCookie tokenCookie = new TokenCookie(cookieValue, "clientId", "clientSecret");
+        final TokenCookie tokenCookie = new TokenCookie(cookieValue, CipherUtil.buildSecretKey("clientId", "clientSecret"));
         assertEquals(userInfoJson, tokenCookie.getUserInfo());
         assertEquals("access", tokenCookie.getAccessToken());
         assertEquals("refresh", tokenCookie.getRefreshToken());

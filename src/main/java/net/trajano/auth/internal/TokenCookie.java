@@ -58,36 +58,17 @@ public class TokenCookie {
     }
 
     /**
-     * Constructs with the ID token and user info.
-     *
-     * @param idToken
-     *            ID token
-     * @param userInfo
-     *            user info
-     */
-    public TokenCookie(final String accessToken, final String refreshToken, final JsonObject idToken, final JsonObject userInfo) {
-
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken != null ? refreshToken : "";
-        this.idToken = idToken;
-        this.userInfo = userInfo;
-    }
-
-    /**
      * Constructs with the cookie value.
      *
      * @param cookieValue
      *            cookie value
-     * @param clientId
-     *            client ID (used for creating the {@link SecretKey})
-     * @param clientSecret
-     *            client secret (used for creating the {@link SecretKey})
+     * @param secret
+     *            secret key
      * @throws GeneralSecurityException
      */
-    public TokenCookie(final String cookieValue, final String clientId, final String clientSecret) throws GeneralSecurityException {
+    public TokenCookie(final String cookieValue, final SecretKey secret) throws GeneralSecurityException {
 
         final String[] cookieValues = cookieValue.split("\\.");
-        final SecretKey secret = CipherUtil.buildSecretKey(clientId, clientSecret);
 
         try {
             final JsonObject tokens = Json.createReader(CipherUtil.buildDecryptStream(new ByteArrayInputStream(Base64.decode(cookieValues[0])), secret))
@@ -105,6 +86,22 @@ public class TokenCookie {
         } catch (final IOException e) {
             throw new GeneralSecurityException(e);
         }
+    }
+
+    /**
+     * Constructs with the ID token and user info.
+     *
+     * @param idToken
+     *            ID token
+     * @param userInfo
+     *            user info
+     */
+    public TokenCookie(final String accessToken, final String refreshToken, final JsonObject idToken, final JsonObject userInfo) {
+
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken != null ? refreshToken : "";
+        this.idToken = idToken;
+        this.userInfo = userInfo;
     }
 
     /**
