@@ -316,6 +316,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
     /**
      * Lets subclasses change the provider configuration.
      *
+     * @param req
+     *            request message
      * @param client
      *            REST client
      * @param options
@@ -324,7 +326,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws AuthException
      *             wraps exceptions thrown during processing
      */
-    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(Client client,
+    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(HttpServletRequest req,
+            Client client,
             Map<String, String> options) throws AuthException;
 
     /**
@@ -488,7 +491,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             final Subject subject) throws GeneralSecurityException,
             IOException {
 
-        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
+        final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(req, restClient, moduleOptions);
         final OAuthToken token = getToken(req, oidProviderConfig);
         final JsonWebKeySet webKeys = getWebKeys(moduleOptions, oidProviderConfig);
 
@@ -676,7 +679,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
         URI authorizationEndpointUri = null;
         try {
-            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(restClient, moduleOptions);
+            final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(req, restClient, moduleOptions);
             restClient.close();
 
             final String state = Base64.encodeWithoutPadding(req.getRequestURI()
@@ -823,8 +826,6 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString("SSLReq"));
                 return AuthStatus.SEND_FAILURE;
             }
-
-            //
 
             if (!req.isSecure() && isCallback(req)) {
                 resp.sendError(HttpURLConnection.HTTP_FORBIDDEN, R.getString("SSLReq"));

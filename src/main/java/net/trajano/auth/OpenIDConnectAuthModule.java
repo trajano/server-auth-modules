@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.message.AuthException;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
 
@@ -20,6 +21,7 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
  * @author Archimedes Trajano
  */
 public class OpenIDConnectAuthModule extends OAuthModule {
+
     /**
      * Issuer URI option key.
      */
@@ -49,7 +51,10 @@ public class OpenIDConnectAuthModule extends OAuthModule {
      * {@inheritDoc}
      */
     @Override
-    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final Client restClient, final Map<String, String> options) throws AuthException {
+    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final HttpServletRequest req,
+            final Client restClient,
+            final Map<String, String> options) throws AuthException {
+
         final String issuerUri = options.get(ISSUER_URI_KEY);
         if (issuerUri == null) {
             LOG.log(Level.SEVERE, "missingOption", ISSUER_URI_KEY);
@@ -57,8 +62,8 @@ public class OpenIDConnectAuthModule extends OAuthModule {
         }
         return restClient.target(URI.create(issuerUri)
                 .resolve("/.well-known/openid-configuration"))
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .get(OpenIDProviderConfiguration.class);
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(OpenIDProviderConfiguration.class);
     }
 
 }

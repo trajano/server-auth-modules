@@ -32,6 +32,8 @@ public class GoogleAuthModule extends OAuthModule {
     /**
      * Build the OpenID config from META-INF/google/config.json.
      *
+     * @param req
+     *            ignored
      * @param restClient
      *            REST client
      * @param options
@@ -39,7 +41,10 @@ public class GoogleAuthModule extends OAuthModule {
      * @return OpenID provider configuration
      */
     @Override
-    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final Client restClient, final Map<String, String> options) throws AuthException {
+    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final HttpServletRequest req,
+            final Client restClient,
+            final Map<String, String> options) throws AuthException {
+
         return new OpenIDProviderConfiguration(Json.createReader(Thread.currentThread()
                 .getContextClassLoader()
                 .getResourceAsStream("META-INF/google-config.json"))
@@ -51,7 +56,9 @@ public class GoogleAuthModule extends OAuthModule {
      * and does not try to do it via the authorization headers. {@inheritDoc}
      */
     @Override
-    protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
+    protected OAuthToken getToken(final HttpServletRequest req,
+            final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
+
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle(CODE, req.getParameter("code"));
         requestData.putSingle(GRANT_TYPE, "authorization_code");
