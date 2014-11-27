@@ -671,12 +671,16 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      *            HTTP servlet request
      * @param resp
      *            HTTP servlet response
+     * @param reason
+     *            reason for redirect (used for logging)
      * @return authentication status
      * @throws AuthException
      */
     private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req,
-            final HttpServletResponse resp) throws AuthException {
+            final HttpServletResponse resp,
+            final String reason) throws AuthException {
 
+        LOG.log(Level.FINE, "redirecting", new Object[] { reason });
         URI authorizationEndpointUri = null;
         try {
             final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(req, restClient, moduleOptions);
@@ -856,14 +860,14 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 return AuthStatus.SEND_FAILURE;
             }
 
-            return redirectToAuthorizationEndpoint(req, resp);
+            return redirectToAuthorizationEndpoint(req, resp, "request is not valid");
         } catch (final Exception e) {
             // Any problems with the data should be caught and force redirect to
             // authorization endpoint.
             LOG.log(Level.FINE, "validationException", e.getMessage());
             LOG.throwing(this.getClass()
                     .getName(), "validateRequest", e);
-            return redirectToAuthorizationEndpoint(req, resp);
+            return redirectToAuthorizationEndpoint(req, resp, e.getMessage());
         }
     }
 }
