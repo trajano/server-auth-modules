@@ -98,10 +98,10 @@ function toggleDisplay(elementId) {
 <tr class="b">
 <td>5</td>
 <td>0</td>
-<td>1</td>
 <td>0</td>
-<td>80%</td>
-<td>11.797</td></tr></table><br />
+<td>0</td>
+<td>100%</td>
+<td>9.779</td></tr></table><br />
 <p>Note: failures are anticipated and checked for with assertions while errors are unanticipated.</p><br /></div>
 <div class="section">
 <h2><a name="Package_List"></a>Package List</h2><a name="Package_List"></a>
@@ -119,10 +119,10 @@ function toggleDisplay(elementId) {
 <td><a href="#net.trajano.auth.test">net.trajano.auth.test</a></td>
 <td>5</td>
 <td>0</td>
-<td>1</td>
 <td>0</td>
-<td>80%</td>
-<td>11.797</td></tr></table><br />
+<td>0</td>
+<td>100%</td>
+<td>9.779</td></tr></table><br />
 <p>Note: package statistics are not computed recursively, they only sum up all of its testsuites numbers.</p>
 <div class="section">
 <h3><a name="net.trajano.auth.test"></a>net.trajano.auth.test</h3><a name="net.trajano.auth.test"></a>
@@ -137,14 +137,14 @@ function toggleDisplay(elementId) {
 <th>Success Rate</th>
 <th>Time</th></tr>
 <tr class="b">
-<td><a href="#net.trajano.auth.testAuthSequenceIT"><img src="images/icon_warning_sml.gif" alt="" /></a></td>
+<td><a href="#net.trajano.auth.testAuthSequenceIT"><img src="images/icon_success_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.testAuthSequenceIT">AuthSequenceIT</a></td>
 <td>2</td>
 <td>0</td>
-<td>1</td>
 <td>0</td>
-<td>50%</td>
-<td>8.855</td></tr>
+<td>0</td>
+<td>100%</td>
+<td>8.431</td></tr>
 <tr class="a">
 <td><a href="#net.trajano.auth.testConfigurationIT"><img src="images/icon_success_sml.gif" alt="" /></a></td>
 <td><a href="#net.trajano.auth.testConfigurationIT">ConfigurationIT</a></td>
@@ -153,7 +153,7 @@ function toggleDisplay(elementId) {
 <td>0</td>
 <td>0</td>
 <td>100%</td>
-<td>2.942</td></tr></table></div><br /></div>
+<td>1.348</td></tr></table></div><br /></div>
 <div class="section">
 <h2><a name="Test_Cases"></a>Test Cases</h2><a name="Test_Cases"></a>
 <p>[<a href="#Summary">Summary</a>] [<a href="#Package_List">Package List</a>] [<a href="#Test_Cases">Test Cases</a>]</p>
@@ -163,74 +163,26 @@ function toggleDisplay(elementId) {
 <tr class="a">
 <td><img src="images/icon_success_sml.gif" alt="" /></td>
 <td>testRedirectToEndpoint</td>
-<td>8.096</td></tr>
+<td>8.094</td></tr>
 <tr class="b">
-<td><a href="#net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpointWithQueryString"><img src="images/icon_error_sml.gif" alt="" /></a></td>
-<td><a href="#net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpointWithQueryString">testRedirectToEndpointWithQueryString</a>
-<div class="detailToggle" style="display:inline"><a href="javascript:toggleDisplay(&apos;net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointWithQueryString&apos;);"><span style="display:inline;" id="net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointWithQueryStringoff"> + </span><span style="display:none;" id="net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointWithQueryStringon"> - </span>[ Detail ]</a></div></td>
-<td>0.759</td></tr>
-<tr class="a">
-<td></td>
-<td>
-Argument(s) are different! Wanted:
-httpServletResponse.sendRedirect(
-    &quot;https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI_cT1mb28&quot;
-);
--&gt; at net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpointWithQueryString(AuthSequenceIT.java:92)
-Actual invocation has different arguments:
-httpServletResponse.sendRedirect(
-    &quot;https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI&quot;
-);
--&gt; at net.trajano.auth.OAuthModule.redirectToAuthorizationEndpoint(OAuthModule.java:735)
-</td>
-<td></td></tr>
-<tr class="b">
-<td></td>
-<td>
-<div id="net_trajano_auth_test_AuthSequenceIT_testRedirectToEndpointWithQueryStringerror" style="display:none;">
-<div>
-<pre>org.mockito.exceptions.verification.junit.ArgumentsAreDifferent:Argument(s) are different! Wanted:httpServletResponse.sendRedirect(&quot;https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI_cT1mb28&quot;);-&gt; at net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpointWithQueryString(AuthSequenceIT.java:92)</pre></div></div></td>
-<td></td></tr></table></div>
+<td><img src="images/icon_success_sml.gif" alt="" /></td>
+<td>testRedirectToEndpointWithQueryString</td>
+<td>0.337</td></tr></table></div>
 <div class="section">
 <h3><a name="ConfigurationIT"></a>ConfigurationIT</h3><a name="net.trajano.auth.testConfigurationIT"></a>
 <table border="1" class="bodyTable">
 <tr class="a">
 <td><img src="images/icon_success_sml.gif" alt="" /></td>
 <td>testSalesforceOpenIdConfiguration</td>
-<td>0.436</td></tr>
+<td>0.412</td></tr>
 <tr class="b">
 <td><img src="images/icon_success_sml.gif" alt="" /></td>
 <td>testGoogleOpenIdConfiguration</td>
-<td>0.302</td></tr>
+<td>0.294</td></tr>
 <tr class="a">
 <td><img src="images/icon_success_sml.gif" alt="" /></td>
 <td>testJwkRetrieval</td>
-<td>2.204</td></tr></table></div><br /></div>
-<div class="section">
-<h2><a name="Failure_Details"></a>Failure Details</h2><a name="Failure_Details"></a>
-<p>[<a href="#Summary">Summary</a>] [<a href="#Package_List">Package List</a>] [<a href="#Test_Cases">Test Cases</a>]</p><br />
-<table border="1" class="bodyTable">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="" /></td>
-<td><a name="net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpointWithQueryString"></a>testRedirectToEndpointWithQueryString</td></tr>
-<tr class="b">
-<td></td>
-<td>org.mockito.exceptions.verification.junit.ArgumentsAreDifferent: 
-Argument(s) are different! Wanted:
-httpServletResponse.sendRedirect(
-    &quot;https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI_cT1mb28&quot;
-);
--&gt; at net.trajano.auth.test.AuthSequenceIT.testRedirectToEndpointWithQueryString(AuthSequenceIT.java:92)
-Actual invocation has different arguments:
-httpServletResponse.sendRedirect(
-    &quot;https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI&quot;
-);
--&gt; at net.trajano.auth.OAuthModule.redirectToAuthorizationEndpoint(OAuthModule.java:735)
-</td></tr>                    
-<tr class="a">
-<td></td>
-<td>
-<div id="testRedirectToEndpointWithQueryStringerror"><a href="./xref-test/net/trajano/auth/test/AuthSequenceIT.html#92">net.trajano.auth.test.AuthSequenceIT:92</a></div></td></tr></table><br /></div>
+<td>0.642</td></tr></table></div><br /></div>
 	      </div>
 	    </article>
 	  </div>

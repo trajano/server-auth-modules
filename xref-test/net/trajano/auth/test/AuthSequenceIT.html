@@ -85,21 +85,22 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          <strong class="jxr_keyword">final</strong> HttpServletRequest servletRequest = mock(HttpServletRequest.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          when(servletRequest.getMethod()).thenReturn(<span class="jxr_string">"GET"</span>);
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          when(servletRequest.getRequestURL()).thenReturn(<strong class="jxr_keyword">new</strong> StringBuffer(<span class="jxr_string">"https://i.trajano.net:8443/util/ejb2?q=foo"</span>));
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          when(servletRequest.getRequestURL()).thenReturn(<strong class="jxr_keyword">new</strong> StringBuffer(<span class="jxr_string">"https://i.trajano.net:8443/util/ejb2"</span>));
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          when(servletRequest.getRequestURI()).thenReturn(<span class="jxr_string">"/util/ejb2"</span>);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          when(servletRequest.getContextPath()).thenReturn(<span class="jxr_string">"/util"</span>);
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          when(servletRequest.isSecure()).thenReturn(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">final</strong> HttpServletResponse servletResponse = mock(HttpServletResponse.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          <strong class="jxr_keyword">final</strong> Subject client = <strong class="jxr_keyword">new</strong> Subject();
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          assertEquals(AuthStatus.SEND_CONTINUE, module.validateRequest(messageInfo, client, <strong class="jxr_keyword">null</strong>));
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>          verify(servletResponse).sendRedirect(<span class="jxr_string">"https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI_cT1mb28"</span>);
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          when(servletRequest.getQueryString()).thenReturn(<span class="jxr_string">"q=foo"</span>);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          when(servletRequest.isSecure()).thenReturn(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          when(messageInfo.getRequestMessage()).thenReturn(servletRequest);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          <strong class="jxr_keyword">final</strong> HttpServletResponse servletResponse = mock(HttpServletResponse.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          when(messageInfo.getResponseMessage()).thenReturn(servletResponse);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">final</strong> Subject client = <strong class="jxr_keyword">new</strong> Subject();
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          assertEquals(AuthStatus.SEND_CONTINUE, module.validateRequest(messageInfo, client, <strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          verify(servletResponse).sendRedirect(<span class="jxr_string">"https://accounts.google.com/o/oauth2/auth?client_id=clientID&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https://i.trajano.net:8443/app/oauth2&amp;state=L2VqYjI_cT1mb28"</span>);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014 <a href="http://www.trajano.net/">Trajano</a>. All rights reserved.</div>
