@@ -9,62 +9,68 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
+	// net.trajano.auth.test.UriTest
+	c0 [label=<<table title="net.trajano.auth.test.UriTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./UriTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> UriTest </td></tr>
+		</table></td></tr>
+		</table>>, URL="./UriTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.ProviderTest
-	c0 [label=<<table title="net.trajano.auth.test.ProviderTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProviderTest.html">
+	c1 [label=<<table title="net.trajano.auth.test.ProviderTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProviderTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> ProviderTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./ProviderTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.ConfigurationIT
-	c1 [label=<<table title="net.trajano.auth.test.ConfigurationIT" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ConfigurationIT.html">
+	c2 [label=<<table title="net.trajano.auth.test.ConfigurationIT" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ConfigurationIT.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> ConfigurationIT </td></tr>
 		</table></td></tr>
 		</table>>, URL="./ConfigurationIT.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.OAuthModuleTest
-	c2 [label=<<table title="net.trajano.auth.test.OAuthModuleTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthModuleTest.html">
+	c3 [label=<<table title="net.trajano.auth.test.OAuthModuleTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OAuthModuleTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> OAuthModuleTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./OAuthModuleTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.AuthSequenceIT
-	c3 [label=<<table title="net.trajano.auth.test.AuthSequenceIT" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AuthSequenceIT.html">
+	c4 [label=<<table title="net.trajano.auth.test.AuthSequenceIT" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AuthSequenceIT.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> AuthSequenceIT </td></tr>
 		</table></td></tr>
 		</table>>, URL="./AuthSequenceIT.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.JwtTest
-	c4 [label=<<table title="net.trajano.auth.test.JwtTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./JwtTest.html">
+	c5 [label=<<table title="net.trajano.auth.test.JwtTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./JwtTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> JwtTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./JwtTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.HttpHeaderAuthModuleTest
-	c5 [label=<<table title="net.trajano.auth.test.HttpHeaderAuthModuleTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./HttpHeaderAuthModuleTest.html">
+	c6 [label=<<table title="net.trajano.auth.test.HttpHeaderAuthModuleTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./HttpHeaderAuthModuleTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> HttpHeaderAuthModuleTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./HttpHeaderAuthModuleTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.HerokuTest
-	c6 [label=<<table title="net.trajano.auth.test.HerokuTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./HerokuTest.html">
+	c7 [label=<<table title="net.trajano.auth.test.HerokuTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./HerokuTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> HerokuTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./HerokuTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.TestUtilityClasses
-	c7 [label=<<table title="net.trajano.auth.test.TestUtilityClasses" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TestUtilityClasses.html">
+	c8 [label=<<table title="net.trajano.auth.test.TestUtilityClasses" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TestUtilityClasses.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> TestUtilityClasses </td></tr>
 		</table></td></tr>
 		</table>>, URL="./TestUtilityClasses.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.AuthSequenceTest
-	c8 [label=<<table title="net.trajano.auth.test.AuthSequenceTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AuthSequenceTest.html">
+	c9 [label=<<table title="net.trajano.auth.test.AuthSequenceTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AuthSequenceTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> AuthSequenceTest </td></tr>
 		</table></td></tr>
 		</table>>, URL="./AuthSequenceTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// net.trajano.auth.test.TokenCookieTest
-	c9 [label=<<table title="net.trajano.auth.test.TokenCookieTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookieTest.html">
+	c10 [label=<<table title="net.trajano.auth.test.TokenCookieTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TokenCookieTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> TokenCookieTest </td></tr>
 		</table></td></tr>

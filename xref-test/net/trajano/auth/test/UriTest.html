@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>UriTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../testapidocs/net/trajano/auth/test/UriTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> net.trajano.auth.test;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> java.net.URI;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> org.junit.Test;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/trajano/auth/test/UriTest.html">UriTest</a> {
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>       @Test
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUri() {
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>          <strong class="jxr_keyword">final</strong> URI uri = URI.create(<span class="jxr_string">"https://angel.stone.co:8181/angelstone/1.0/search/10000000-0000-0000-0000-000000000000?q=angelstone"</span>);
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>          System.out.println(uri.getSchemeSpecificPart());
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>          System.out.println(uri.getPath());
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>          System.out.println(uri.getPath() + <span class="jxr_string">"?"</span> + uri.getQuery());
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>          System.out.println(uri.getPath()
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>                  .substring(<span class="jxr_string">"/angelstone"</span>.length()) + <span class="jxr_string">"?"</span> + uri.getQuery());
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>      }
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2014 <a href="http://www.trajano.net/">Trajano</a>. All rights reserved.</div>
+</body>
+</html>

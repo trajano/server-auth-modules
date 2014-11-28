@@ -32,6 +32,8 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
     /**
      * Build the OpenID config from META-INF/google/config.json.
      *
+     * @param req
+     *            ignored
      * @param restClient
      *            REST client
      * @param options
@@ -39,8 +41,11 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
      * @return OpenID provider configuration
      */
     @Override
-    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final Client restClient, final Map&lt;String, String&gt; options) throws AuthException {
-<span class="nc" id="L43">        return new OpenIDProviderConfiguration(Json.createReader(Thread.currentThread()</span>
+    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final HttpServletRequest req,
+            final Client restClient,
+            final Map&lt;String, String&gt; options) throws AuthException {
+
+<span class="nc" id="L48">        return new OpenIDProviderConfiguration(Json.createReader(Thread.currentThread()</span>
                 .getContextClassLoader()
                 .getResourceAsStream(&quot;META-INF/google-config.json&quot;))
                 .readObject());
@@ -51,17 +56,19 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
      * and does not try to do it via the authorization headers. {@inheritDoc}
      */
     @Override
-    protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
-<span class="nc" id="L55">        final MultivaluedMap&lt;String, String&gt; requestData = new MultivaluedHashMap&lt;&gt;();</span>
-<span class="nc" id="L56">        requestData.putSingle(CODE, req.getParameter(&quot;code&quot;));</span>
-<span class="nc" id="L57">        requestData.putSingle(GRANT_TYPE, &quot;authorization_code&quot;);</span>
-<span class="nc" id="L58">        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req).toASCIIString());</span>
-<span class="nc" id="L59">        requestData.putSingle(CLIENT_ID, getClientId());</span>
-<span class="nc" id="L60">        requestData.putSingle(CLIENT_SECRET_KEY, getClientSecret());</span>
-<span class="nc" id="L61">        final OAuthToken authorizationTokenResponse = getRestClient().target(oidProviderConfig.getTokenEndpoint())</span>
+    protected OAuthToken getToken(final HttpServletRequest req,
+            final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
+
+<span class="nc" id="L62">        final MultivaluedMap&lt;String, String&gt; requestData = new MultivaluedHashMap&lt;&gt;();</span>
+<span class="nc" id="L63">        requestData.putSingle(CODE, req.getParameter(&quot;code&quot;));</span>
+<span class="nc" id="L64">        requestData.putSingle(GRANT_TYPE, &quot;authorization_code&quot;);</span>
+<span class="nc" id="L65">        requestData.putSingle(REDIRECT_URI, getRedirectionEndpointUri(req).toASCIIString());</span>
+<span class="nc" id="L66">        requestData.putSingle(CLIENT_ID, getClientId());</span>
+<span class="nc" id="L67">        requestData.putSingle(CLIENT_SECRET_KEY, getClientSecret());</span>
+<span class="nc" id="L68">        final OAuthToken authorizationTokenResponse = getRestClient().target(oidProviderConfig.getTokenEndpoint())</span>
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.form(requestData), OAuthToken.class);
-<span class="nc" id="L64">        return authorizationTokenResponse;</span>
+<span class="nc" id="L71">        return authorizationTokenResponse;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

@@ -9,11 +9,11 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// net.trajano.auth.test.ProviderTest
-	c100 [label=<<table title="net.trajano.auth.test.ProviderTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ProviderTest.html">
+	// net.trajano.auth.test.UriTest
+	c132 [label=<<table title="net.trajano.auth.test.UriTest" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./UriTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ProviderTest </td></tr>
+<tr><td align="center" balign="center"> UriTest </td></tr>
 		</table></td></tr>
-		</table>>, URL="./ProviderTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="./UriTest.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 }
 

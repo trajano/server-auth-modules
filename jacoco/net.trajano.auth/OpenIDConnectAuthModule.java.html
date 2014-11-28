@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.message.AuthException;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
 
@@ -19,7 +20,8 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
  *
  * @author Archimedes Trajano
  */
-<span class="fc" id="L22">public class OpenIDConnectAuthModule extends OAuthModule {</span>
+<span class="fc" id="L23">public class OpenIDConnectAuthModule extends OAuthModule {</span>
+
     /**
      * Issuer URI option key.
      */
@@ -41,24 +43,27 @@ import net.trajano.auth.internal.OpenIDProviderConfiguration;
     private static final ResourceBundle R;
 
     static {
-<span class="fc" id="L44">        LOG = Logger.getLogger(&quot;net.trajano.auth.openidsam&quot;, MESSAGES);</span>
-<span class="fc" id="L45">        R = ResourceBundle.getBundle(MESSAGES);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L46">        LOG = Logger.getLogger(&quot;net.trajano.auth.openidsam&quot;, MESSAGES);</span>
+<span class="fc" id="L47">        R = ResourceBundle.getBundle(MESSAGES);</span>
+<span class="fc" id="L48">    }</span>
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final Client restClient, final Map&lt;String, String&gt; options) throws AuthException {
-<span class="fc" id="L53">        final String issuerUri = options.get(ISSUER_URI_KEY);</span>
-<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (issuerUri == null) {</span>
-<span class="nc" id="L55">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, ISSUER_URI_KEY);</span>
-<span class="nc" id="L56">            throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), ISSUER_URI_KEY));</span>
+    protected OpenIDProviderConfiguration getOpenIDProviderConfig(final HttpServletRequest req,
+            final Client restClient,
+            final Map&lt;String, String&gt; options) throws AuthException {
+
+<span class="fc" id="L58">        final String issuerUri = options.get(ISSUER_URI_KEY);</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (issuerUri == null) {</span>
+<span class="nc" id="L60">            LOG.log(Level.SEVERE, &quot;missingOption&quot;, ISSUER_URI_KEY);</span>
+<span class="nc" id="L61">            throw new AuthException(MessageFormat.format(R.getString(&quot;missingOption&quot;), ISSUER_URI_KEY));</span>
         }
-<span class="fc" id="L58">        return restClient.target(URI.create(issuerUri)</span>
+<span class="fc" id="L63">        return restClient.target(URI.create(issuerUri)</span>
                 .resolve(&quot;/.well-known/openid-configuration&quot;))
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .get(OpenIDProviderConfiguration.class);
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(OpenIDProviderConfiguration.class);
     }
 
 }
