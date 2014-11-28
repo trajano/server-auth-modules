@@ -8,7 +8,7 @@
     </parent>
     <groupId>net.trajano.auth</groupId>
     <artifactId>server-auth-modules</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
     <name>Server Auth Modules</name>
     <description>A set of server authentication modules.</description>
@@ -16,7 +16,7 @@
     <scm>
         <connection>scm:git:https://github.com/trajano/${project.artifactId}</connection>
         <developerConnection>scm:git:ssh://git@github.com/trajano/${project.artifactId}.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>server-auth-modules-1.2.0</tag>
         <url>http://github.com/trajano/${project.artifactId}</url>
     </scm>
     <distributionManagement>
