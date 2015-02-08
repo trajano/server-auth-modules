@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 import javax.crypto.SecretKey;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -55,8 +57,9 @@ import javax.ws.rs.core.UriBuilder;
 
 import net.trajano.auth.internal.Base64;
 import net.trajano.auth.internal.CipherUtil;
-import net.trajano.auth.internal.DisableSslCertificateCheckUtil;
 import net.trajano.auth.internal.JsonWebKeySet;
+import net.trajano.auth.internal.NullHostnameVerifier;
+import net.trajano.auth.internal.NullX509TrustManager;
 import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
 import net.trajano.auth.internal.TokenCookie;
@@ -95,8 +98,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
     /**
      * DUsable HTTP certificate checks key. This this is set to true, the auth
-     * module will <b>globally</b> disable HTTPS certificate checks. This should
-     * only be used in development.
+     * module will disable HTTPS certificate checks for the REST client
+     * connections. This should only be used in development.
      */
     public static final String DISABLE_CERTIFICATE_CHECKS_KEY = "disable_certificate_checks";
 
@@ -232,7 +235,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * REST Client. This is not final so a different one can be put in for
      * testing.
      */
-    private Client restClient = ClientBuilder.newClient();
+    private Client restClient;
 
     /**
      * Scope.
@@ -612,14 +615,26 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 scope = "openid";
             }
             clientSecret = getRequiredOption(CLIENT_SECRET_KEY);
-            if (moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY) != null && Boolean.valueOf(moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY))) {
-                DisableSslCertificateCheckUtil.disableChecks();
-            }
             LOGCONFIG.log(Level.CONFIG, "options", moduleOptions);
 
             handler = h;
             mandatory = requestPolicy.isMandatory();
             secret = CipherUtil.buildSecretKey(clientId, clientSecret);
+
+            if (restClient == null) {
+                if (moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY) != null && Boolean.valueOf(moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY))) {
+                    final SSLContext context = SSLContext.getInstance("SSLv3");
+                    final TrustManager[] trustManagerArray = { new NullX509TrustManager() };
+                    context.init(null, trustManagerArray, null);
+                    restClient = ClientBuilder.newBuilder()
+                            .hostnameVerifier(new NullHostnameVerifier())
+                            .sslContext(context)
+                            .build();
+                } else {
+                    restClient = ClientBuilder.newClient();
+                }
+
+            }
         } catch (final Exception e) {
             // Should not happen
             LOG.log(Level.SEVERE, "initializeException", e);
@@ -897,4 +912,5 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             return redirectToAuthorizationEndpoint(req, resp, e.getMessage());
         }
     }
+
 }
