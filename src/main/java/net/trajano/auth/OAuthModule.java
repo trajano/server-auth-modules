@@ -264,6 +264,22 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
     private String userInfoUri;
 
     /**
+     * Builds a REST client that bypasses SSL security checks. Made public so it
+     * can be used for testing.
+     *
+     * @return JAX-RS client.
+     */
+    public Client buildUnsecureRestClient() throws GeneralSecurityException {
+        final SSLContext context = SSLContext.getInstance("TLSv1");
+        final TrustManager[] trustManagerArray = { NullX509TrustManager.INSTANCE };
+        context.init(null, trustManagerArray, null);
+        return ClientBuilder.newBuilder()
+                .hostnameVerifier(NullHostnameVerifier.INSTANCE)
+                .sslContext(context)
+                .build();
+    }
+
+    /**
      * Does nothing.
      *
      * @param messageInfo
@@ -623,13 +639,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
             if (restClient == null) {
                 if (moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY) != null && Boolean.valueOf(moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY))) {
-                    final SSLContext context = SSLContext.getInstance("SSLv3");
-                    final TrustManager[] trustManagerArray = { new NullX509TrustManager() };
-                    context.init(null, trustManagerArray, null);
-                    restClient = ClientBuilder.newBuilder()
-                            .hostnameVerifier(new NullHostnameVerifier())
-                            .sslContext(context)
-                            .build();
+                    restClient = buildUnsecureRestClient();
                 } else {
                     restClient = ClientBuilder.newClient();
                 }

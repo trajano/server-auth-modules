@@ -9,8 +9,13 @@ import javax.net.ssl.SSLSession;
 public class NullHostnameVerifier implements HostnameVerifier {
 
     /**
+     * Singleton instance.
+     */
+    public static final HostnameVerifier INSTANCE = new NullHostnameVerifier();
+
+    /**
      * Always return true.
-     * 
+     *
      * @param hostname
      *            hostname
      * @param sslSession
