@@ -55,6 +55,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import net.trajano.auth.internal.Base64;
 import net.trajano.auth.internal.CipherUtil;
+import net.trajano.auth.internal.DisableSslCertificateCheckUtil;
 import net.trajano.auth.internal.JsonWebKeySet;
 import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
@@ -91,6 +92,13 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * Cookie context option key. The value is optional.
      */
     public static final String COOKIE_CONTEXT_KEY = "cookie_context";
+
+    /**
+     * DUsable HTTP certificate checks key. This this is set to true, the auth
+     * module will <b>globally</b> disable HTTPS certificate checks. This should
+     * only be used in development.
+     */
+    public static final String DISABLE_CERTIFICATE_CHECKS_KEY = "disable_certificate_checks";
 
     /**
      * https prefix.
@@ -180,17 +188,17 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
     }
 
     /**
-     * Client ID. This is set through "client.id" option.
+     * Client ID. This is set through {@value #CLIENT_ID_KEY} option.
      */
     private String clientId;
 
     /**
-     * Client secret. This is set through "client.secret" option.
+     * Client secret. This is set through {@value #CLIENT_SECRET_KEY} option.
      */
     private String clientSecret;
 
     /**
-     * Cookie context path. Set through through "cookie.context" option. This is
+     * Cookie context path. Set through through "cookie_context" option. This is
      * optional.
      */
     private String cookieContext;
@@ -261,8 +269,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      *            subject
      */
     @Override
-    public void cleanSubject(final MessageInfo messageInfo,
-            final Subject subject) throws AuthException {
+    public void cleanSubject(final MessageInfo messageInfo, final Subject subject) throws AuthException {
 
         // Does nothing.
     }
@@ -310,8 +317,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws GeneralSecurityException
      * @throws IOException
      */
-    private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException,
-            IOException {
+    private String getIdToken(final HttpServletRequest req) throws GeneralSecurityException, IOException {
 
         final Cookie[] cookies = req.getCookies();
         if (cookies == null) {
@@ -350,9 +356,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws AuthException
      *             wraps exceptions thrown during processing
      */
-    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(HttpServletRequest req,
-            Client client,
-            Map<String, String> options) throws AuthException;
+    protected abstract OpenIDProviderConfiguration getOpenIDProviderConfig(HttpServletRequest req, Client client, Map<String, String> options) throws AuthException;
 
     /**
      * This gets the redirection endpoint URI. It uses the
@@ -428,8 +432,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      *            OpenID provider config
      * @return token response
      */
-    protected OAuthToken getToken(final HttpServletRequest req,
-            final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
+    protected OAuthToken getToken(final HttpServletRequest req, final OpenIDProviderConfiguration oidProviderConfig) throws IOException {
 
         final MultivaluedMap<String, String> requestData = new MultivaluedHashMap<>();
         requestData.putSingle(CODE, req.getParameter("code"));
@@ -473,8 +476,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws GeneralSecurityException
      *             wraps exceptions thrown during processing
      */
-    protected JsonWebKeySet getWebKeys(final Map<String, String> options,
-            final OpenIDProviderConfiguration config) throws GeneralSecurityException {
+    protected JsonWebKeySet getWebKeys(final Map<String, String> options, final OpenIDProviderConfiguration config) throws GeneralSecurityException {
 
         return new JsonWebKeySet(restClient.target(config.getJwksUri())
                 .request(MediaType.APPLICATION_JSON_TYPE)
@@ -510,10 +512,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @return status
      * @throws GeneralSecurityException
      */
-    private AuthStatus handleCallback(final HttpServletRequest req,
-            final HttpServletResponse resp,
-            final Subject subject) throws GeneralSecurityException,
-            IOException {
+    private AuthStatus handleCallback(final HttpServletRequest req, final HttpServletResponse resp, final Subject subject) throws GeneralSecurityException, IOException {
 
         final OpenIDProviderConfiguration oidProviderConfig = getOpenIDProviderConfig(req, restClient, moduleOptions);
         final OAuthToken token = getToken(req, oidProviderConfig);
@@ -597,10 +596,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void initialize(final MessagePolicy requestPolicy,
-            final MessagePolicy responsePolicy,
-            final CallbackHandler h,
-            @SuppressWarnings("rawtypes") final Map options) throws AuthException {
+    public void initialize(final MessagePolicy requestPolicy, final MessagePolicy responsePolicy, final CallbackHandler h, @SuppressWarnings("rawtypes") final Map options) throws AuthException {
 
         try {
             moduleOptions = options;
@@ -616,6 +612,9 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 scope = "openid";
             }
             clientSecret = getRequiredOption(CLIENT_SECRET_KEY);
+            if (moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY) != null && Boolean.valueOf(moduleOptions.get(DISABLE_CERTIFICATE_CHECKS_KEY))) {
+                DisableSslCertificateCheckUtil.disableChecks();
+            }
             LOGCONFIG.log(Level.CONFIG, "options", moduleOptions);
 
             handler = h;
@@ -657,8 +656,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      *            servlet request
      * @return token cookie.
      */
-    private TokenCookie processTokenCookie(final Subject subject,
-            final HttpServletRequest req) {
+    private TokenCookie processTokenCookie(final Subject subject, final HttpServletRequest req) {
 
         try {
             final String idToken = getIdToken(req);
@@ -702,9 +700,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @return authentication status
      * @throws AuthException
      */
-    private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req,
-            final HttpServletResponse resp,
-            final String reason) throws AuthException {
+    private AuthStatus redirectToAuthorizationEndpoint(final HttpServletRequest req, final HttpServletResponse resp, final String reason) throws AuthException {
 
         LOG.log(Level.FINE, "redirecting", new Object[] { reason });
         URI authorizationEndpointUri = null;
@@ -728,8 +724,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                    .queryParam(STATE, state)
-                    .build();
+                            .queryParam(STATE, state)
+                            .build();
             deleteAuthCookies(resp);
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
@@ -755,8 +751,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @return {@link AuthStatus#SEND_SUCCESS}
      */
     @Override
-    public AuthStatus secureResponse(final MessageInfo messageInfo,
-            final Subject subject) throws AuthException {
+    public AuthStatus secureResponse(final MessageInfo messageInfo, final Subject subject) throws AuthException {
 
         return AuthStatus.SEND_SUCCESS;
     }
@@ -783,8 +778,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @throws AuthException
      * @throws GeneralSecurityException
      */
-    private void updateSubjectPrincipal(final Subject subject,
-            final JsonObject jwtPayload) throws GeneralSecurityException {
+    private void updateSubjectPrincipal(final Subject subject, final JsonObject jwtPayload) throws GeneralSecurityException {
 
         try {
             final String iss = googleWorkaround(jwtPayload.getString("iss"));
@@ -817,9 +811,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * @return Auth status
      */
     @Override
-    public AuthStatus validateRequest(final MessageInfo messageInfo,
-            final Subject clientSubject,
-            final Subject serviceSubject) throws AuthException {
+    public AuthStatus validateRequest(final MessageInfo messageInfo, final Subject clientSubject, final Subject serviceSubject) throws AuthException {
 
         final HttpServletRequest req = (HttpServletRequest) messageInfo.getRequestMessage();
         final HttpServletResponse resp = (HttpServletResponse) messageInfo.getResponseMessage();
@@ -831,7 +823,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getIdToken());
+                .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -839,7 +831,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getUserInfo());
+                .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
