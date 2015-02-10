@@ -105,7 +105,7 @@ public class TestUtilityClasses {
     }
 
     @Test
-    public void validateUtilityClasses() {
+    public void validateUtilityClasses() throws Exception {
         assertUtilityClassWellDefined(OAuthParameters.class);
         assertUtilityClassWellDefined(Utils.class);
         assertUtilityClassWellDefined(CipherUtil.class);
