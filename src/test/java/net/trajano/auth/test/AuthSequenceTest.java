@@ -194,7 +194,7 @@ public class AuthSequenceTest {
     }
 
     /**
-     * Tests callback validatoin.
+     * Tests callback validation.
      *
      * @throws Exception
      */
@@ -216,7 +216,7 @@ public class AuthSequenceTest {
     }
 
     /**
-     * Tests callback validatoin.
+     * Tests callback validation.
      *
      * @throws Exception
      */
