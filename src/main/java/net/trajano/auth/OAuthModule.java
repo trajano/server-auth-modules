@@ -97,7 +97,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
     public static final String COOKIE_CONTEXT_KEY = "cookie_context";
 
     /**
-     * DUsable HTTP certificate checks key. This this is set to true, the auth
+     * Disable HTTP certificate checks key. This this is set to true, the auth
      * module will disable HTTPS certificate checks for the REST client
      * connections. This should only be used in development.
      */
@@ -749,8 +749,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                            .queryParam(STATE, state)
-                            .build();
+                    .queryParam(STATE, state)
+                    .build();
             deleteAuthCookies(resp);
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
@@ -848,7 +848,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getIdToken());
+                        .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -856,7 +856,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                .print(tokenCookie.getUserInfo());
+                        .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
