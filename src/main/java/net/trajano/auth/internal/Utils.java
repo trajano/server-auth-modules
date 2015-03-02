@@ -161,10 +161,13 @@ public final class Utils {
      *            ID Token JSON.
      * @throws GeneralSecurityException
      */
-    public static void validateIdToken(final String clientId, final JsonObject idTokenJson) throws GeneralSecurityException {
+    public static void validateIdToken(final String clientId, final JsonObject idTokenJson, final String nonce) throws GeneralSecurityException {
         // TODO handle multiple audiences
         if (!clientId.equals(idTokenJson.getString("aud"))) {
             throw new GeneralSecurityException(String.format("invalid 'aud' got' %s' expected '%s'", idTokenJson.getString("aud"), clientId));
+        }
+        if (nonce != null && !nonce.equals(idTokenJson.getString("nonce"))) {
+            throw new GeneralSecurityException(String.format("invalid 'nonce' got' %s' expected '%s'", idTokenJson.getString("nonce"), clientId));
         }
         if (idTokenJson.containsKey("azp") && !clientId.equals(idTokenJson.getString("azp"))) {
             throw new GeneralSecurityException(String.format("invalid 'azp' got' %s' expected '%s'", idTokenJson.getString("azp"), clientId));

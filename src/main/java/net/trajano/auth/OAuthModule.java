@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -147,6 +149,11 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
     public static final String NET_TRAJANO_AUTH_ID = "net.trajano.auth.id";
 
     /**
+     * Nonce cookie name. This one expires when the browser closes.
+     */
+    public static final String NET_TRAJANO_AUTH_NONCE = "net.trajano.auth.nonce";
+
+    /**
      * Resource bundle.
      */
     private static final ResourceBundle R;
@@ -156,12 +163,10 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * context root of the application.
      */
     public static final String REDIRECTION_ENDPOINT_URI_KEY = "redirection_endpoint"; //$NON-NLS-1$
-
     /**
      * Refresh token attribute name.
      */
     public static final String REFRESH_TOKEN_KEY = "auth_refresh";
-
     /**
      * Scope option key. The value is optional and defaults to "openid"
      */
@@ -224,6 +229,11 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * Options for the module.
      */
     private Map<String, String> moduleOptions;
+
+    /**
+     * Randomizer.
+     */
+    private final Random random = new SecureRandom();
 
     /**
      * Redirection endpoint URI. This is set through "redirection_endpoint"
@@ -359,7 +369,29 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                 return idToken;
             }
         }
-        return idToken;
+        return null;
+    }
+
+    /**
+     * Gets the nonce from the cookie.
+     *
+     * @param req
+     * @return
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
+    private String getNonceFromCookie(final HttpServletRequest req) throws GeneralSecurityException, IOException {
+        final Cookie[] cookies = req.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+
+        for (final Cookie cookie : cookies) {
+            if (NET_TRAJANO_AUTH_NONCE.equals(cookie.getName())) {
+                return new String(CipherUtil.decrypt(Base64.decode(cookie.getValue()), secret), "US-ASCII");
+            }
+        }
+        return null;
     }
 
     /**
@@ -541,7 +573,8 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         final JsonObject claimsSet = Json.createReader(new ByteArrayInputStream(Utils.getJwsPayload(token.getIdToken(), webKeys)))
                 .readObject();
 
-        validateIdToken(clientId, claimsSet);
+        final String nonce = getNonceFromCookie(req);
+        validateIdToken(clientId, claimsSet, nonce);
 
         final String iss = googleWorkaround(claimsSet.getString("iss"));
         final String issuer = googleWorkaround(oidProviderConfig.getIssuer());
@@ -591,7 +624,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             ageCookie.setMaxAge(Integer.parseInt(req.getParameter("expires_in")));
         }
         ageCookie.setPath(requestCookieContext);
-        idTokenCookie.setSecure(true);
+        ageCookie.setSecure(true);
         resp.addCookie(ageCookie);
 
         final String stateEncoded = req.getParameter("state");
@@ -670,10 +703,21 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
     }
 
     /**
+     * Generate the next nonce.
+     *
+     * @return nonce
+     */
+    private String nextNonce() {
+        final byte[] bytes = new byte[8];
+        random.nextBytes(bytes);
+        return Base64.encodeWithoutPadding(bytes);
+    }
+
+    /**
      * Builds the token cookie and updates the subject principal and sets the
      * token and user info attribute in the request. Any exceptions or
      * validation problems during validation will make this return
-     * <code>null</code> to indicat that there was no valid token.
+     * <code>null</code> to indicate that there was no valid token.
      *
      * @param subject
      *            subject
@@ -688,7 +732,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             TokenCookie tokenCookie = null;
             if (idToken != null) {
                 tokenCookie = new TokenCookie(idToken, secret);
-                validateIdToken(clientId, tokenCookie.getIdToken());
+                validateIdToken(clientId, tokenCookie.getIdToken(), null);
                 updateSubjectPrincipal(subject, tokenCookie.getIdToken());
 
                 req.setAttribute(ACCESS_TOKEN_KEY, tokenCookie.getAccessToken());
@@ -715,6 +759,10 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
      * {@link AuthStatus#SEND_FAILURE}. For idempotent requests, it will build
      * the redirect URI and return {@link AuthStatus#SEND_CONTINUE}. It will
      * also destroy the cookies used for authorization as part of the response.
+     * <p>
+     * It stores an encrypted nonce in the cookies and uses it to verify the
+     * nonce value later.
+     * </p>
      *
      * @param req
      *            HTTP servlet request
@@ -742,6 +790,19 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             final String state = Base64.encodeWithoutPadding(stateBuilder.toString()
                     .getBytes("UTF-8"));
 
+            final String requestCookieContext;
+            if (isNullOrEmpty(cookieContext)) {
+                requestCookieContext = req.getContextPath();
+            } else {
+                requestCookieContext = cookieContext;
+            }
+
+            final String nonce = nextNonce();
+            final Cookie nonceCookie = new Cookie(NET_TRAJANO_AUTH_NONCE, Base64.encodeWithoutPadding(CipherUtil.encrypt(nonce.getBytes(), secret)));
+            nonceCookie.setMaxAge(-1);
+            nonceCookie.setPath(requestCookieContext);
+            nonceCookie.setSecure(true);
+            resp.addCookie(nonceCookie);
             authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())
                     .queryParam(CLIENT_ID, clientId)
                     .queryParam(RESPONSE_TYPE, "code")
@@ -749,13 +810,14 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .queryParam(REDIRECT_URI, URI.create(req.getRequestURL()
                             .toString())
                             .resolve(moduleOptions.get(REDIRECTION_ENDPOINT_URI_KEY)))
-                    .queryParam(STATE, state)
-                    .build();
+                            .queryParam(STATE, state)
+                            .queryParam("nonce", nonce)
+                            .build();
             deleteAuthCookies(resp);
 
             resp.sendRedirect(authorizationEndpointUri.toASCIIString());
             return AuthStatus.SEND_CONTINUE;
-        } catch (final IOException e) {
+        } catch (final IOException | GeneralSecurityException e) {
             // Should not happen
             LOG.log(Level.SEVERE, "sendRedirectException", new Object[] { authorizationEndpointUri, e.getMessage() });
             LOG.throwing(this.getClass()
@@ -848,7 +910,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(tokenUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getIdToken());
+                .print(tokenCookie.getIdToken());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -856,7 +918,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
                     .equals(userInfoUri)) {
                 resp.setContentType(MediaType.APPLICATION_JSON);
                 resp.getWriter()
-                        .print(tokenCookie.getUserInfo());
+                .print(tokenCookie.getUserInfo());
                 return AuthStatus.SEND_SUCCESS;
             }
 
@@ -922,5 +984,4 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             return redirectToAuthorizationEndpoint(req, resp, e.getMessage());
         }
     }
-
 }
