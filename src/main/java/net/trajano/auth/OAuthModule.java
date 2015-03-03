@@ -305,15 +305,12 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
 
     private void deleteAuthCookies(final HttpServletResponse resp) {
 
-        final Cookie deleteAgeCookie = new Cookie(NET_TRAJANO_AUTH_AGE, "");
-        deleteAgeCookie.setMaxAge(0);
-        deleteAgeCookie.setPath(cookieContext);
-        resp.addCookie(deleteAgeCookie);
-
-        final Cookie deleteIdCookie = new Cookie(NET_TRAJANO_AUTH_ID, "");
-        deleteIdCookie.setMaxAge(0);
-        deleteIdCookie.setPath(cookieContext);
-        resp.addCookie(deleteIdCookie);
+        for (final String cookieName : new String[] { NET_TRAJANO_AUTH_ID, NET_TRAJANO_AUTH_AGE, NET_TRAJANO_AUTH_NONCE }) {
+            final Cookie deleteCookie = new Cookie(cookieName, "");
+            deleteCookie.setMaxAge(0);
+            deleteCookie.setPath(cookieContext);
+            resp.addCookie(deleteCookie);
+        }
     }
 
     /**
@@ -576,6 +573,11 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         final String nonce = getNonceFromCookie(req);
         validateIdToken(clientId, claimsSet, nonce);
 
+        final Cookie deleteNonceCookie = new Cookie(NET_TRAJANO_AUTH_NONCE, "");
+        deleteNonceCookie.setMaxAge(0);
+        deleteNonceCookie.setPath(cookieContext);
+        resp.addCookie(deleteNonceCookie);
+
         final String iss = googleWorkaround(claimsSet.getString("iss"));
         final String issuer = googleWorkaround(oidProviderConfig.getIssuer());
         if (!iss.equals(issuer)) {
@@ -612,6 +614,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         final Cookie idTokenCookie = new Cookie(NET_TRAJANO_AUTH_ID, tokenCookie.toCookieValue(clientId, clientSecret));
         idTokenCookie.setMaxAge(-1);
         idTokenCookie.setSecure(true);
+        idTokenCookie.setHttpOnly(true);
         idTokenCookie.setPath(requestCookieContext);
         resp.addCookie(idTokenCookie);
 
@@ -625,6 +628,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
         }
         ageCookie.setPath(requestCookieContext);
         ageCookie.setSecure(true);
+        ageCookie.setHttpOnly(true);
         resp.addCookie(ageCookie);
 
         final String stateEncoded = req.getParameter("state");
@@ -801,6 +805,7 @@ public abstract class OAuthModule implements ServerAuthModule, ServerAuthContext
             final Cookie nonceCookie = new Cookie(NET_TRAJANO_AUTH_NONCE, Base64.encodeWithoutPadding(CipherUtil.encrypt(nonce.getBytes(), secret)));
             nonceCookie.setMaxAge(-1);
             nonceCookie.setPath(requestCookieContext);
+            nonceCookie.setHttpOnly(true);
             nonceCookie.setSecure(true);
             resp.addCookie(nonceCookie);
             authorizationEndpointUri = UriBuilder.fromUri(oidProviderConfig.getAuthorizationEndpoint())
