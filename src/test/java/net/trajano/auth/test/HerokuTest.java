@@ -355,20 +355,30 @@ public class HerokuTest {
         }
     }
 
-    private void validateResponse(final HttpServletResponse resp) throws GeneralSecurityException,
-    IOException {
+    private void validateResponse(final HttpServletResponse resp) throws GeneralSecurityException, IOException {
 
         final ArgumentCaptor<Cookie> cookieCapture = ArgumentCaptor.forClass(Cookie.class);
-        verify(resp, times(2)).addCookie(cookieCapture.capture());
-        final Cookie cookie = cookieCapture.getAllValues()
+        verify(resp, times(3)).addCookie(cookieCapture.capture());
+        final Cookie nonceCookie = cookieCapture.getAllValues()
                 .get(0);
+        assertEquals(OAuthModule.NET_TRAJANO_AUTH_NONCE, nonceCookie.getName());
+        assertEquals(nonceCookie.getValue(), "");
+
+        final Cookie cookie = cookieCapture.getAllValues()
+                .get(1);
         assertEquals(OAuthModule.NET_TRAJANO_AUTH_ID, cookie.getName());
         tokenCookie = new TokenCookie(cookie.getValue(), secretKey);
+
         assertEquals("https://connect-op.herokuapp.com", tokenCookie.getIdToken()
                 .getString("iss"));
+        final String nonceCookieValue = Base64.encodeWithoutPadding(CipherUtil.encrypt(tokenCookie.getIdToken()
+                .getString("nonce")
+                .getBytes(), secretKey));
+        assertEquals(8, Base64.decode(tokenCookie.getIdToken()
+                .getString("nonce")).length);
 
         ageCookie = cookieCapture.getAllValues()
-                .get(1);
+                .get(2);
         assertEquals(OAuthModule.NET_TRAJANO_AUTH_AGE, ageCookie.getName());
 
         final ArgumentCaptor<String> redirectUrl = ArgumentCaptor.forClass(String.class);
