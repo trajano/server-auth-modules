@@ -47,6 +47,7 @@ import net.trajano.auth.internal.OAuthToken;
 import net.trajano.auth.internal.OpenIDProviderConfiguration;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -336,7 +337,10 @@ public class AuthSequenceTest {
 
         final Subject client = new Subject();
         assertEquals(AuthStatus.SEND_CONTINUE, module.validateRequest(messageInfo, client, null));
-        verify(servletResponse).sendRedirect("https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L2VqYjI");
+        final ArgumentCaptor<String> redirectUriCaptor = ArgumentCaptor.forClass(String.class);
+        verify(servletResponse).sendRedirect(redirectUriCaptor.capture());
+        assertTrue(redirectUriCaptor.getValue()
+                .startsWith("https://accounts.google.com/o/oauth2/auth?client_id=clientID&response_type=code&scope=openid&redirect_uri=https://i.trajano.net:8443/app/oauth2&state=L2VqYjI&nonce="));
     }
 
     @Test
