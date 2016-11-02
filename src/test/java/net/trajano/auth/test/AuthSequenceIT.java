@@ -1,7 +1,8 @@
 package net.trajano.auth.test;
 
 import static net.trajano.auth.OAuthModule.REDIRECTION_ENDPOINT_URI_KEY;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,15 +15,14 @@ import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.MessagePolicy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.AssertTrue;
-
-import net.trajano.auth.OAuthModule;
-import net.trajano.auth.OpenIDConnectAuthModule;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.google.common.collect.ImmutableMap;
+
+import net.trajano.auth.OAuthModule;
+import net.trajano.auth.OpenIDConnectAuthModule;
 
 public class AuthSequenceIT {
 
